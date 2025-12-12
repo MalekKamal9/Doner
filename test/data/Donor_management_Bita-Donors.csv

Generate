@@ -1,0 +1,100 @@
+donorID;name;email;phone;status;isRecurringDonor;isHNI;donorType_ID
+1f8b9e4a-1d2b-4f3e-9a1c-5d9f8e4a1d2b;John Smith;john.smith@example.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2a9c8d7b-2e3f-4a5b-8c9d-6e7f8d7b2e3f;Maria Garcia;maria.garcia@example.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3b7d6e5c-3f4a-5b6c-9d8e-7f6e5c3f4a5b;Michael Johnson;michael.johnson@example.com;(345) 678-9012;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4c6e5d4b-4a5b-6c7d-8e9f-8e5d4b4a5b6c;Emily Davis;emily.davis@example.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5d5c4b3a-5b6c-7d8e-9f0a-9d4b3a5b6c7d;Christopher Brown;christopher.brown@example.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6e4b3a2c-6c7d-8e9f-0a1b-0e3a2c6c7d8e;Jessica Wilson;jessica.wilson@example.com;(678) 901-2345;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7f3a2b1d-7d8e-9f0a-1b2c-1f2b1d7d8e9f;David Martinez;david.martinez@example.com;(789) 012-3456;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8a2b1c0e-8e9f-0a1b-2c3d-2a1c0e8e9f0a;Sarah Anderson;sarah.anderson@example.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9b1c0d9f-9f0a-1b2c-3d4e-3b0d9f9f0a1b;Matthew Thomas;matthew.thomas@example.com;(901) 234-5678;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0c0d9e8f-0a1b-2c3d-4e5f-4c9e8f0a1b2c;Ashley Jackson;ashley.jackson@example.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1d9e8f7a-1b2c-3d4e-5f6a-5d8f7a1b2c3d;Joshua White;joshua.white@example.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2e8f7a6b-2c3d-4e5f-6a7b-6e7a6b2c3d4e;Amanda Harris;amanda.harris@example.com;(234) 567-8901;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3f7a6b5c-3d4e-5f6a-7b8c-7f6b5c3d4e5f;Andrew Clark;andrew.clark@example.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4a6b5c4d-4e5f-6a7b-8c9d-8a5c4d4e5f6a;Stephanie Lewis;stephanie.lewis@example.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5b5c4d3e-5f6a-7b8c-9d0e-9b4d3e5f6a7b;Ryan Walker;ryan.walker@example.com;(567) 890-1234;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6c4d3e2f-6a7b-8c9d-0e1f-0c3e2f6a7b8c;Nicole Hall;nicole.hall@example.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7d3e2f1a-7b8c-9d0e-1f2a-1d2f1a7b8c9d;Jason Allen;jason.allen@example.com;(789) 012-3456;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8e2f1a0b-8c9d-0e1f-2a3b-2e1a0b8c9d0e;Laura Young;laura.young@example.com;(890) 123-4567;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9f1a0b9c-9d0e-1f2a-3b4c-3f0b9c9d0e1f;Kevin King;kevin.king@example.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0a0b9c8d-0e1f-2a3b-4c5d-4a9c8d0e1f2a;Rebecca Wright;rebecca.wright@example.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1b9c8d7e-1f2a-3b4c-5d6e-5b8d7e1f2a3b;Brian Scott;brian.scott@example.com;(123) 456-7890;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2c8d7e6f-2a3b-4c5d-6e7f-6c7e6f2a3b4c;Angela Green;angela.green@example.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3d7e6f5a-3b4c-5d6e-7f8a-7d6f5a3b4c5d;Eric Adams;eric.adams@example.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4e6f5a4b-4c5d-6e7f-8a9b-8e5a4b4c5d6e;Rachel Baker;rachel.baker@example.com;(456) 789-0123;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5f5a4b3c-5d6e-7f8a-9b0c-9f4b3c5d6e7f;Patrick Gonzalez;patrick.gonzalez@example.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6a4b3c2d-6e7f-8a9b-0c1d-0a3c2d6e7f8a;Hannah Nelson;hannah.nelson@example.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7b3c2d1e-7f8a-9b0c-1d2e-1b2d1e7f8a9b;Justin Carter;justin.carter@example.com;(789) 012-3456;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8c2d1e0f-8a9b-0c1d-2e3f-2c1e0f8a9b0c;Megan Mitchell;megan.mitchell@example.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9d1e0f9a-9b0c-1d2e-3f4a-3d0f9a9b0c1d;Kyle Perez;kyle.perez@example.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0e0f9a8b-0c1d-2e3f-4a5b-4e9a8b0c1d2e;Victoria Roberts;victoria.roberts@example.com;(012) 345-6789;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1f9a8b7c-1d2e-3f4a-5b6c-5f8b7c1d2e3f;Jordan Turner;jordan.turner@example.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2a8b7c6d-2e3f-4a5b-6c7d-6a7c6d2e3f4a;Sophia Phillips;sophia.phillips@example.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3b7c6d5e-3f4a-5b6c-7d8e-7b6d5e3f4a5b;Brandon Campbell;brandon.campbell@example.com;(345) 678-9012;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4c6d5e4f-4a5b-6c7d-8e9f-8c5e4f4a5b6c;Olivia Parker;olivia.parker@example.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5d5e4f3a-5b6c-7d8e-9f0a-9d4f3a5b6c7d;Ethan Evans;ethan.evans@example.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6e4f3a2b-6c7d-8e9f-0a1b-0e3a2b6c7d8e;Alyssa Collins;alyssa.collins@example.com;(678) 901-2345;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7f3a2b1c-7d8e-9f0a-1b2c-1f2b1c7d8e9f;Zachary Stewart;zachary.stewart@example.com;(789) 012-3456;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8a2b1c0d-8e9f-0a1b-2c3d-2a1c0d8e9f0a;Samantha Morris;samantha.morris@example.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9b1c0d9e-9f0a-1b2c-3d4e-3b0d9e9f0a1b;Nathan Reed;nathan.reed@example.com;(901) 234-5678;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0c0d9e8f-0a1b-2c3d-4e5f-4c9e8f0a1b2c;Lauren Foster;lauren.foster@example.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1d9e8f7a-1b2c-3d4e-5f6a-5d8f7a1b2c3d;Benjamin Howard;benjamin.howard@example.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2e8f7a6b-2c3d-4e5f-6a7b-6e7a6b2c3d4e;Madison Ward;madison.ward@example.com;(234) 567-8901;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3f7a6b5c-3d4e-5f6a-7b8c-7f6b5c3d4e5f;Jacob Ramirez;jacob.ramirez@example.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4a6b5c4d-4e5f-6a7b-8c9d-8a5c4d4e5f6a;Abigail Torres;abigail.torres@example.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5b5c4d3e-5f6a-7b8c-9d0e-9b4d3e5f6a7b;Tyler Peterson;tyler.peterson@example.com;(567) 890-1234;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6c4d3e2f-6a7b-8c9d-0e1f-0c3e2f6a7b8c;Sydney Rogers;sydney.rogers@example.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7d3e2f1a-7b8c-9d0e-1f2a-1d2f1a7b8c9d;Christian Perry;christian.perry@example.com;(789) 012-3456;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8e2f1a0b-8c9d-0e1f-2a3b-2e1a0b8c9d0e;Kaitlyn Powell;kaitlyn.powell@example.com;(890) 123-4567;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9f1a0b9c-9d0e-1f2a-3b4c-3f0b9c9d0e1f;Gabriel Bennett;gabriel.bennett@example.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0a0b9c8d-0e1f-2a3b-4c5d-4a9c8d0e1f2a;Alexis Rivera;alexis.rivera@example.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1b9c8d7e-1f2a-3b4c-5d6e-5b8d7e1f2a3b;Sean Richardson;sean.richardson@example.com;(123) 456-7890;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+2c8d7e6f-2a3b-4c5d-6e7f-6c7e6f2a3b4c;Jasmine Cox;jasmine.cox@example.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+3d7e6f5a-3b4c-5d6e-7f8a-7d6f5a3b4c5d;Aaron Bailey;aaron.bailey@example.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+4e6f5a4b-4c5d-6e7f-8a9b-8e5a4b4c5d6e;Haley Cooper;haley.cooper@example.com;(456) 789-0123;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+5f5a4b3c-5d6e-7f8a-9b0c-9f4b3c5d6e7f;Eli Morgan;eli.morgan@example.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+6a4b3c2d-6e7f-8a9b-0c1d-0a3c2d6e7f8a;Avery Bell;avery.bell@example.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+7b3c2d1e-7f8a-9b0c-1d2e-1b2d1e7f8a9b;Isaac Murphy;isaac.murphy@example.com;(789) 012-3456;true;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+8c2d1e0f-8a9b-0c1d-2e3f-2c1e0f8a9b0c;Mackenzie Bailey;mackenzie.bailey@example.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+9d1e0f9a-9b0c-1d2e-3f4a-3d0f9a9b0c1d;Connor Hughes;connor.hughes@example.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4
+0e0f9a8b-0c1d-2e3f-4a5b-4e9a8b0c1d2e;Savannah Flores;savannah.flores@example.com;(012) 345-6789;true;true;true;cbce2914-c599-4fd5-b6f0-03fd650547e4
+1f9a8b7c-1d2e-3f4a-5b6c-5f8b7c1d2e3f;Foundation for Education;foundation.education@example.com;(123) 456-7890;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+2a8b7c6d-2e3f-4a5b-6c7d-6a7c6d2e3f4a;Health Trust Foundation;health.trust@example.com;(234) 567-8901;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+3b7c6d5e-3f4a-5b6c-7d8e-7b6d5e3f4a5b;Green Earth Charitable Foundation;green.earth@example.com;(345) 678-9012;true;false;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+4c6d5e4f-4a5b-6c7d-8e9f-8c5e4f4a5b6c;Children's Memorial Foundation;children.memorial@example.com;(456) 789-0123;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+5d5e4f3a-5b6c-7d8e-9f0a-9d4f3a5b6c7d;Animal Welfare Trust;animal.welfare@example.com;(567) 890-1234;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+6e4f3a2b-6c7d-8e9f-0a1b-0e3a2b6c7d8e;Community Support Foundation;community.support@example.com;(678) 901-2345;true;true;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+7f3a2b1c-7d8e-9f0a-1b2c-1f2b1c7d8e9f;Arts and Culture Trust;arts.culture@example.com;(789) 012-3456;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+8a2b1c0d-8e9f-0a1b-2c3d-2a1c0d8e9f0a;Global Health Foundation;global.health@example.com;(890) 123-4567;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+9b1c0d9e-9f0a-1b2c-3d4e-3b0d9e9f0a1b;Youth Empowerment Trust;youth.empowerment@example.com;(901) 234-5678;true;false;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+0c0d9e8f-0a1b-2c3d-4e5f-4c9e8f0a1b2c;Environmental Action Foundation;environmental.action@example.com;(012) 345-6789;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+1d9e8f7a-1b2c-3d4e-5f6a-5d8f7a1b2c3d;Women's Rights Charitable Foundation;womens.rights@example.com;(123) 456-7890;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+2e8f7a6b-2c3d-4e5f-6a7b-6e7a6b2c3d4e;Education for All Foundation;education.all@example.com;(234) 567-8901;true;true;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+3f7a6b5c-3d4e-5f6a-7b8c-7f6b5c3d4e5f;Healthcare Access Trust;healthcare.access@example.com;(345) 678-9012;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+4a6b5c4d-4e5f-6a7b-8c9d-8a5c4d4e5f6a;Clean Water Foundation;clean.water@example.com;(456) 789-0123;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+5b5c4d3e-5f6a-7b8c-9d0e-9b4d3e5f6a7b;Hunger Relief Trust;hunger.relief@example.com;(567) 890-1234;true;false;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+6c4d3e2f-6a7b-8c9d-0e1f-0c3e2f6a7b8c;Disaster Recovery Foundation;disaster.recovery@example.com;(678) 901-2345;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+7d3e2f1a-7b8c-9d0e-1f2a-1d2f1a7b8c9d;Animal Rescue Trust;animal.rescue@example.com;(789) 012-3456;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+8e2f1a0b-8c9d-0e1f-2a3b-2e1a0b8c9d0e;Mental Health Awareness Foundation;mental.health@example.com;(890) 123-4567;true;true;true;65997707-95fd-4b3c-be0f-6c90a46c7217
+9f1a0b9c-9d0e-1f2a-3b4c-3f0b9c9d0e1f;Social Justice Foundation;social.justice@example.com;(901) 234-5678;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217
+0a0b9c8d-0e1f-2a3b-4c5d-4a9c8d0e1f2a;Corporate Solutions Inc;corporate.solutions@example.com;(012) 345-6789;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+1b9c8d7e-1f2a-3b4c-5d6e-5b8d7e1f2a3b;Tech Innovations LLC;tech.innovations@example.com;(123) 456-7890;true;false;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+2c8d7e6f-2a3b-4c5d-6e7f-6c7e6f2a3b4c;Global Enterprises Corp;global.enterprises@example.com;(234) 567-8901;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+3d7e6f5a-3b4c-5d6e-7f8a-7d6f5a3b4c5d;Financial Holdings Partners;financial.holdings@example.com;(345) 678-9012;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+4e6f5a4b-4c5d-6e7f-8a9b-8e5a4b4c5d6e;Retail Services Inc;retail.services@example.com;(456) 789-0123;true;true;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+5f5a4b3c-5d6e-7f8a-9b0c-9f4b3c5d6e7f;Manufacturing Partners LLC;manufacturing.partners@example.com;(567) 890-1234;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+6a4b3c2d-6e7f-8a9b-0c1d-0a3c2d6e7f8a;Energy Solutions Corp;energy.solutions@example.com;(678) 901-2345;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+7b3c2d1e-7f8a-9b0c-1d2e-1b2d1e7f8a9b;Healthcare Services Holdings;healthcare.services@example.com;(789) 012-3456;true;false;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+8c2d1e0f-8a9b-0c1d-2e3f-2c1e0f8a9b0c;Construction Enterprises Inc;construction.enterprises@example.com;(890) 123-4567;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+9d1e0f9a-9b0c-1d2e-3f4a-3d0f9a9b0c1d;Automotive Solutions LLC;automotive.solutions@example.com;(901) 234-5678;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+0e0f9a8b-0c1d-2e3f-4a5b-4e9a8b0c1d2e;Telecommunications Partners;telecommunications.partners@example.com;(012) 345-6789;true;true;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+1f9a8b7c-1d2e-3f4a-5b6c-5f8b7c1d2e3f;Food Services Holdings;food.services@example.com;(123) 456-7890;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+2a8b7c6d-2e3f-4a5b-6c7d-6a7c6d2e3f4a;Media Solutions Inc;media.solutions@example.com;(234) 567-8901;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+3b7c6d5e-3f4a-5b6c-7d8e-7b6d5e3f4a5b;Transportation Services LLC;transportation.services@example.com;(345) 678-9012;true;false;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+4c6d5e4f-4a5b-6c7d-8e9f-8c5e4f4a5b6c;Technology Partners Corp;technology.partners@example.com;(456) 789-0123;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+5d5e4f3a-5b6c-7d8e-9f0a-9d4f3a5b6c7d;Consulting Solutions Inc;consulting.solutions@example.com;(567) 890-1234;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+6e4f3a2b-6c7d-8e9f-0a1b-0e3a2b6c7d8e;Insurance Holdings LLC;insurance.holdings@example.com;(678) 901-2345;true;true;true;c040991b-205c-4e8c-af1b-dfa9ef18791b
+7f3a2b1c-7d8e-9f0a-1b2c-1f2b1c7d8e9f;Real Estate Partners Corp;realestate.partners@example.com;(789) 012-3456;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+8a2b1c0d-8e9f-0a1b-2c3d-2a1c0d8e9f0a;Pharmaceutical Solutions Inc;pharmaceutical.solutions@example.com;(890) 123-4567;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b
+9b1c0d9e-9f0a-1b2c-3d4e-3b0d9e9f0a1b;Legal Services Holdings;legal.services@example.com;(901) 234-5678;true;false;true;c040991b-205c-4e8c-af1b-dfa9ef18791b

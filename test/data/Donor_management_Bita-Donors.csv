@@ -1,0 +1,71 @@
+donorID;name;email;phone;status;isRecurringDonor;isHNI;donorType_ID;ID;createdAt;createdBy;modifiedAt;modifiedBy
+c2daf01b-0b1b-4ee7-bd5c-35beb088668c;Jeffrey Wright;jeffrey.wright749@icloud.com;(818) 263-3849;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;1635f371-60c5-4c90-b8b8-cb76db99ac69;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+096f4a69-87f3-42f1-a3a6-9b32bc697a76;Rodriguez Charitable Foundation;rodriguez.charitable.foundation@aol.com;(212) 931-1283;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;08eef74e-26a2-40ec-8dde-ce158c710021;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+6acde6b1-2552-4aba-bf73-f608186946c1;Rivera Enterprises;rivera.enterprises143@outlook.com;(703) 120-4339;false;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;2e8ac3eb-f0a5-4d94-af46-be32857b67d7;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+313a1e4d-4391-4ace-a169-6b5eb7ae79c2;Kimberly Ramirez;kimberly.ramirez@outlook.com;(415) 655-3769;false;false;true;cbce2914-c599-4fd5-b6f0-03fd650547e4;2d0b7008-ff34-4364-baae-309321f0bb2b;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+7febbcb4-0bc6-448d-8c1e-d57a25f1ec0d;Brown Scholarship Foundation;brown.scholarship.foundation@gmail.com;(310) 685-7924;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;e32f5734-57bc-410c-9c02-70b6be68d826;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+8137b703-e275-4d24-9a4d-9a144a835fa9;Cook Memorial Foundation;cook.memorial.foundation937@gmail.com;(323) 198-2169;false;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;67b2b2b5-aa3e-4cab-b7da-b89aabaffa55;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+13728bd7-890d-4dba-accb-e985937fd897;Kevin White;kevin.white486@outlook.com;(212) 212-3707;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;d14209da-9850-492c-93ab-eafb7901cfab;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+aef413b9-4da4-4499-884c-92bbeb3e6d74;Mitchell International;mitchell.international@gmail.com;(617) 775-5670;true;true;true;c040991b-205c-4e8c-af1b-dfa9ef18791b;eb1c0056-0a2b-42b2-a00e-fe15ded22d2d;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+90beb73e-582c-4daf-9d11-41611b4aa0d9;Lisa Sanchez;lisa.sanchez@yahoo.com;(650) 825-5762;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;03149927-264b-4221-bba6-91914cdc6d44;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+768b031f-da3f-49c2-9aa7-db5861b9a17b;White Family Foundation;white.family.foundation205@outlook.com;(214) 314-1501;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;59c7ca55-98c6-43dd-8e9a-cf71fe370801;2025-12-12T18:37:47.832Z;admin;2025-12-12T18:37:47.832Z;admin
+f3b1c5d2-1e8a-4a5e-9f3d-1e1a7f3d5b1c;John Smith;john.smith@gmail.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;f3b1c5d2-1e8a-4a5e-9f3d-1e1a7f3d5b1c;;;;
+d4e5f6g7-8h9i-0j1k-2l3m-4n5o6p7q8r9s;Maria Garcia;maria.garcia@gmail.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;d4e5f6g7-8h9i-0j1k-2l3m-4n5o6p7q8r9s;;;;
+e5f6g7h8-9i0j-1k2l-3m4n-5o6p7q8r9s0t;Smith Foundation;smith.foundation@gmail.com;(345) 678-9012;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;e5f6g7h8-9i0j-1k2l-3m4n-5o6p7q8r9s0t;;;;
+f6g7h8i9-0j1k-2l3m-4n5o-6p7q8r9s0t1u;Garcia Memorial Trust;garcia.trust@gmail.com;(456) 789-0123;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;f6g7h8i9-0j1k-2l3m-4n5o-6p7q8r9s0t1u;;;;
+g7h8i9j0-1k2l-3m4n-5o6p-7q8r9s0t1u2v;Smith Corp;smith.corp@gmail.com;(567) 890-1234;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;g7h8i9j0-1k2l-3m4n-5o6p-7q8r9s0t1u2v;;;;
+h8i9j0k1-2l3m-4n5o-6p7q-8r9s0t1u2v3w;Garcia Holdings LLC;garcia.holdings@gmail.com;(678) 901-2345;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;h8i9j0k1-2l3m-4n5o-6p7q-8r9s0t1u2v3w;;;;
+i9j0k1l2-3m4n-5o6p-7q8r-9s0t1u2v3w4x;John Smith;john.smith2@gmail.com;(789) 012-3456;false;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;i9j0k1l2-3m4n-5o6p-7q8r-9s0t1u2v3w4x;;;;
+j0k1l2m3-4n5o-6p7q-8r9s-0t1u2v3w4x5y;Maria Garcia;maria.garcia2@gmail.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;j0k1l2m3-4n5o-6p7q-8r9s-0t1u2v3w4x5y;;;;
+k1l2m3n4-5o6p-7q8r-9s0t-1u2v3w4x5y6z;Smith Foundation;smith.foundation2@gmail.com;(901) 234-5678;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;k1l2m3n4-5o6p-7q8r-9s0t-1u2v3w4x5y6z;;;;
+l2m3n4o5-6p7q-8r9s-0t1u-2v3w4x5y6z7a;Garcia Memorial Trust;garcia.trust2@gmail.com;(012) 345-6789;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;l2m3n4o5-6p7q-8r9s-0t1u-2v3w4x5y6z7a;;;;
+m3n4o5p6-7q8r-9s0t-1u2v-3w4x5y6z7a8b;Smith Corp;smith.corp2@gmail.com;(123) 456-7890;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;m3n4o5p6-7q8r-9s0t-1u2v-3w4x5y6z7a8b;;;;
+n4o5p6q7-8r9s-0t1u-2v3w-4x5y6z7a8b9c;Garcia Holdings LLC;garcia.holdings2@gmail.com;(234) 567-8901;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;n4o5p6q7-8r9s-0t1u-2v3w-4x5y6z7a8b9c;;;;
+o5p6q7r8-9s0t-1u2v-3w4x-5y6z7a8b9c0d;John Smith;john.smith3@gmail.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;o5p6q7r8-9s0t-1u2v-3w4x-5y6z7a8b9c0d;;;;
+p6q7r8s9-0t1u-2v3w-4x5y-6z7a8b9c0d1e;Maria Garcia;maria.garcia3@gmail.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;p6q7r8s9-0t1u-2v3w-4x5y-6z7a8b9c0d1e;;;;
+q7r8s9t0-1u2v-3w4x-5y6z-7a8b9c0d1e2f;Smith Foundation;smith.foundation3@gmail.com;(567) 890-1234;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;q7r8s9t0-1u2v-3w4x-5y6z-7a8b9c0d1e2f;;;;
+r8s9t0u1-2v3w-4x5y-6z7a-8b9c0d1e2f3g;Garcia Memorial Trust;garcia.trust3@gmail.com;(678) 901-2345;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;r8s9t0u1-2v3w-4x5y-6z7a-8b9c0d1e2f3g;;;;
+s9t0u1v2-3w4x-5y6z-7a8b-9c0d1e2f3g4h;Smith Corp;smith.corp3@gmail.com;(789) 012-3456;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;s9t0u1v2-3w4x-5y6z-7a8b-9c0d1e2f3g4h;;;;
+t0u1v2w3-4x5y-6z7a-8b9c-0d1e2f3g4h5i;Garcia Holdings LLC;garcia.holdings3@gmail.com;(890) 123-4567;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;t0u1v2w3-4x5y-6z7a-8b9c-0d1e2f3g4h5i;;;;
+u1v2w3x4-5y6z-7a8b-9c0d-1e2f3g4h5i6j;John Smith;john.smith4@gmail.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;u1v2w3x4-5y6z-7a8b-9c0d-1e2f3g4h5i6j;;;;
+v2w3x4y5-6z7a-8b9c-0d1e-2f3g4h5i6j7k;Maria Garcia;maria.garcia4@gmail.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;v2w3x4y5-6z7a-8b9c-0d1e-2f3g4h5i6j7k;;;;
+w3x4y5z6-7a8b-9c0d-1e2f-3g4h5i6j7k8l;Smith Foundation;smith.foundation4@gmail.com;(123) 456-7890;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;w3x4y5z6-7a8b-9c0d-1e2f-3g4h5i6j7k8l;;;;
+x4y5z6a7-8b9c-0d1e-2f3g-4h5i6j7k8l9m;Garcia Memorial Trust;garcia.trust4@gmail.com;(234) 567-8901;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;x4y5z6a7-8b9c-0d1e-2f3g-4h5i6j7k8l9m;;;;
+y5z6a7b8-9c0d-1e2f-3g4h-5i6j7k8l9m0n;Smith Corp;smith.corp4@gmail.com;(345) 678-9012;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;y5z6a7b8-9c0d-1e2f-3g4h-5i6j7k8l9m0n;;;;
+z6a7b8c9-0d1e-2f3g-4h5i-6j7k8l9m0n1o;Garcia Holdings LLC;garcia.holdings4@gmail.com;(456) 789-0123;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;z6a7b8c9-0d1e-2f3g-4h5i-6j7k8l9m0n1o;;;;
+a7b8c9d0-1e2f-3g4h-5i6j-7k8l9m0n1o2p;John Smith;john.smith5@gmail.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;a7b8c9d0-1e2f-3g4h-5i6j-7k8l9m0n1o2p;;;;
+b8c9d0e1-2f3g-4h5i-6j7k-8l9m0n1o2p3q;Maria Garcia;maria.garcia5@gmail.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;b8c9d0e1-2f3g-4h5i-6j7k-8l9m0n1o2p3q;;;;
+c9d0e1f2-3g4h-5i6j-7k8l-9m0n1o2p3q4r;Smith Foundation;smith.foundation5@gmail.com;(789) 012-3456;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;c9d0e1f2-3g4h-5i6j-7k8l-9m0n1o2p3q4r;;;;
+d0e1f2g3-4h5i-6j7k-8l9m-0n1o2p3q4r5s;Garcia Memorial Trust;garcia.trust5@gmail.com;(890) 123-4567;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;d0e1f2g3-4h5i-6j7k-8l9m-0n1o2p3q4r5s;;;;
+e1f2g3h4-5i6j-7k8l-9m0n-1o2p3q4r5s6t;Smith Corp;smith.corp5@gmail.com;(901) 234-5678;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;e1f2g3h4-5i6j-7k8l-9m0n-1o2p3q4r5s6t;;;;
+f2g3h4i5-6j7k-8l9m-0n1o-2p3q4r5s6t7u;Garcia Holdings LLC;garcia.holdings5@gmail.com;(012) 345-6789;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;f2g3h4i5-6j7k-8l9m-0n1o-2p3q4r5s6t7u;;;;
+g3h4i5j6-7k8l-9m0n-1o2p-3q4r5s6t7u8v;John Smith;john.smith6@gmail.com;(123) 456-7890;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;g3h4i5j6-7k8l-9m0n-1o2p-3q4r5s6t7u8v;;;;
+h4i5j6k7-8l9m-0n1o-2p3q-4r5s6t7u8v9w;Maria Garcia;maria.garcia6@gmail.com;(234) 567-8901;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;h4i5j6k7-8l9m-0n1o-2p3q-4r5s6t7u8v9w;;;;
+i5j6k7l8-9m0n-1o2p-3q4r-5s6t7u8v9w0x;Smith Foundation;smith.foundation6@gmail.com;(345) 678-9012;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;i5j6k7l8-9m0n-1o2p-3q4r-5s6t7u8v9w0x;;;;
+j6k7l8m9-0n1o-2p3q-4r5s-6t7u8v9w0x1y;Garcia Memorial Trust;garcia.trust6@gmail.com;(456) 789-0123;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;j6k7l8m9-0n1o-2p3q-4r5s-6t7u8v9w0x1y;;;;
+k7l8m9n0-1o2p-3q4r-5s6t-7u8v9w0x1y2z;Smith Corp;smith.corp6@gmail.com;(567) 890-1234;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;k7l8m9n0-1o2p-3q4r-5s6t-7u8v9w0x1y2z;;;;
+l8m9n0o1-2p3q-4r5s-6t7u-8v9w0x1y2z3a;Garcia Holdings LLC;garcia.holdings6@gmail.com;(678) 901-2345;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;l8m9n0o1-2p3q-4r5s-6t7u-8v9w0x1y2z3a;;;;
+m9n0o1p2-3q4r-5s6t-7u8v-9w0x1y2z3a4b;John Smith;john.smith7@gmail.com;(789) 012-3456;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;m9n0o1p2-3q4r-5s6t-7u8v-9w0x1y2z3a4b;;;;
+n0o1p2q3-4r5s-6t7u-8v9w-0x1y2z3a4b5c;Maria Garcia;maria.garcia7@gmail.com;(890) 123-4567;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;n0o1p2q3-4r5s-6t7u-8v9w-0x1y2z3a4b5c;;;;
+o1p2q3r4-5s6t-7u8v-9w0x-1y2z3a4b5c6d;Smith Foundation;smith.foundation7@gmail.com;(901) 234-5678;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;o1p2q3r4-5s6t-7u8v-9w0x-1y2z3a4b5c6d;;;;
+p2q3r4s5-6t7u-8v9w-0x1y-2z3a4b5c6d7e;Garcia Memorial Trust;garcia.trust7@gmail.com;(012) 345-6789;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;p2q3r4s5-6t7u-8v9w-0x1y-2z3a4b5c6d7e;;;;
+q3r4s5t6-7u8v-9w0x-1y2z-3a4b5c6d7e8f;Smith Corp;smith.corp7@gmail.com;(123) 456-7890;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;q3r4s5t6-7u8v-9w0x-1y2z-3a4b5c6d7e8f;;;;
+r4s5t6u7-8v9w-0x1y-2z3a-4b5c6d7e8f9g;Garcia Holdings LLC;garcia.holdings7@gmail.com;(234) 567-8901;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;r4s5t6u7-8v9w-0x1y-2z3a-4b5c6d7e8f9g;;;;
+s5t6u7v8-9w0x-1y2z-3a4b-5c6d7e8f9g0h;John Smith;john.smith8@gmail.com;(345) 678-9012;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;s5t6u7v8-9w0x-1y2z-3a4b-5c6d7e8f9g0h;;;;
+t6u7v8w9-0x1y-2z3a-4b5c-6d7e8f9g0h1i;Maria Garcia;maria.garcia8@gmail.com;(456) 789-0123;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;t6u7v8w9-0x1y-2z3a-4b5c-6d7e8f9g0h1i;;;;
+u7v8w9x0-1y2z-3a4b-5c6d-7e8f9g0h1i2j;Smith Foundation;smith.foundation8@gmail.com;(567) 890-1234;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;u7v8w9x0-1y2z-3a4b-5c6d-7e8f9g0h1i2j;;;;
+v8w9x0y1-2z3a-4b5c-6d7e-8f9g0h1i2j3k;Garcia Memorial Trust;garcia.trust8@gmail.com;(678) 901-2345;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;v8w9x0y1-2z3a-4b5c-6d7e-8f9g0h1i2j3k;;;;
+w9x0y1z2-3a4b-5c6d-7e8f-9g0h1i2j3k4l;Smith Corp;smith.corp8@gmail.com;(789) 012-3456;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;w9x0y1z2-3a4b-5c6d-7e8f-9g0h1i2j3k4l;;;;
+x0y1z2a3-4b5c-6d7e-8f9g-0h1i2j3k4l5m;Garcia Holdings LLC;garcia.holdings8@gmail.com;(890) 123-4567;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;x0y1z2a3-4b5c-6d7e-8f9g-0h1i2j3k4l5m;;;;
+y1z2a3b4-5c6d-7e8f-9g0h-1i2j3k4l5m6n;John Smith;john.smith9@gmail.com;(901) 234-5678;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;y1z2a3b4-5c6d-7e8f-9g0h-1i2j3k4l5m6n;;;;
+z2a3b4c5-6d7e-8f9g-0h1i-2j3k4l5m6n7o;Maria Garcia;maria.garcia9@gmail.com;(012) 345-6789;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;z2a3b4c5-6d7e-8f9g-0h1i-2j3k4l5m6n7o;;;;
+a3b4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p;Smith Foundation;smith.foundation9@gmail.com;(123) 456-7890;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;a3b4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p;;;;
+b4c5d6e7-8f9g-0h1i-2j3k-4l5m6n7o8p9q;Garcia Memorial Trust;garcia.trust9@gmail.com;(234) 567-8901;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;b4c5d6e7-8f9g-0h1i-2j3k-4l5m6n7o8p9q;;;;
+c5d6e7f8-9g0h-1i2j-3k4l-5m6n7o8p9q0r;Smith Corp;smith.corp9@gmail.com;(345) 678-9012;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;c5d6e7f8-9g0h-1i2j-3k4l-5m6n7o8p9q0r;;;;
+d6e7f8g9-0h1i-2j3k-4l5m-6n7o8p9q0r1s;Garcia Holdings LLC;garcia.holdings9@gmail.com;(456) 789-0123;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;d6e7f8g9-0h1i-2j3k-4l5m-6n7o8p9q0r1s;;;;
+e7f8g9h0-1i2j-3k4l-5m6n-7o8p9q0r1s2t;John Smith;john.smith10@gmail.com;(567) 890-1234;true;false;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;e7f8g9h0-1i2j-3k4l-5m6n-7o8p9q0r1s2t;;;;
+f8g9h0i1-2j3k-4l5m-6n7o-8p9q0r1s2t3u;Maria Garcia;maria.garcia10@gmail.com;(678) 901-2345;true;true;false;cbce2914-c599-4fd5-b6f0-03fd650547e4;f8g9h0i1-2j3k-4l5m-6n7o-8p9q0r1s2t3u;;;;
+g9h0i1j2-3k4l-5m6n-7o8p-9q0r1s2t3u4v;Smith Foundation;smith.foundation10@gmail.com;(789) 012-3456;true;false;false;65997707-95fd-4b3c-be0f-6c90a46c7217;g9h0i1j2-3k4l-5m6n-7o8p-9q0r1s2t3u4v;;;;
+h0i1j2k3-4l5m-6n7o-8p9q-0r1s2t3u4v5w;Garcia Memorial Trust;garcia.trust10@gmail.com;(890) 123-4567;true;true;false;65997707-95fd-4b3c-be0f-6c90a46c7217;h0i1j2k3-4l5m-6n7o-8p9q-0r1s2t3u4v5w;;;;
+i1j2k3l4-5m6n-7o8p-9q0r-1s2t3u4v5w6x;Smith Corp;smith.corp10@gmail.com;(901) 234-5678;true;false;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;i1j2k3l4-5m6n-7o8p-9q0r-1s2t3u4v5w6x;;;;
+j2k3l4m5-6n7o-8p9q-0r1s-2t3u4v5w6x7y;Garcia Holdings LLC;garcia.holdings10@gmail.com;(012) 345-6789;true;true;false;c040991b-205c-4e8c-af1b-dfa9ef18791b;j2k3l4m5-6n7o-8p9q-0r1s-2t3u4v5w6x7y;;;;
