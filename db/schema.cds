@@ -32,7 +32,7 @@ entity Donors : cuid, managed
     isRecurringDonor : Boolean default false;
     isHNI : Boolean default false;
     donorType : Association to one DonorTypes;
-    summary : String;
+    summary : LargeString;
     donation : Association to one Donations;
 }
 
