@@ -42,7 +42,7 @@
   "sap.ui": {
     "technology": "UI5",
     "icons": {
-      "icon": "",
+      "icon": "sap-icon://customer",
       "favIcon": "",
       "phone": "",
       "phone@2": "",
@@ -62,7 +62,9 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.templates": {}
+        "sap.fe.templates": {},
+        "sap.f": {},
+        "sap.uxap": {}
       }
     },
     "contentDensities": {
@@ -91,7 +93,11 @@
       }
     },
     "resources": {
-      "css": []
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
     },
     "routing": {
       "config": {},
@@ -116,6 +122,7 @@
             "settings": {
               "contextPath": "/Donors",
               "variantManagement": "Page",
+              "initialLoad": "Enabled",
               "navigation": {
                 "Donors": {
                   "detail": {
@@ -126,7 +133,27 @@
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
-                    "type": "ResponsiveTable"
+                    "type": "ResponsiveTable",
+                    "selectionMode": "Multi",
+                    "condensedTableLayout": true,
+                    "enableExport": true,
+                    "enableFullScreen": true,
+                    "enablePaste": false,
+                    "quickVariantSelection": {
+                      "showCounts": true,
+                      "paths": [
+                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#DefaultVariant" },
+                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VIPDonors" },
+                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#RecurringDonors" },
+                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#ActiveDonors" }
+                      ]
+                    },
+                    "personalization": {
+                      "column": true,
+                      "filter": true,
+                      "sort": true,
+                      "group": true
+                    }
                   }
                 }
               }
@@ -140,7 +167,9 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/Donors"
+              "contextPath": "/Donors",
+              "sectionLayout": "Tabs",
+              "showRelatedApps": false
             }
           }
         }

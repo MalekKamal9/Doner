@@ -1,7 +1,9 @@
+const cds = require('@sap/cds');
 const LCAPApplicationService = require('@sap/low-code-event-handler');
 const donors_Logic = require('./code/donors-logic');
 const action1_Logic = require('./code/action1-logic');
-const { SendThankYou, ShareImpactReport, InviteToEvent } = require('./code/nextsteps-logic');
+const { SendThankYou, InviteToEvent } = require('./code/nextsteps-logic');
+const { GenerateAIImpactReport } = require('./code/impact-report-logic');
 const { PredictDonationLikelihood } = require('./code/prediction-logic');
 const { DetectAnomalies } = require('./code/anomaly-logic');
 
@@ -12,35 +14,42 @@ class donor_management_BitaSrv extends LCAPApplicationService {
             return donors_Logic(request, next);
         });
 
-        // Generate AI Summary
+        // Generate AI Summary - Returns updated data for auto-refresh
         this.on('Action1', 'Donors', async (request) => {
-            return action1_Logic(request);
+            const result = await action1_Logic(request);
+            // Trigger refresh by returning the result
+            return result;
         });
 
-        // Predict Donation Likelihood
+        // Predict Donation Likelihood - Returns updated data
         this.on('PredictLikelihood', 'Donors', async (request) => {
-            return PredictDonationLikelihood(request);
+            const result = await PredictDonationLikelihood(request);
+            return result;
         });
 
-        // Detect Anomalies
+        // Detect Anomalies - Returns updated data
         this.on('DetectAnomalies', 'Donors', async (request) => {
-            return DetectAnomalies(request);
+            const result = await DetectAnomalies(request);
+            return result;
         });
 
-        // Next Step Actions
+        // Generate AI Impact Report with PDF
+        this.on('GenerateImpactReport', 'Donors', async (request) => {
+            const result = await GenerateAIImpactReport(request);
+            return result;
+        });
+
+        // Send Thank You Email
         this.on('SendThankYou', 'Donors', async (request) => {
             return SendThankYou(request);
         });
 
-        this.on('ShareImpactReport', 'Donors', async (request) => {
-            return ShareImpactReport(request);
-        });
-
+        // Invite to Event
         this.on('InviteToEvent', 'Donors', async (request) => {
             return InviteToEvent(request);
         });
 
-        // Populate donation history virtual field when reading donors
+        // Populate donation history virtual field
         this.after('READ', 'Donors', async (data, request) => {
             try {
                 const { Donations } = cds.entities('Donor_management_Bita');
@@ -79,30 +88,37 @@ class donor_management_BitaSrv extends LCAPApplicationService {
 function generateDonationHistoryTable(donations) {
     if (!donations || donations.length === 0) return null;
 
-    let table = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-    table += '📜 DONATION HISTORY (' + donations.length + ' records)\n';
-    table += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+    let table = `
+╔══════════════════════════════════════════════════════════════════════════════════════════╗
+║                           📜 DONATION HISTORY                                            ║
+╚══════════════════════════════════════════════════════════════════════════════════════════╝
+
+`;
 
     let totalAmount = 0;
     donations.forEach(d => totalAmount += parseFloat(d.amount || 0));
     const currency = donations[0]?.currency_code || 'USD';
 
-    table += '💰 Total: ' + currency + ' ' + totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + '\n\n';
-    table += '┌────────────┬──────────────┬──────────┬────────────────────────────────────────┬─────────────────────────┐\n';
-    table += '│ Date       │ Amount       │ Currency │ Campaign                               │ Cause                   │\n';
-    table += '├────────────┼──────────────┼──────────┼────────────────────────────────────────┼─────────────────────────┤\n';
+    table += `    💰 TOTAL CONTRIBUTED: ${currency} ${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+    📊 TOTAL DONATIONS: ${donations.length}
+
+    ┌────────────┬───────────────┬──────────┬──────────────────────────────┬────────────────────┐
+    │    DATE    │    AMOUNT     │ CURRENCY │          CAMPAIGN            │       CAUSE        │
+    ├────────────┼───────────────┼──────────┼──────────────────────────────┼────────────────────┤
+`;
 
     donations.forEach(function(d) {
         const date = d.donation_date || 'N/A';
         const amount = parseFloat(d.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const curr = d.currency_code || 'USD';
-        const campaign = truncate(d.campaign || 'N/A', 38);
-        const cause = truncate(d.cause || 'N/A', 23);
+        const campaign = truncate(d.campaign || 'N/A', 28);
+        const cause = truncate(d.cause || 'N/A', 18);
         
-        table += '│ ' + padRight(date, 10) + ' │ ' + padLeft(amount, 12) + ' │ ' + padRight(curr, 8) + ' │ ' + padRight(campaign, 38) + ' │ ' + padRight(cause, 23) + ' │\n';
+        table += `    │ ${padRight(date, 10)} │ ${padLeft(amount, 13)} │ ${padRight(curr, 8)} │ ${padRight(campaign, 28)} │ ${padRight(cause, 18)} │\n`;
     });
 
-    table += '└────────────┴──────────────┴──────────┴────────────────────────────────────────┴─────────────────────────┘\n';
+    table += `    └────────────┴───────────────┴──────────┴──────────────────────────────┴────────────────────┘
+`;
     return table;
 }
 

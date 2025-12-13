@@ -34,6 +34,9 @@ entity Donors : cuid, managed
     donorType : Association to one DonorTypes;
     summary : LargeString;
     donation : Association to one Donations;
+    anomalyResult : LargeString;
+    newProperty1 : String(100);
+    predictionResult : LargeString;
 }
 
 annotate Donors with @assert.unique :

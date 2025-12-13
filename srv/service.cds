@@ -9,7 +9,7 @@ service donor_management_BitaSrv {
     } actions {
         action Action1() returns String;
         action SendThankYou() returns String;
-        action ShareImpactReport() returns String;
+        action GenerateImpactReport() returns String;
         action InviteToEvent() returns String;
         action PredictLikelihood() returns String;
         action DetectAnomalies() returns String;
