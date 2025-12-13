@@ -1,217 +1,26 @@
-/* ══════════════════════════════════════════════════════════════════════════════
-   MODERN DONOR MANAGEMENT STYLES
-   ══════════════════════════════════════════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   GLOBAL STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapUiBody {
-    font-family: '72', 'Segoe UI', Arial, sans-serif !important;
+/* Professional Text Area Styling */
+.sapMTextArea textarea,
+textarea[readonly] {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    background: #fafbfc !important;
+    color: #24292e !important;
+    border: 1px solid #e1e4e8 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    white-space: pre !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   HEADER STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapUxAPObjectPageHeaderTitle {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+/* Section styling */
+.sapUxAPObjectPageSubSection {
+    padding: 20px !important;
 }
 
-.sapUxAPObjectPageHeaderIdentifier .sapMTitle {
-    color: #1a1a2e !important;
-    font-weight: 700 !important;
-    font-size: 1.5rem !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SECTION STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+/* Card-like appearance for sections */
 .sapUxAPObjectPageSection {
-    background-color: #ffffff !important;
+    background: #ffffff !important;
     border-radius: 12px !important;
     margin: 16px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-}
-
-.sapUxAPObjectPageSectionTitle {
-    font-weight: 600 !important;
-    font-size: 1.125rem !important;
-    color: #1a1a2e !important;
-    padding: 16px 20px !important;
-    border-bottom: 2px solid #667eea !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TABLE STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMListTbl {
-    border-radius: 8px !important;
-    overflow: hidden !important;
-}
-
-.sapMListTblHeader {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-    font-weight: 600 !important;
-}
-
-.sapMListTblHeader .sapMLabel {
-    color: #495057 !important;
-    font-weight: 600 !important;
-}
-
-.sapMListTblRow:hover {
-    background-color: #f8f9ff !important;
-    transition: background-color 0.2s ease !important;
-}
-
-.sapMListTblRow:nth-child(even) {
-    background-color: #fafbfc !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BUTTON STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMBtn {
-    border-radius: 8px !important;
-    transition: all 0.2s ease !important;
-}
-
-.sapMBtnEmphasized {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: none !important;
-}
-
-.sapMBtnEmphasized:hover {
-    background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   CARD STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapFCard {
-    border-radius: 12px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-.sapFCard:hover {
-    transform: translateY(-4px) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   STATUS BADGES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMObjStatusText {
-    border-radius: 16px !important;
-    padding: 4px 12px !important;
-    font-weight: 500 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   AI SUMMARY SECTION - MODERN STYLING
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMTextArea textarea {
-    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace !important;
-    font-size: 12px !important;
-    line-height: 1.5 !important;
-    background-color: #1e1e2e !important;
-    color: #cdd6f4 !important;
-    border-radius: 8px !important;
-    padding: 16px !important;
-    border: 1px solid #313244 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   FILTER BAR STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapUiCompFilterBar {
-    background-color: #ffffff !important;
-    border-radius: 12px !important;
-    padding: 16px !important;
-    margin-bottom: 16px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   INPUT FIELD STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMInput {
-    border-radius: 8px !important;
-}
-
-.sapMInputBaseInner {
-    border-radius: 8px !important;
-    border: 1px solid #dee2e6 !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-.sapMInputBaseInner:focus {
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   VIP BADGE HIGHLIGHT
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapMCbBg {
-    border-radius: 4px !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SCROLLBAR STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   LOADING INDICATOR
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.sapUiLocalBusyIndicator {
-    background: rgba(255, 255, 255, 0.9) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE ADJUSTMENTS
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 768px) {
-    .sapUxAPObjectPageSection {
-        margin: 8px !important;
-        border-radius: 8px !important;
-    }
-    
-    .sapMListTbl {
-        font-size: 13px !important;
-    }
 }
