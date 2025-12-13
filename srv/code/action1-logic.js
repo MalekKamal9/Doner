@@ -33,7 +33,6 @@ async function Action1(request) {
   
   console.log('Summary saved to database');
 
-  // Show success message
   request.info(`✅ AI Summary Generated Successfully!\n\n👤 Donor: ${donor.name}\n📧 Email: ${donor.email}\n📊 Donations Analyzed: ${donations.length}\n\nRefresh the page to see the full summary.`);
 
   return generatedSummary;
@@ -115,7 +114,7 @@ function generateProfessionalSummary(donor, donations) {
   const firstDonation = donations[donations.length - 1];
   const lastDonation = donations[0];
 
-  // Build summary
+  // Build summary (without donation history table - it's now separate)
   let summary = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
   summary += '📋 DONOR PROFILE SUMMARY\n';
   summary += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';

@@ -27,7 +27,7 @@
                     return Controller.extend("PreviewController", {
                         onInit: function () {
 
-                            const data = {"Services":[{"ServiceName":"donor_management_BitaSrv","DetailsURL":"./service/donor_management_Bita/","Metadata":"./service/donor_management_Bita/$metadata","Entities":[{"Name":"DonorTypes","URL":"./service/donor_management_Bita/DonorTypes","FioriURL":"$fiori-preview/donor_management_BitaSrv/DonorTypes#preview-app"},{"Name":"Donors","URL":"./service/donor_management_Bita/Donors","FioriURL":"$fiori-preview/donor_management_BitaSrv/Donors#preview-app"},{"Name":"Donations","URL":"./service/donor_management_Bita/Donations","FioriURL":"$fiori-preview/donor_management_BitaSrv/Donations#preview-app"}],"EntitiesCount":3}]}
+                            const data = {"Services":[{"ServiceName":"donor_management_BitaSrv","DetailsURL":"./service/donor_management_Bita/","Metadata":"./service/donor_management_Bita/$metadata","Entities":[{"Name":"Donors","URL":"./service/donor_management_Bita/Donors","FioriURL":"$fiori-preview/donor_management_BitaSrv/Donors#preview-app"},{"Name":"DonorTypes","URL":"./service/donor_management_Bita/DonorTypes","FioriURL":"$fiori-preview/donor_management_BitaSrv/DonorTypes#preview-app"},{"Name":"Donations","URL":"./service/donor_management_Bita/Donations","FioriURL":"$fiori-preview/donor_management_BitaSrv/Donations#preview-app"}],"EntitiesCount":3}]}
                             this.getView().setModel(new JSONModel(data));
                         }
                     });

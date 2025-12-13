@@ -1,4 +1,4 @@
 ID;typeID;typeName;description
-cbce2914-c599-4fd5-b6f0-03fd650547e4;typeID9198;Individual;Individual
-65997707-95fd-4b3c-be0f-6c90a46c7217;typeID9199;Foundation;description114
-c040991b-205c-4e8c-af1b-dfa9ef18791b;typeID4839;Corporate;Corporate
+550e8400-e29b-41d4-a716-446655440001;DT001;Individual;Individual donor
+550e8400-e29b-41d4-a716-446655440002;DT002;Corporate;Corporate donor
+550e8400-e29b-41d4-a716-446655440003;DT003;Foundation;Foundation
