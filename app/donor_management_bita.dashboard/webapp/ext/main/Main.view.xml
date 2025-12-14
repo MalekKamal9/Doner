@@ -1,0 +1,390 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    controllerName="donormanagementbita.dashboard.ext.main.Main"
+    height="100%">
+    
+    <Page id="mainPage" showHeader="false" enableScrolling="false">
+        
+        <!-- Icon Tab Bar for Navigation -->
+        <IconTabBar id="mainTabBar" expandable="false" stretchContentHeight="true" class="sapUiNoContentPadding">
+            
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- TAB 1: ANALYTICS DASHBOARD -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <items>
+                <IconTabFilter id="tabDashboard" icon="sap-icon://dashboard" text="Dashboard" key="dashboard">
+                    <ScrollContainer id="dashboardScroll" height="100%" vertical="true" horizontal="false">
+                        <VBox id="dashboardContent" class="sapUiSmallMargin">
+                            
+                            <!-- Header Section -->
+                            <HBox id="headerSection" justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom">
+                                <VBox id="headerTitleBox">
+                                    <Title id="dashboardTitle" text="Analytics Dashboard" level="H1" class="sapUiSmallMarginBottom"/>
+                                    <Label id="lastUpdatedLabel" text="Last updated: --" class="sapUiTinyMarginTop"/>
+                                </VBox>
+                                <HBox id="headerActionsBox" alignItems="Center">
+                                    <Label id="autoRefreshLabel" text="Auto Refresh" class="sapUiSmallMarginEnd"/>
+                                    <Switch id="autoRefreshSwitch" state="false" change="onAutoRefreshChange" class="sapUiSmallMarginEnd"/>
+                                    <Button id="refreshBtn" icon="sap-icon://refresh" text="Refresh" press="onRefreshData" type="Emphasized" class="sapUiSmallMarginEnd"/>
+                                    <MenuButton id="exportMenuBtn" text="Export" icon="sap-icon://action">
+                                        <menu>
+                                            <Menu id="exportMenu">
+                                                <MenuItem id="exportPdfItem" text="Export as PDF" icon="sap-icon://pdf-attachment" press="onExportPDF"/>
+                                                <MenuItem id="exportExcelItem" text="Export as Excel" icon="sap-icon://excel-attachment" press="onExportExcel"/>
+                                                <MenuItem id="exportPngItem" text="Export Charts as PNG" icon="sap-icon://picture" press="onExportPNG"/>
+                                            </Menu>
+                                        </menu>
+                                    </MenuButton>
+                                </HBox>
+                            </HBox>
+                            
+                            <!-- Filters Section -->
+                            <Panel id="filtersPanel" expandable="true" expanded="false" headerText="Filters &amp; Options" class="sapUiSmallMarginBottom">
+                                <HBox id="filtersBox" wrap="Wrap" class="sapUiSmallMargin">
+                                    <VBox id="dateFilterBox" class="sapUiSmallMarginEnd">
+                                        <Label id="dateRangeLabel" text="Date Range" class="sapUiTinyMarginBottom"/>
+                                        <HBox id="datePickersBox">
+                                            <DatePicker id="dateFrom" placeholder="From Date" change="onFilterChange" class="sapUiTinyMarginEnd"/>
+                                            <DatePicker id="dateTo" placeholder="To Date" change="onFilterChange"/>
+                                        </HBox>
+                                    </VBox>
+                                    <VBox id="campaignFilterBox" class="sapUiSmallMarginEnd">
+                                        <Label id="campaignLabel" text="Campaign" class="sapUiTinyMarginBottom"/>
+                                        <MultiComboBox id="campaignFilter" placeholder="All Campaigns" width="250px" selectionChange="onFilterChange"/>
+                                    </VBox>
+                                    <VBox id="causeFilterBox" class="sapUiSmallMarginEnd">
+                                        <Label id="causeLabel" text="Cause" class="sapUiTinyMarginBottom"/>
+                                        <MultiComboBox id="causeFilter" placeholder="All Causes" width="200px" selectionChange="onFilterChange"/>
+                                    </VBox>
+                                    <VBox id="comparisonBox" class="sapUiSmallMarginEnd">
+                                        <Label id="comparisonLabel" text="Compare With" class="sapUiTinyMarginBottom"/>
+                                        <Select id="comparisonSelect" change="onFilterChange">
+                                            <items>
+                                                <core:Item id="itemPrevYear" key="previousYear" text="Previous Year"/>
+                                                <core:Item id="itemPrevQuarter" key="previousQuarter" text="Previous Quarter"/>
+                                                <core:Item id="itemPrevMonth" key="previousMonth" text="Previous Month"/>
+                                                <core:Item id="itemNone" key="none" text="No Comparison"/>
+                                            </items>
+                                        </Select>
+                                    </VBox>
+                                    <VBox id="resetFilterBox" justifyContent="End">
+                                        <Label id="resetSpacerLabel" text=" " class="sapUiTinyMarginBottom"/>
+                                        <Button id="resetFiltersBtn" text="Reset Filters" icon="sap-icon://clear-filter" press="onResetFilters"/>
+                                    </VBox>
+                                </HBox>
+                            </Panel>
+                            
+                            <!-- KPI Cards Row -->
+                            <HBox id="kpiContainer" wrap="Wrap" justifyContent="SpaceBetween" class="sapUiMediumMarginBottom">
+                                <core:HTML id="kpiCardsHtml" content="&lt;div id='kpiCards' style='display:flex;flex-wrap:wrap;gap:16px;width:100%'&gt;&lt;/div&gt;"/>
+                            </HBox>
+                            
+                            <!-- Quick Insights Bar -->
+                            <Panel id="insightsPanel" headerText="Quick Insights" class="sapUiSmallMarginBottom">
+                                <HBox id="insightsBox" wrap="Wrap" justifyContent="SpaceAround" class="sapUiSmallMargin">
+                                    <VBox id="insightRetentionBox" alignItems="Center" class="sapUiSmallMarginEnd">
+                                        <ObjectNumber id="insightRetention" number="--" unit="%" state="Success"/>
+                                        <Label id="insightRetentionLabel" text="Donor Retention"/>
+                                    </VBox>
+                                    <VBox id="insightLTVBox" alignItems="Center" class="sapUiSmallMarginEnd">
+                                        <ObjectNumber id="insightLTV" number="--" unit="USD" state="Information"/>
+                                        <Label id="insightLTVLabel" text="Avg. Lifetime Value"/>
+                                    </VBox>
+                                    <VBox id="insightFrequencyBox" alignItems="Center" class="sapUiSmallMarginEnd">
+                                        <ObjectNumber id="insightFrequency" number="--" unit="donations/year" state="Success"/>
+                                        <Label id="insightFrequencyLabel" text="Avg. Frequency"/>
+                                    </VBox>
+                                    <VBox id="insightAtRiskBox" alignItems="Center" class="sapUiSmallMarginEnd">
+                                        <ObjectNumber id="insightAtRisk" number="--" unit="donors" state="Error"/>
+                                        <Label id="insightAtRiskLabel" text="At Risk"/>
+                                    </VBox>
+                                    <VBox id="insightGrowthBox" alignItems="Center">
+                                        <ObjectNumber id="insightGrowth" number="--" unit="%" state="Success"/>
+                                        <Label id="insightGrowthLabel" text="Monthly Growth"/>
+                                    </VBox>
+                                </HBox>
+                            </Panel>
+                            
+                            <!-- Charts Row 1 -->
+                            <HBox id="chartsRow1" wrap="Wrap" class="sapUiMediumMarginBottom">
+                                <VBox id="trendsChartBox" width="65%" class="sapUiSmallMarginEnd">
+                                    <Panel id="trendsPanel" headerText="Donation Trends (Monthly)">
+                                        <core:HTML id="trendsChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='trendsChart' height='300'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                                <VBox id="campaignsChartBox" width="33%">
+                                    <Panel id="campaignsPanel" headerText="Top Campaigns">
+                                        <core:HTML id="campaignsChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='campaignsChart' height='300'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                            </HBox>
+                            
+                            <!-- Charts Row 2 -->
+                            <HBox id="chartsRow2" wrap="Wrap" class="sapUiMediumMarginBottom">
+                                <VBox id="causesChartBox" width="32%" class="sapUiSmallMarginEnd">
+                                    <Panel id="causesPanel" headerText="Donations by Cause">
+                                        <core:HTML id="causesChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='causesChart' height='280'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                                <VBox id="segmentsChartBox" width="32%" class="sapUiSmallMarginEnd">
+                                    <Panel id="segmentsPanel" headerText="Donor Segments">
+                                        <core:HTML id="segmentsChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='segmentsChart' height='280'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                                <VBox id="quarterlyChartBox" width="32%">
+                                    <Panel id="quarterlyPanel" headerText="Quarterly Performance">
+                                        <core:HTML id="quarterlyChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='quarterlyChart' height='280'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                            </HBox>
+                            
+                            <!-- Charts Row 3 -->
+                            <HBox id="chartsRow3" wrap="Wrap" class="sapUiMediumMarginBottom">
+                                <VBox id="forecastChartBox" width="65%" class="sapUiSmallMarginEnd">
+                                    <Panel id="forecastPanel" headerText="Donation Forecast (Next 6 Months)">
+                                        <core:HTML id="forecastChartHtml" content="&lt;div style='padding:16px'&gt;&lt;canvas id='forecastChart' height='280'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                                <VBox id="gaugeChartBox" width="33%">
+                                    <Panel id="gaugePanel" headerText="Annual Goal Progress">
+                                        <core:HTML id="gaugeChartHtml" content="&lt;div style='padding:16px;text-align:center'&gt;&lt;canvas id='gaugeChart' height='280'&gt;&lt;/canvas&gt;&lt;/div&gt;"/>
+                                    </Panel>
+                                </VBox>
+                            </HBox>
+                            
+                            <!-- Tables Row -->
+                            <HBox id="tablesRow" wrap="Wrap" class="sapUiMediumMarginBottom">
+                                <VBox id="topDonorsBox" width="49%" class="sapUiSmallMarginEnd">
+                                    <Panel id="topDonorsPanel" headerText="Top 10 Donors" class="sapUiNoContentPadding">
+                                        <Table id="topDonorsTable" growing="false" mode="None">
+                                            <columns>
+                                                <Column id="colRank" width="5%"><Text id="txtRank" text="#"/></Column>
+                                                <Column id="colDonor" width="35%"><Text id="txtDonor" text="Donor"/></Column>
+                                                <Column id="colTotal" width="25%" hAlign="End"><Text id="txtTotal" text="Total Donated"/></Column>
+                                                <Column id="colCount" width="15%" hAlign="Center"><Text id="txtCount" text="Count"/></Column>
+                                                <Column id="colTier" width="20%" hAlign="Center"><Text id="txtTier" text="Tier"/></Column>
+                                            </columns>
+                                        </Table>
+                                    </Panel>
+                                </VBox>
+                                <VBox id="atRiskBox" width="49%">
+                                    <Panel id="atRiskPanel" headerText="At-Risk Donors (No Activity 6+ Months)" class="sapUiNoContentPadding">
+                                        <Table id="atRiskTable" growing="false" mode="None">
+                                            <columns>
+                                                <Column id="colAtRiskDonor" width="35%"><Text id="txtAtRiskDonor" text="Donor"/></Column>
+                                                <Column id="colLastDonation" width="25%" hAlign="End"><Text id="txtLastDonation" text="Last Donation"/></Column>
+                                                <Column id="colDaysInactive" width="20%" hAlign="Center"><Text id="txtDaysInactive" text="Days Inactive"/></Column>
+                                                <Column id="colAction" width="20%" hAlign="Center"><Text id="txtAction" text="Action"/></Column>
+                                            </columns>
+                                        </Table>
+                                    </Panel>
+                                </VBox>
+                            </HBox>
+                            
+                        </VBox>
+                    </ScrollContainer>
+                </IconTabFilter>
+                
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- TAB 2: AI REPORTS -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <IconTabFilter id="tabAIReports" icon="sap-icon://ai" text="AI Reports" key="aiReports">
+                    <ScrollContainer id="aiReportsScroll" height="100%" vertical="true" horizontal="false">
+                        <VBox id="aiReportsContent" class="sapUiSmallMargin">
+                            
+                            <!-- AI Reports Header -->
+                            <HBox id="aiHeaderSection" justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom">
+                                <VBox id="aiHeaderTitleBox">
+                                    <Title id="aiReportsTitle" text="AI-Powered Reports" level="H1" class="sapUiSmallMarginBottom"/>
+                                    <Label id="aiSubtitle" text="Generate intelligent summaries and insights using AI"/>
+                                </VBox>
+                                <HBox id="aiActionsBox">
+                                    <Button id="generateAllBtn" text="Generate All Reports" icon="sap-icon://create" press="onGenerateAllReports" type="Emphasized"/>
+                                </HBox>
+                            </HBox>
+                            
+                            <!-- Report Type Selection -->
+                            <Panel id="aiReportTypesPanel" headerText="Select Report Type" class="sapUiSmallMarginBottom">
+                                <HBox id="reportTypesBox" wrap="Wrap" class="sapUiSmallMargin">
+                                    <VBox id="execSummaryCard" class="sapUiSmallMarginEnd">
+                                        <Button id="execSummaryBtn" icon="sap-icon://manager-insight" text="Executive Summary" press="onGenerateExecSummary" type="Accept" class="sapUiLargeMarginBottom" width="200px"/>
+                                        <Text id="execSummaryDesc" text="High-level overview for leadership"/>
+                                    </VBox>
+                                    <VBox id="donorInsightsCard" class="sapUiSmallMarginEnd">
+                                        <Button id="donorInsightsBtn" icon="sap-icon://customer-briefing" text="Donor Insights" press="onGenerateDonorInsights" type="Accept" class="sapUiLargeMarginBottom" width="200px"/>
+                                        <Text id="donorInsightsDesc" text="Deep dive into donor behavior"/>
+                                    </VBox>
+                                    <VBox id="campaignAnalysisCard" class="sapUiSmallMarginEnd">
+                                        <Button id="campaignAnalysisBtn" icon="sap-icon://marketing-campaign" text="Campaign Analysis" press="onGenerateCampaignAnalysis" type="Accept" class="sapUiLargeMarginBottom" width="200px"/>
+                                        <Text id="campaignAnalysisDesc" text="Campaign performance review"/>
+                                    </VBox>
+                                    <VBox id="predictionsCard" class="sapUiSmallMarginEnd">
+                                        <Button id="predictionsBtn" icon="sap-icon://trend-up" text="Predictions &amp; Trends" press="onGeneratePredictions" type="Accept" class="sapUiLargeMarginBottom" width="200px"/>
+                                        <Text id="predictionsDesc" text="Future forecasts and trends"/>
+                                    </VBox>
+                                    <VBox id="recommendationsCard">
+                                        <Button id="recommendationsBtn" icon="sap-icon://lightbulb" text="Recommendations" press="onGenerateRecommendations" type="Accept" class="sapUiLargeMarginBottom" width="200px"/>
+                                        <Text id="recommendationsDesc" text="Actionable suggestions"/>
+                                    </VBox>
+                                </HBox>
+                            </Panel>
+                            
+                            <!-- AI Generated Report Display -->
+                            <Panel id="aiReportOutputPanel" headerText="Generated Report" class="sapUiSmallMarginBottom">
+                                <VBox id="aiReportOutputBox" class="sapUiSmallMargin">
+                                    <!-- Loading Indicator -->
+                                    <VBox id="aiLoadingBox" visible="false" alignItems="Center" class="sapUiLargeMargin">
+                                        <BusyIndicator id="aiLoadingIndicator"/>
+                                        <Label id="aiLoadingLabel" text="AI is generating your report..." class="sapUiSmallMarginTop"/>
+                                    </VBox>
+                                    
+                                    <!-- Report Content -->
+                                    <core:HTML id="aiReportHtml" content="&lt;div id='aiReportContent' style='padding:20px;background:#f9f9f9;border-radius:8px;min-height:400px'&gt;&lt;div style='text-align:center;color:#666;padding:100px'&gt;&lt;span style='font-size:48px'&gt;🤖&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;Select a report type above to generate an AI-powered report&lt;/div&gt;&lt;/div&gt;"/>
+                                    
+                                    <!-- Report Actions -->
+                                    <HBox id="aiReportActionsBox" justifyContent="End" class="sapUiSmallMarginTop">
+                                        <Button id="copyReportBtn" text="Copy to Clipboard" icon="sap-icon://copy" press="onCopyReport" class="sapUiSmallMarginEnd"/>
+                                        <Button id="exportReportPdfBtn" text="Export as PDF" icon="sap-icon://pdf-attachment" press="onExportReportPDF" class="sapUiSmallMarginEnd"/>
+                                        <Button id="exportReportWordBtn" text="Export as Word" icon="sap-icon://doc-attachment" press="onExportReportWord"/>
+                                    </HBox>
+                                </VBox>
+                            </Panel>
+                            
+                            <!-- Quick Stats for AI Context -->
+                            <Panel id="aiContextPanel" headerText="Data Context" expandable="true" expanded="false">
+                                <HBox id="aiContextBox" wrap="Wrap" justifyContent="SpaceAround" class="sapUiSmallMargin">
+                                    <VBox id="aiStatDonations" alignItems="Center">
+                                        <ObjectNumber id="aiStatDonationsNum" number="--" state="Information"/>
+                                        <Label id="aiStatDonationsLabel" text="Total Donations"/>
+                                    </VBox>
+                                    <VBox id="aiStatDonors" alignItems="Center">
+                                        <ObjectNumber id="aiStatDonorsNum" number="--" state="Information"/>
+                                        <Label id="aiStatDonorsLabel" text="Total Donors"/>
+                                    </VBox>
+                                    <VBox id="aiStatCampaigns" alignItems="Center">
+                                        <ObjectNumber id="aiStatCampaignsNum" number="--" state="Information"/>
+                                        <Label id="aiStatCampaignsLabel" text="Campaigns"/>
+                                    </VBox>
+                                    <VBox id="aiStatPeriod" alignItems="Center">
+                                        <ObjectNumber id="aiStatPeriodNum" number="--" unit="months" state="Information"/>
+                                        <Label id="aiStatPeriodLabel" text="Data Period"/>
+                                    </VBox>
+                                </HBox>
+                            </Panel>
+                            
+                        </VBox>
+                    </ScrollContainer>
+                </IconTabFilter>
+                
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- TAB 3: FUNCTIONAL REPORTS -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <IconTabFilter id="tabReports" icon="sap-icon://document" text="Reports" key="reports">
+                    <ScrollContainer id="reportsScroll" height="100%" vertical="true" horizontal="false">
+                        <VBox id="reportsContent" class="sapUiSmallMargin">
+                            
+                            <!-- Reports Header -->
+                            <HBox id="reportsHeaderSection" justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom">
+                                <VBox id="reportsHeaderTitleBox">
+                                    <Title id="reportsTitle" text="Functional Reports" level="H1" class="sapUiSmallMarginBottom"/>
+                                    <Label id="reportsSubtitle" text="Generate detailed reports for donors, campaigns, and financials"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <!-- Report Categories -->
+                            <HBox id="reportCategoriesBox" wrap="Wrap" class="sapUiMediumMarginBottom">
+                                
+                                <!-- Donor Reports -->
+                                <VBox id="donorReportsCard" width="32%" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                                    <Panel id="donorReportsPanel" headerText="Donor Reports" class="sapUiNoContentPadding">
+                                        <VBox id="donorReportsListBox" class="sapUiSmallMargin">
+                                            <Button id="rptDonorList" text="Donor List Report" icon="sap-icon://list" press="onGenerateDonorListReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptDonorActivity" text="Donor Activity Report" icon="sap-icon://activity-items" press="onGenerateDonorActivityReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptDonorRetention" text="Retention Analysis" icon="sap-icon://customer-history" press="onGenerateRetentionReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptDonorSegment" text="Segment Analysis" icon="sap-icon://pie-chart" press="onGenerateSegmentReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptTopDonors" text="Top Donors Report" icon="sap-icon://competitor" press="onGenerateTopDonorsReport" width="100%"/>
+                                        </VBox>
+                                    </Panel>
+                                </VBox>
+                                
+                                <!-- Campaign Reports -->
+                                <VBox id="campaignReportsCard" width="32%" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                                    <Panel id="campaignReportsPanel" headerText="Campaign Reports" class="sapUiNoContentPadding">
+                                        <VBox id="campaignReportsListBox" class="sapUiSmallMargin">
+                                            <Button id="rptCampaignSummary" text="Campaign Summary" icon="sap-icon://marketing-campaign" press="onGenerateCampaignSummaryReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptCampaignPerformance" text="Performance Comparison" icon="sap-icon://compare" press="onGenerateCampaignPerformanceReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptCampaignROI" text="Campaign ROI Analysis" icon="sap-icon://money-bills" press="onGenerateCampaignROIReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptCauseBreakdown" text="Cause Breakdown" icon="sap-icon://lead" press="onGenerateCauseReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptYearComparison" text="Year-over-Year" icon="sap-icon://along-stacked-chart" press="onGenerateYoYReport" width="100%"/>
+                                        </VBox>
+                                    </Panel>
+                                </VBox>
+                                
+                                <!-- Financial Reports -->
+                                <VBox id="financialReportsCard" width="32%" class="sapUiSmallMarginBottom">
+                                    <Panel id="financialReportsPanel" headerText="Financial Reports" class="sapUiNoContentPadding">
+                                        <VBox id="financialReportsListBox" class="sapUiSmallMargin">
+                                            <Button id="rptMonthlyRevenue" text="Monthly Revenue" icon="sap-icon://bar-chart" press="onGenerateMonthlyRevenueReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptQuarterlyReport" text="Quarterly Report" icon="sap-icon://horizontal-bar-chart" press="onGenerateQuarterlyReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptAnnualReport" text="Annual Summary" icon="sap-icon://calendar" press="onGenerateAnnualReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptForecastReport" text="Forecast Report" icon="sap-icon://trend-up" press="onGenerateForecastReport" width="100%" class="sapUiTinyMarginBottom"/>
+                                            <Button id="rptTaxReport" text="Tax Summary" icon="sap-icon://official-service" press="onGenerateTaxReport" width="100%"/>
+                                        </VBox>
+                                    </Panel>
+                                </VBox>
+                                
+                            </HBox>
+                            
+                            <!-- Report Output Section -->
+                            <Panel id="reportOutputPanel" headerText="Report Preview" class="sapUiSmallMarginBottom">
+                                <VBox id="reportOutputBox" class="sapUiSmallMargin">
+                                    <!-- Loading -->
+                                    <VBox id="reportLoadingBox" visible="false" alignItems="Center" class="sapUiLargeMargin">
+                                        <BusyIndicator id="reportLoadingIndicator"/>
+                                        <Label id="reportLoadingLabel" text="Generating report..." class="sapUiSmallMarginTop"/>
+                                    </VBox>
+                                    
+                                    <!-- Report Content -->
+                                    <core:HTML id="reportOutputHtml" content="&lt;div id='reportOutputContent' style='padding:20px;background:#fff;border:1px solid #e0e0e0;border-radius:8px;min-height:500px'&gt;&lt;div style='text-align:center;color:#666;padding:100px'&gt;&lt;span style='font-size:48px'&gt;📊&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;Select a report from the categories above&lt;/div&gt;&lt;/div&gt;"/>
+                                    
+                                    <!-- Export Actions -->
+                                    <HBox id="reportExportActionsBox" justifyContent="End" class="sapUiSmallMarginTop">
+                                        <Button id="printReportBtn" text="Print" icon="sap-icon://print" press="onPrintReport" class="sapUiSmallMarginEnd"/>
+                                        <Button id="exportReportExcelBtn" text="Export Excel" icon="sap-icon://excel-attachment" press="onExportReportExcel" class="sapUiSmallMarginEnd"/>
+                                        <Button id="exportReportPdf2Btn" text="Export PDF" icon="sap-icon://pdf-attachment" press="onExportReportPDF2" type="Emphasized"/>
+                                    </HBox>
+                                </VBox>
+                            </Panel>
+                            
+                            <!-- Scheduled Reports -->
+                            <Panel id="scheduledReportsPanel" headerText="Scheduled Reports" expandable="true" expanded="false">
+                                <VBox id="scheduledReportsBox" class="sapUiSmallMargin">
+                                    <MessageStrip id="scheduleInfo" text="Schedule reports to be generated and emailed automatically" type="Information" showIcon="true" class="sapUiSmallMarginBottom"/>
+                                    <HBox id="scheduleActionsBox">
+                                        <Button id="createScheduleBtn" text="Create Schedule" icon="sap-icon://appointment" press="onCreateSchedule" type="Emphasized"/>
+                                    </HBox>
+                                </VBox>
+                            </Panel>
+                            
+                        </VBox>
+                    </ScrollContainer>
+                </IconTabFilter>
+                
+            </items>
+        </IconTabBar>
+        
+        <!-- Drill-Down Dialog -->
+        <Dialog id="drillDownDialog" title="Details" contentWidth="600px" contentHeight="400px">
+            <content>
+                <core:HTML id="drillDownContent" content="&lt;div id='drillDownContainer' style='padding:16px'&gt;&lt;/div&gt;"/>
+            </content>
+            <endButton>
+                <Button id="closeDrillDownBtn" text="Close" press="onCloseDrillDown"/>
+            </endButton>
+        </Dialog>
+        
+    </Page>
+</mvc:View>

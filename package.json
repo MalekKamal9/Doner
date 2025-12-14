@@ -26,7 +26,8 @@
     "start-local": "npm run generate-entry-point && npm run cds-watch",
     "generate-entry-point": "dev-cap-tools gen-entrypoint",
     "cds-watch": "cds watch --open",
-    "watch-donor_management_bita.donormanagement": "cds watch --open donor_management_bita.donormanagement/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-donor_management_bita.donormanagement": "cds watch --open donor_management_bita.donormanagement/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-donor_management_bita.dashboard": "cds watch --open donor_management_bita.dashboard/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "private": true,
   "cds": {
@@ -47,6 +48,7 @@
   },
   "lcap": true,
   "sapux": [
-    "app/donor_management_bita.donormanagement"
+    "app/donor_management_bita.donormanagement",
+    "app/donor_management_bita.dashboard"
   ]
 }
