@@ -36,6 +36,15 @@
             "additionalParameters": "allowed"
           }
         }
+      },
+      "outbounds": {
+        "navigateToDonorManagement": {
+          "semanticObject": "donormanagementbitadonormanagement",
+          "action": "display",
+          "parameters": {
+            "preferredMode": []
+          }
+        }
       }
     }
   },
@@ -91,7 +100,11 @@
       }
     },
     "resources": {
-      "css": []
+      "css": [
+        {
+          "uri": "ext/main/Main.css"
+        }
+      ]
     },
     "routing": {
       "config": {},
@@ -118,5 +131,8 @@
       }
     }
   },
-  "sap.fiori": {}
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
 }

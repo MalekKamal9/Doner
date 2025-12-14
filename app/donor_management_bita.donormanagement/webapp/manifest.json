@@ -24,6 +24,29 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "donormanagementbitadonormanagement-display": {
+          "semanticObject": "donormanagementbitadonormanagement",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      },
+      "outbounds": {
+        "navigateToDashboard": {
+          "semanticObject": "donormanagementbitadashboard",
+          "action": "display",
+          "parameters": {
+            "preferredMode": []
+          }
+        }
+      }
     }
   },
   "sap.ui": {
@@ -123,7 +146,7 @@
                   "actions": {
                     "AnalyticsDashboard": {
                       "press": "donormanagementbita.donormanagement.ext.ListReportExt.onOpenAnalytics",
-                      "text": "Analytics Dashboard",
+                      "text": "📊 Analytics Dashboard",
                       "enabled": true,
                       "visible": true
                     }
@@ -135,7 +158,7 @@
                   "tableSettings": {
                     "type": "ResponsiveTable",
                     "selectionMode": "Multi",
-                    "condensedTableLayout": true,
+                    "condensedTableLayout": false,
                     "enableExport": true,
                     "enableFullScreen": true,
                     "quickVariantSelection": {
@@ -161,8 +184,29 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/Donors",
-              "sectionLayout": "Tabs"
+              "sectionLayout": "Tabs",
+              "showRelatedApps": false,
+              "controlConfiguration": {
+                "donations/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "enableExport": true,
+                    "creationMode": {
+                      "name": "Inline"
+                    }
+                  }
+                }
+              }
             }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ObjectPage.ObjectPageController#donormanagementbita.donormanagement::DonorsObjectPage": {
+            "controllerName": "donormanagementbita.donormanagement.ext.controller.ObjectPageExt"
           }
         }
       }
@@ -171,5 +215,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "donormanagementbita"
   }
 }

@@ -1,0 +1,176 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:l="sap.ui.layout">
+    
+    <VBox id="headerCardsContainer" class="sapUiSmallMargin">
+        
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- KPI CARDS ROW -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <HBox id="kpiCardsRow" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMarginBottom">
+            
+            <!-- Card 1: Total Donors -->
+            <VBox id="totalDonorsCardBox" class="donorKpiCard donorKpiCardBlue" width="23%">
+                <VBox id="totalDonorsCardInner" alignItems="Center" class="sapUiSmallPadding">
+                    <core:Icon id="totalDonorsIcon" src="sap-icon://group" size="3rem" color="white"/>
+                    <Text id="totalDonorsLabel" text="Total Donors" class="donorKpiLabel"/>
+                    <ObjectNumber id="totalDonorsCard" 
+                                  number="0" 
+                                  unit="" 
+                                  emphasized="true" 
+                                  class="donorKpiNumber"/>
+                    <ObjectStatus id="totalDonorsChange" 
+                                  text="+12% vs last month" 
+                                  state="Success" 
+                                  class="donorKpiChange"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Card 2: Active Donors -->
+            <VBox id="activeDonorsCardBox" class="donorKpiCard donorKpiCardGreen" width="23%">
+                <VBox id="activeDonorsCardInner" alignItems="Center" class="sapUiSmallPadding">
+                    <core:Icon id="activeDonorsIcon" src="sap-icon://user-settings" size="3rem" color="white"/>
+                    <Text id="activeDonorsLabel" text="Active Donors" class="donorKpiLabel"/>
+                    <ObjectNumber id="activeDonorsCard" 
+                                  number="0" 
+                                  unit="" 
+                                  emphasized="true" 
+                                  class="donorKpiNumber"/>
+                    <ObjectStatus id="activeDonorsChange" 
+                                  text="+8% active rate" 
+                                  state="Success" 
+                                  class="donorKpiChange"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Card 3: Total Donations -->
+            <VBox id="totalDonatedCardBox" class="donorKpiCard donorKpiCardOrange" width="23%">
+                <VBox id="totalDonatedCardInner" alignItems="Center" class="sapUiSmallPadding">
+                    <core:Icon id="totalDonatedIcon" src="sap-icon://money-bills" size="3rem" color="white"/>
+                    <Text id="totalDonatedLabel" text="Total Donated" class="donorKpiLabel"/>
+                    <ObjectNumber id="totalDonatedCard" 
+                                  number="0" 
+                                  unit="USD" 
+                                  emphasized="true" 
+                                  class="donorKpiNumber"/>
+                    <ObjectStatus id="totalDonatedChange" 
+                                  text="+25% this quarter" 
+                                  state="Success" 
+                                  class="donorKpiChange"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Card 4: Average Donation -->
+            <VBox id="avgDonationCardBox" class="donorKpiCard donorKpiCardPurple" width="23%">
+                <VBox id="avgDonationCardInner" alignItems="Center" class="sapUiSmallPadding">
+                    <core:Icon id="avgDonationIcon" src="sap-icon://target-group" size="3rem" color="white"/>
+                    <Text id="avgDonationLabel" text="Avg Donation" class="donorKpiLabel"/>
+                    <ObjectNumber id="avgDonationCard" 
+                                  number="0" 
+                                  unit="USD" 
+                                  emphasized="true" 
+                                  class="donorKpiNumber"/>
+                    <ObjectStatus id="avgDonationChange" 
+                                  text="+15% improvement" 
+                                  state="Success" 
+                                  class="donorKpiChange"/>
+                </VBox>
+            </VBox>
+            
+        </HBox>
+        
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- QUICK STATS ROW -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <HBox id="quickStatsRow" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMarginTop">
+            
+            <!-- Stat 1: Retention Rate -->
+            <VBox id="retentionRateCardBox" class="donorStatCard" width="18%">
+                <HBox id="retentionRateCardHBox" alignItems="Center" class="sapUiTinyPadding">
+                    <core:Icon id="retentionRateIcon" src="sap-icon://supplier" size="2rem" color="#0854A0" class="sapUiTinyMarginEnd"/>
+                    <VBox id="retentionRateCardVBox">
+                        <Text id="retentionRateLabel" text="Retention Rate" class="donorStatLabel"/>
+                        <ObjectNumber id="retentionRateCard" 
+                                      number="0" 
+                                      unit="%" 
+                                      class="donorStatNumber"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+            <!-- Stat 2: Recurring Donors -->
+            <VBox id="recurringDonorsCardBox" class="donorStatCard" width="18%">
+                <HBox id="recurringDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
+                    <core:Icon id="recurringDonorsIcon" src="sap-icon://restart" size="2rem" color="#107E3E" class="sapUiTinyMarginEnd"/>
+                    <VBox id="recurringDonorsCardVBox">
+                        <Text id="recurringDonorsLabel" text="Recurring Donors" class="donorStatLabel"/>
+                        <ObjectNumber id="recurringDonorsCard" 
+                                      number="0" 
+                                      unit="" 
+                                      class="donorStatNumber"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+            <!-- Stat 3: HNI Donors -->
+            <VBox id="hniDonorsCardBox" class="donorStatCard" width="18%">
+                <HBox id="hniDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
+                    <core:Icon id="hniDonorsIcon" src="sap-icon://diamond" size="2rem" color="#E9730C" class="sapUiTinyMarginEnd"/>
+                    <VBox id="hniDonorsCardVBox">
+                        <Text id="hniDonorsLabel" text="VIP Donors" class="donorStatLabel"/>
+                        <ObjectNumber id="hniDonorsCard" 
+                                      number="0" 
+                                      unit="" 
+                                      class="donorStatNumber"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+            <!-- Stat 4: At Risk -->
+            <VBox id="atRiskDonorsCardBox" class="donorStatCard" width="18%">
+                <HBox id="atRiskDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
+                    <core:Icon id="atRiskDonorsIcon" src="sap-icon://alert" size="2rem" color="#BB0000" class="sapUiTinyMarginEnd"/>
+                    <VBox id="atRiskDonorsCardVBox">
+                        <Text id="atRiskDonorsLabel" text="At Risk" class="donorStatLabel"/>
+                        <ObjectNumber id="atRiskDonorsCard" 
+                                      number="0" 
+                                      unit="" 
+                                      state="Error" 
+                                      class="donorStatNumber"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+            <!-- Stat 5: New This Month -->
+            <VBox id="newDonorsCardBox" class="donorStatCard" width="18%">
+                <HBox id="newDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
+                    <core:Icon id="newDonorsIcon" src="sap-icon://add-contact" size="2rem" color="#6C32A4" class="sapUiTinyMarginEnd"/>
+                    <VBox id="newDonorsCardVBox">
+                        <Text id="newDonorsLabel" text="New This Month" class="donorStatLabel"/>
+                        <ObjectNumber id="newDonorsCard" 
+                                      number="0" 
+                                      unit="" 
+                                      class="donorStatNumber"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+        </HBox>
+        
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- REFRESH BUTTON -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <Toolbar id="statsToolbar" class="sapUiTinyMarginTop">
+            <ToolbarSpacer id="toolbarSpacer"/>
+            <Button id="refreshStatsBtn" 
+                    text="Refresh Statistics" 
+                    icon="sap-icon://refresh" 
+                    type="Transparent" 
+                    press=".onRefreshStatistics"/>
+        </Toolbar>
+        
+    </VBox>
+    
+</core:FragmentDefinition>

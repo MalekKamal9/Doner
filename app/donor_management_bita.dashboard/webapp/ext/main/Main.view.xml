@@ -22,7 +22,7 @@
                             <!-- Header Section -->
                             <HBox id="headerSection" justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom">
                                 <VBox id="headerTitleBox">
-                                    <Title id="dashboardTitle" text="Analytics Dashboard" level="H1" class="sapUiSmallMarginBottom"/>
+                                    <Title id="dashboardTitle" text="Dashboard" level="H1" class="sapUiSmallMarginBottom"/>
                                     <Label id="lastUpdatedLabel" text="Last updated: --" class="sapUiTinyMarginTop"/>
                                 </VBox>
                                 <HBox id="headerActionsBox" alignItems="Center">
@@ -373,8 +373,110 @@
                     </ScrollContainer>
                 </IconTabFilter>
                 
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- TAB 4: DONOR LIST MANAGEMENT -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TAB 4: DONOR LIST - LINK TO SEPARATE APP -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<IconTabFilter id="tabDonorList" icon="sap-icon://customer" text="Donor List" key="donorList">
+    <VBox id="donorNavMainBox" justifyContent="Center" alignItems="Center" height="100%" class="sapUiLargePadding">
+        
+        <!-- Navigation Card -->
+        <VBox id="donorMgmtCard" 
+              alignItems="Center" 
+              class="sapUiLargePadding donorNavCard"
+              width="800px">
+            
+            <!-- Icon -->
+            <core:Icon id="donorMgmtIcon" 
+                       src="sap-icon://customer" 
+                       size="8rem" 
+                       color="white" 
+                       class="sapUiMediumMarginBottom"/>
+            
+            <!-- Title -->
+            <Title id="donorMgmtTitle" 
+                   text="Donor Management System" 
+                   level="H1" 
+                   class="sapUiSmallMarginBottom donorNavCardTitle"/>
+            
+            <!-- Subtitle -->
+            <Text id="donorMgmtSubtitle" 
+                  text="Complete List Report with Full CRUD Operations" 
+                  class="sapUiMediumMarginBottom donorNavCardSubtitle"/>
+            
+            <!-- Description -->
+            <Text id="donorMgmtDesc" 
+                  text="Access the complete donor database with advanced search, filtering, create, edit, delete operations, and detailed reporting capabilities." 
+                  class="sapUiMediumMarginBottom donorNavCardDesc"/>
+            
+            <!-- Features Grid -->
+            <HBox id="donorMgmtFeatures" 
+                  wrap="Wrap" 
+                  justifyContent="Center" 
+                  class="sapUiMediumMarginBottom" 
+                  width="100%">
+                
+                <VBox id="feature1Box" alignItems="Center" class="sapUiSmallMargin donorNavFeatureBox">
+                    <VBox id="feature1Inner" alignItems="Center" class="sapUiSmallPadding donorNavFeatureInner">
+                        <core:Icon id="feature1Icon" src="sap-icon://add-contact" size="2.5rem" color="white"/>
+                        <Text id="feature1Text" text="Create Donors" class="donorNavFeatureText"/>
+                        <Text id="feature1Desc" text="Add new donors" class="donorNavFeatureDesc"/>
+                    </VBox>
+                </VBox>
+                
+                <VBox id="feature2Box" alignItems="Center" class="sapUiSmallMargin donorNavFeatureBox">
+                    <VBox id="feature2Inner" alignItems="Center" class="sapUiSmallPadding donorNavFeatureInner">
+                        <core:Icon id="feature2Icon" src="sap-icon://edit" size="2.5rem" color="white"/>
+                        <Text id="feature2Text" text="Edit Details" class="donorNavFeatureText"/>
+                        <Text id="feature2Desc" text="Update information" class="donorNavFeatureDesc"/>
+                    </VBox>
+                </VBox>
+                
+                <VBox id="feature3Box" alignItems="Center" class="sapUiSmallMargin donorNavFeatureBox">
+                    <VBox id="feature3Inner" alignItems="Center" class="sapUiSmallPadding donorNavFeatureInner">
+                        <core:Icon id="feature3Icon" src="sap-icon://search" size="2.5rem" color="white"/>
+                        <Text id="feature3Text" text="Search &amp; Filter" class="donorNavFeatureText"/>
+                        <Text id="feature3Desc" text="Advanced filtering" class="donorNavFeatureDesc"/>
+                    </VBox>
+                </VBox>
+                
+                <VBox id="feature4Box" alignItems="Center" class="sapUiSmallMargin donorNavFeatureBox">
+                    <VBox id="feature4Inner" alignItems="Center" class="sapUiSmallPadding donorNavFeatureInner">
+                        <core:Icon id="feature4Icon" src="sap-icon://document" size="2.5rem" color="white"/>
+                        <Text id="feature4Text" text="View Details" class="donorNavFeatureText"/>
+                        <Text id="feature4Desc" text="Object page view" class="donorNavFeatureDesc"/>
+                    </VBox>
+                </VBox>
+                
+            </HBox>
+            
+            <!-- Action Button -->
+            <Button id="openDonorMgmtAppBtn" 
+                    text="Open Donor Management App" 
+                    icon="sap-icon://open-command-field" 
+                    type="Emphasized" 
+                    press="onNavigateToDonorManagement"
+                    class="sapUiLargeMarginTop donorNavButton"
+                    width="300px"/>
+            
+            <!-- Info Text -->
+            <Text id="donorMgmtInfoText" 
+                  text="This will open the Donor Management application in a new tab" 
+                  class="sapUiSmallMarginTop donorNavInfoText"/>
+            
+        </VBox>
+        
+    </VBox>
+</IconTabFilter>
+                
             </items>
         </IconTabBar>
+        
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DIALOGS (OUTSIDE IconTabBar) -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
         
         <!-- Drill-Down Dialog -->
         <Dialog id="drillDownDialog" title="Details" contentWidth="600px" contentHeight="400px">
@@ -383,6 +485,138 @@
             </content>
             <endButton>
                 <Button id="closeDrillDownBtn" text="Close" press="onCloseDrillDown"/>
+            </endButton>
+        </Dialog>
+        
+        <!-- Create/Edit Donor Dialog -->
+        <Dialog id="donorFormDialog" title="Donor Information" contentWidth="600px" contentHeight="auto">
+            <content>
+                <VBox id="donorFormVBox" class="sapUiSmallMargin">
+                    <Label id="labelDonorFirstName" text="First Name *" class="sapUiTinyMarginBottom"/>
+                    <Input id="donorFirstName" placeholder="Enter first name" required="true" class="sapUiSmallMarginBottom"/>
+                    
+                    <Label id="labelDonorLastName" text="Last Name *" class="sapUiTinyMarginBottom"/>
+                    <Input id="donorLastName" placeholder="Enter last name" required="true" class="sapUiSmallMarginBottom"/>
+                    
+                    <Label id="labelDonorEmail" text="Email *" class="sapUiTinyMarginBottom"/>
+                    <Input id="donorEmail" type="Email" placeholder="email@example.com" required="true" class="sapUiSmallMarginBottom"/>
+                    
+                    <Label id="labelDonorPhone" text="Phone" class="sapUiTinyMarginBottom"/>
+                    <Input id="donorPhone" placeholder="+1 (555) 123-4567" class="sapUiSmallMarginBottom"/>
+                    
+                    <Label id="labelDonorAddress" text="Address" class="sapUiTinyMarginBottom"/>
+                    <Input id="donorAddress" placeholder="Street address" class="sapUiSmallMarginBottom"/>
+                    
+                    <HBox id="donorCityStateZip" width="100%">
+                        <VBox id="donorCityBox" width="50%" class="sapUiTinyMarginEnd">
+                            <Label id="labelDonorCity" text="City" class="sapUiTinyMarginBottom"/>
+                            <Input id="donorCity" placeholder="City"/>
+                        </VBox>
+                        <VBox id="donorStateBox" width="25%" class="sapUiTinyMarginEnd">
+                            <Label id="labelDonorState" text="State" class="sapUiTinyMarginBottom"/>
+                            <Input id="donorState" placeholder="ST"/>
+                        </VBox>
+                        <VBox id="donorZipBox" width="25%">
+                            <Label id="labelDonorZip" text="ZIP Code" class="sapUiTinyMarginBottom"/>
+                            <Input id="donorZip" placeholder="12345"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <Label id="labelDonorStatus" text="Status" class="sapUiTinyMarginTop sapUiTinyMarginBottom"/>
+                    <Switch id="donorActiveSwitch" state="true" customTextOn="Active" customTextOff="Inactive"/>
+                    
+                    <MessageStrip id="donorFormMessage" visible="false" type="Error" showIcon="true" class="sapUiSmallMarginTop"/>
+                </VBox>
+            </content>
+            <beginButton>
+                <Button id="saveDonorBtn" text="Save" type="Emphasized" press="onSaveDonor"/>
+            </beginButton>
+            <endButton>
+                <Button id="cancelDonorBtn" text="Cancel" press="onCancelDonorDialog"/>
+            </endButton>
+        </Dialog>
+        
+        <!-- View Donor Dialog -->
+        <Dialog id="viewDonorDialog" title="Donor Details" contentWidth="700px" contentHeight="auto">
+            <content>
+                <VBox id="viewDonorVBox" class="sapUiSmallMargin">
+                    <HBox id="viewDonorHeader" justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom donorViewHeader">
+                        <VBox id="viewDonorHeaderText">
+                            <Title id="viewDonorName" text="" level="H3"/>
+                            <Label id="viewDonorEmail" text="" class="sapUiTinyMarginTop"/>
+                        </VBox>
+                        <ObjectStatus id="viewDonorStatus" text="Active" state="Success"/>
+                    </HBox>
+                    
+                    <VBox id="viewDonorContactSection" class="sapUiSmallMarginBottom donorViewSection">
+                        <Label id="viewDonorContactLabel" text="CONTACT INFORMATION" class="donorViewSectionLabel sapUiTinyMarginBottom"/>
+                        <HBox id="viewDonorPhoneRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorPhoneLabel" text="Phone:" class="donorViewFieldLabel"/>
+                            <Text id="viewDonorPhone" text=""/>
+                        </HBox>
+                        <HBox id="viewDonorAddressRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorAddressLabel" text="Address:" class="donorViewFieldLabel"/>
+                            <Text id="viewDonorAddress" text=""/>
+                        </HBox>
+                        <HBox id="viewDonorLocationRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorLocationLabel" text="City, State ZIP:" class="donorViewFieldLabel"/>
+                            <Text id="viewDonorLocation" text=""/>
+                        </HBox>
+                    </VBox>
+                    
+                    <VBox id="viewDonorDonationSection" class="sapUiSmallMarginBottom donorViewSection">
+                        <Label id="viewDonorDonationLabel" text="DONATION SUMMARY" class="donorViewSectionLabel sapUiTinyMarginBottom"/>
+                        <HBox id="viewDonorTotalRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorTotalLabel" text="Total Donated:" class="donorViewFieldLabelWide"/>
+                            <ObjectNumber id="viewDonorTotal" number="0" unit="USD" state="Success"/>
+                        </HBox>
+                        <HBox id="viewDonorCountRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorCountLabel" text="Number of Gifts:" class="donorViewFieldLabelWide"/>
+                            <Text id="viewDonorCount" text="0"/>
+                        </HBox>
+                        <HBox id="viewDonorAvgRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorAvgLabel" text="Average Gift:" class="donorViewFieldLabelWide"/>
+                            <Text id="viewDonorAvg" text="$0"/>
+                        </HBox>
+                        <HBox id="viewDonorTierRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorTierLabel" text="Donor Tier:" class="donorViewFieldLabelWide"/>
+                            <ObjectStatus id="viewDonorTier" text="" state="Success"/>
+                        </HBox>
+                        <HBox id="viewDonorFirstDateRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorFirstDateLabel" text="First Donation:" class="donorViewFieldLabelWide"/>
+                            <Text id="viewDonorFirstDate" text=""/>
+                        </HBox>
+                        <HBox id="viewDonorLastDateRow" class="sapUiTinyMarginTop">
+                            <Label id="viewDonorLastDateLabel" text="Last Donation:" class="donorViewFieldLabelWide"/>
+                            <Text id="viewDonorLastDate" text=""/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </content>
+            <endButton>
+                <Button id="closeViewDonorBtn" text="Close" press="onCloseViewDonorDialog"/>
+            </endButton>
+        </Dialog>
+        
+        <!-- Delete Confirmation Dialog -->
+        <Dialog id="deleteDonorDialog" title="Confirm Delete" type="Message">
+            <content>
+                <VBox id="deleteDonorVBox" class="sapUiSmallMargin">
+                    <HBox id="deleteDonorWarningBox" alignItems="Center" class="sapUiSmallMarginBottom">
+                        <core:Icon id="deleteDonorWarningIcon" src="sap-icon://warning" size="2rem" color="#BB0000" class="sapUiSmallMarginEnd"/>
+                        <VBox id="deleteDonorWarningText">
+                            <Text id="deleteDonorWarningMsg" text="Are you sure you want to delete this donor?" class="sapUiTinyMarginBottom"/>
+                            <Text id="deleteDonorName" text="" class="donorDeleteName"/>
+                        </VBox>
+                    </HBox>
+                    <MessageStrip id="deleteDonorWarningStrip" text="Warning: This action cannot be undone. All donation history will be preserved, but the donor record will be removed." type="Warning" showIcon="true"/>
+                </VBox>
+            </content>
+            <beginButton>
+                <Button id="confirmDeleteDonorBtn" text="Delete" type="Reject" press="onConfirmDeleteDonor"/>
+            </beginButton>
+            <endButton>
+                <Button id="cancelDeleteDonorBtn" text="Cancel" press="onCancelDeleteDonor"/>
             </endButton>
         </Dialog>
         
