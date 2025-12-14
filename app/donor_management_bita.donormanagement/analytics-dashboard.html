@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Analytics Dashboard - Chart.js Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a6ed1;
+            --primary-light: #e8f3fc;
+            --success: #1a9a5b;
+            --success-light: #e6f5ee;
+            --warning: #e76500;
+            --warning-light: #fff3e8;
+            --danger: #bb0000;
+            --danger-light: #fce8e8;
+            --purple: #8b47d7;
+            --cyan: #00a2e8;
+            --text-dark: #1a2332;
+            --text-muted: #6b7785;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3a4f 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header h1::before {
+            content: '📊';
+            font-size: 1.3rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0958a8;
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .kpi-card:nth-child(1)::before { background: var(--success); }
+        .kpi-card:nth-child(2)::before { background: var(--primary); }
+        .kpi-card:nth-child(3)::before { background: var(--warning); }
+        .kpi-card:nth-child(4)::before { background: var(--purple); }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .kpi-trend {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .kpi-trend.positive { color: var(--success); }
+        .kpi-trend.negative { color: var(--danger); }
+
+        /* Chart Grid */
+        .chart-grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .chart-row {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .chart-row-1 { grid-template-columns: 2fr 1fr; }
+        .chart-row-2 { grid-template-columns: 1fr 1fr 1.5fr; }
+        .chart-row-3 { grid-template-columns: 1fr 2fr; }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .chart-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f0f2f5;
+            background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+        }
+
+        .chart-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .chart-body {
+            padding: 1.5rem;
+            height: 320px;
+            position: relative;
+        }
+
+        .chart-body.small {
+            height: 280px;
+        }
+
+        .chart-body canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Last Updated */
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .chart-row-1, .chart-row-2, .chart-row-3 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 1rem; }
+            .header h1 { font-size: 1.25rem; }
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+
+        .loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>Donor Analytics Dashboard</h1>
+        <div class="header-actions">
+            <button class="btn btn-ghost" onclick="refreshCharts()">
+                🔄 Refresh
+            </button>
+            <button class="btn btn-primary" onclick="alert('Export feature - implement with jsPDF')">
+                📄 Export PDF
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Donations</div>
+                <div class="kpi-value" id="kpi-total">$269,200</div>
+                <div class="kpi-trend positive">↑ 18.5% from last year</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Active Donors</div>
+                <div class="kpi-value" id="kpi-donors">924</div>
+                <div class="kpi-trend positive">↑ 12.3% growth</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Avg Donation</div>
+                <div class="kpi-value" id="kpi-avg">$291</div>
+                <div class="kpi-trend positive">↑ 5.2% increase</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">YoY Growth</div>
+                <div class="kpi-value" id="kpi-growth">+22.8%</div>
+                <div class="kpi-trend positive">↑ Ahead of target</div>
+            </div>
+        </div>
+
+        <!-- Chart Grid -->
+        <div class="chart-grid">
+            <!-- Row 1: Trends + Campaigns -->
+            <div class="chart-row chart-row-1">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>📈 Donation Trends</h3>
+                        <span class="chart-subtitle">Monthly donation amounts comparison</span>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>🏆 Top Campaigns</h3>
+                        <span class="chart-subtitle">Donations by campaign</span>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="campaignChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Cause + Segments + Comparison -->
+            <div class="chart-row chart-row-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>🎯 By Cause</h3>
+                        <span class="chart-subtitle">Distribution</span>
+                    </div>
+                    <div class="chart-body small">
+                        <canvas id="causeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>👥 Donor Segments</h3>
+                        <span class="chart-subtitle">Engagement levels</span>
+                    </div>
+                    <div class="chart-body small">
+                        <canvas id="segmentChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>📊 Year Comparison</h3>
+                        <span class="chart-subtitle">Quarterly: 2024 vs 2023</span>
+                    </div>
+                    <div class="chart-body small">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Retention + Distribution -->
+            <div class="chart-row chart-row-3">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>🔄 Donor Retention</h3>
+                        <span class="chart-subtitle">New vs returning</span>
+                    </div>
+                    <div class="chart-body small">
+                        <canvas id="retentionChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>💰 Donation Size Distribution</h3>
+                        <span class="chart-subtitle">Amount ranges breakdown</span>
+                    </div>
+                    <div class="chart-body small">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Data refreshed: <span id="lastUpdated"></span> | Donor Analytics Dashboard v1.0
+    </footer>
+
+    <script>
+        // ============================================================
+        // CHART.JS CONFIGURATION & INITIALIZATION
+        // ============================================================
+
+        // Global Chart.js defaults
+        Chart.defaults.font.family = "'DM Sans', -apple-system, sans-serif";
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(26, 35, 50, 0.95)';
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+        Chart.defaults.plugins.tooltip.padding = 12;
+
+        // Color palette
+        const colors = {
+            primary: '#0a6ed1',
+            primaryLight: 'rgba(10, 110, 209, 0.1)',
+            success: '#1a9a5b',
+            warning: '#e76500',
+            danger: '#bb0000',
+            purple: '#8b47d7',
+            cyan: '#00a2e8',
+            gray: '#6b7785',
+            grayLight: 'rgba(107, 119, 133, 0.05)'
+        };
+
+        // Store chart instances for cleanup
+        const charts = {};
+
+        // ============================================================
+        // 1. DONATION TRENDS - Line Chart
+        // ============================================================
+        function createTrendChart() {
+            const ctx = document.getElementById('trendChart');
+            if (charts.trend) charts.trend.destroy();
+
+            charts.trend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: '2024',
+                            data: [12500, 15800, 13200, 18500, 22100, 19800, 24500, 21300, 26800, 28500, 31200, 35000],
+                            borderColor: colors.primary,
+                            backgroundColor: colors.primaryLight,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: '2023',
+                            data: [10200, 12500, 11800, 14200, 16800, 15500, 18200, 17100, 20500, 22800, 25100, 28500],
+                            borderColor: colors.gray,
+                            backgroundColor: colors.grayLight,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { padding: 20 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: v => '$' + (v / 1000) + 'k'
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 2. TOP CAMPAIGNS - Horizontal Bar Chart
+        // ============================================================
+        function createCampaignChart() {
+            const ctx = document.getElementById('campaignChart');
+            if (charts.campaign) charts.campaign.destroy();
+
+            charts.campaign = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Education Fund', 'Medical Relief', 'Food Security', 'Shelter Program', 'Clean Water'],
+                    datasets: [{
+                        data: [85000, 72000, 58000, 45000, 38000],
+                        backgroundColor: [colors.primary, colors.success, colors.warning, colors.danger, colors.purple],
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => '$' + ctx.parsed.x.toLocaleString()
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: v => '$' + (v / 1000) + 'k'
+                            }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 3. BY CAUSE - Doughnut Chart
+        // ============================================================
+        function createCauseChart() {
+            const ctx = document.getElementById('causeChart');
+            if (charts.cause) charts.cause.destroy();
+
+            charts.cause = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Healthcare', 'Education', 'Environment', 'Community', 'Veterans', 'Children'],
+                    datasets: [{
+                        data: [28, 24, 18, 14, 10, 6],
+                        backgroundColor: [
+                            colors.primary, colors.success, colors.warning,
+                            colors.danger, colors.purple, colors.cyan
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 12, font: { size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.label}: ${ctx.parsed}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 4. DONOR SEGMENTS - Polar Area Chart
+        // ============================================================
+        function createSegmentChart() {
+            const ctx = document.getElementById('segmentChart');
+            if (charts.segment) charts.segment.destroy();
+
+            const segmentColors = [colors.success, colors.primary, colors.warning, colors.cyan, colors.danger];
+
+            charts.segment = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Champions', 'Regular', 'Occasional', 'New', 'At Risk'],
+                    datasets: [{
+                        data: [15, 35, 25, 18, 7],
+                        backgroundColor: segmentColors.map(c => c + 'cc'),
+                        borderColor: segmentColors,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 10, font: { size: 10 } }
+                        }
+                    },
+                    scales: {
+                        r: { display: false }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 5. YEAR COMPARISON - Grouped Bar Chart
+        // ============================================================
+        function createComparisonChart() {
+            const ctx = document.getElementById('comparisonChart');
+            if (charts.comparison) charts.comparison.destroy();
+
+            charts.comparison = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [
+                        {
+                            label: '2024',
+                            data: [41500, 60400, 72600, 94700],
+                            backgroundColor: colors.primary,
+                            borderRadius: 6
+                        },
+                        {
+                            label: '2023',
+                            data: [34500, 46500, 55800, 76400],
+                            backgroundColor: '#c2d6eb',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { padding: 20 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: v => '$' + (v / 1000) + 'k'
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 6. DONOR RETENTION - Doughnut Chart
+        // ============================================================
+        function createRetentionChart() {
+            const ctx = document.getElementById('retentionChart');
+            if (charts.retention) charts.retention.destroy();
+
+            charts.retention = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Returning', 'New', 'Reactivated'],
+                    datasets: [{
+                        data: [62, 28, 10],
+                        backgroundColor: [colors.primary, colors.success, colors.warning],
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { padding: 15 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.label}: ${ctx.parsed}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // 7. DISTRIBUTION - Bar Chart with Gradient
+        // ============================================================
+        function createDistributionChart() {
+            const ctx = document.getElementById('distributionChart');
+            if (charts.distribution) charts.distribution.destroy();
+
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, 'rgba(10, 110, 209, 0.9)');
+            gradient.addColorStop(1, 'rgba(10, 110, 209, 0.3)');
+
+            charts.distribution = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['$1-50', '$51-100', '$101-250', '$251-500', '$501-1000', '$1000+'],
+                    datasets: [{
+                        label: 'Donations',
+                        data: [245, 312, 189, 98, 56, 24],
+                        backgroundColor: gradient,
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.parsed.y} donations`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            title: {
+                                display: true,
+                                text: 'Number of Donations',
+                                font: { size: 11 }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Amount Range',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+        function refreshCharts() {
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+            
+            // Recreate all charts with fresh data
+            createTrendChart();
+            createCampaignChart();
+            createCauseChart();
+            createSegmentChart();
+            createComparisonChart();
+            createRetentionChart();
+            createDistributionChart();
+
+            console.log('✅ All charts refreshed');
+        }
+
+        // ============================================================
+        // INITIALIZE ON PAGE LOAD
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+            
+            // Initialize all charts
+            createTrendChart();
+            createCampaignChart();
+            createCauseChart();
+            createSegmentChart();
+            createComparisonChart();
+            createRetentionChart();
+            createDistributionChart();
+
+            console.log('📊 Donor Analytics Dashboard initialized');
+        });
+    </script>
+</body>
+</html>

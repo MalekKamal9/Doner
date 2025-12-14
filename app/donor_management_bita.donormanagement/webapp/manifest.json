@@ -118,6 +118,18 @@
                   }
                 }
               },
+              "content": {
+                "header": {
+                  "actions": {
+                    "AnalyticsDashboard": {
+                      "press": "donormanagementbita.donormanagement.ext.ListReportExt.onOpenAnalytics",
+                      "text": "Analytics Dashboard",
+                      "enabled": true,
+                      "visible": true
+                    }
+                  }
+                }
+              },
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {

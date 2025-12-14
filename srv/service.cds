@@ -35,4 +35,7 @@ service donor_management_BitaSrv {
 
     entity DonorTypes as projection on my.DonorTypes;
     entity Donations as projection on my.Donations;
+
+    // Analytics Dashboard Function - Returns aggregated data for charts
+    function getAnalyticsData() returns String;
 }

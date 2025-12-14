@@ -1,0 +1,56 @@
+<mvc:View
+    controllerName="donormanagementbita.donormanagement.controller.Analytics"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:html="http://www.w3.org/1999/xhtml">
+
+    <Page id="analyticsPage" 
+          title="Donor Analytics Dashboard"
+          showNavButton="true"
+          navButtonPress=".onNavBack"
+          class="sapUiContentPadding analyticsPage">
+        
+        <customHeader>
+            <Bar id="analyticsHeaderBar">
+                <contentLeft>
+                    <Button id="btnNavBack" icon="sap-icon://nav-back" press=".onNavBack" type="Transparent"/>
+                    <Title id="analyticsTitle" text="Analytics Dashboard" level="H3"/>
+                </contentLeft>
+                <contentRight>
+                    <Button id="btnRefresh" text="Refresh" icon="sap-icon://refresh" press=".onRefreshCharts" type="Emphasized"/>
+                    <Button id="btnExportPDF" text="Export PDF" icon="sap-icon://pdf-attachment" press=".onExportPDF" type="Ghost"/>
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <content>
+            <!-- KPI Summary Cards -->
+            <HBox id="kpiContainer" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiMediumMarginBottom kpiContainer">
+                <VBox id="kpiTotalDonationsCard" class="kpiCard">
+                    <ObjectStatus id="kpiTotalDonationsStatus" title="Total Donations" text="{analytics>/totalDonations}" state="Success" icon="sap-icon://money-bills"/>
+                </VBox>
+                <VBox id="kpiTotalDonorsCard" class="kpiCard">
+                    <ObjectStatus id="kpiTotalDonorsStatus" title="Active Donors" text="{analytics>/totalDonors}" state="Information" icon="sap-icon://group"/>
+                </VBox>
+                <VBox id="kpiAvgDonationCard" class="kpiCard">
+                    <ObjectStatus id="kpiAvgDonationStatus" title="Avg Donation" text="{analytics>/avgDonation}" state="Warning" icon="sap-icon://lead-average"/>
+                </VBox>
+                <VBox id="kpiGrowthCard" class="kpiCard">
+                    <ObjectStatus id="kpiGrowthStatus" title="YoY Growth" text="{analytics>/yoyGrowth}" state="Success" icon="sap-icon://trend-up"/>
+                </VBox>
+            </HBox>
+
+            <!-- Charts Container -->
+            <core:HTML id="chartsContainer" content="&lt;div id='analyticsChartsWrapper'&gt;&lt;/div&gt;" afterRendering=".onChartsContainerReady"/>
+        </content>
+
+        <footer>
+            <Bar id="analyticsFooterBar">
+                <contentMiddle>
+                    <Text id="lastUpdatedText" text="Data refreshed: {analytics>/lastUpdated}" class="sapUiTinyMarginTop"/>
+                </contentMiddle>
+            </Bar>
+        </footer>
+    </Page>
+</mvc:View>
