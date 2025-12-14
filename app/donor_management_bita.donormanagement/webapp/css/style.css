@@ -24,3 +24,166 @@ textarea[readonly] {
     margin: 16px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DONOR MANAGEMENT - ANALYTICS DASHBOARD STYLING
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Header KPI Cards */
+.sapUxAPObjectPageHeaderIdentifierTitle {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+
+.sapUxAPObjectPageHeaderIdentifierDescription {
+    font-size: 16px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+/* Progress Indicator in Header */
+.sapMPI {
+    height: 10px !important;
+    border-radius: 5px !important;
+    background: #e2e8f0 !important;
+}
+
+.sapMPIBarPositive,
+.sapMPIBar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 5px !important;
+}
+
+/* Object Number (KPI Values) */
+.sapMObjectNumber {
+    font-weight: 700 !important;
+}
+
+.sapMObjectNumberStatusPositive {
+    color: #22c55e !important;
+}
+
+/* Section Cards */
+.sapUxAPObjectPageSubSection {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    margin: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Field Group Styling */
+.sapUiFormCL {
+    background: #f8fafc !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    margin: 8px 0 !important;
+}
+
+/* Text Area - Terminal Style */
+.sapMTextArea textarea {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+}
+
+/* Table Styling */
+.sapMListTblHeader {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.sapMListTblHeader .sapMText,
+.sapMListTblHeader .sapMLabel {
+    color: rgb(0, 0, 0) !important;
+    font-weight: 600 !important;
+}
+
+.sapMListTblRow:hover {
+    background: #f1f5f9 !important;
+}
+
+/* Tab Bar */
+.sapUxAPAnchorBarButton {
+    border-radius: 20px !important;
+    margin: 0 4px !important;
+    font-weight: 500 !important;
+}
+
+.sapUxAPAnchorBarButton.sapUxAPAnchorBarButtonSelected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Action Buttons */
+.sapMBtn.sapMBtnEmphasized {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.sapMBtn.sapMBtnEmphasized:hover {
+    background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+}
+
+/* Form Labels */
+.sapMLabel {
+    color: #64748b !important;
+    font-weight: 500 !important;
+}
+
+/* Input Fields */
+.sapMInputBaseInner {
+    border-radius: 8px !important;
+}
+
+/* Boolean Toggle */
+.sapMCb {
+    border-radius: 6px !important;
+}
+
+/* Scroll Container */
+.sapUxAPObjectPageWrapper {
+    background: #f0ebeb !important;
+}
+
+/* Micro Charts */
+.sapSuiteUiMicroChart {
+    margin: 8px 0 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sapUxAPObjectPageHeaderIdentifierTitle {
+        font-size: 20px !important;
+    }
+    
+    .sapUxAPObjectPageSubSection {
+        margin: 8px !important;
+        padding: 16px !important;
+    }
+}
+
+/* Animation for sections */
+.sapUxAPObjectPageSection {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

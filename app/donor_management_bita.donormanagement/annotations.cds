@@ -37,46 +37,82 @@ annotate donor_management_BitaSrv.DonorTypes with {
 
 
 // ══════════════════════════════════════════════════════════════════════════════
-// DONORS - MODERN UI WITH SEPARATE AI SECTIONS
+// DONORS - WITH ANALYTICS DASHBOARD
 // ══════════════════════════════════════════════════════════════════════════════
 
 annotate donor_management_BitaSrv.Donors with @(
   
-  // ══════════════════════════════════════════════════════════════════════════
-  // HEADER INFO WITH ICON
-  // ══════════════════════════════════════════════════════════════════════════
   UI.HeaderInfo: {
     TypeName       : 'Donor',
     TypeNamePlural : 'Donors',
     Title          : { Value: name },
-    Description    : { Value: email },
+    Description    : { Value: donorTier },
     ImageUrl       : 'sap-icon://customer',
     TypeImageUrl   : 'sap-icon://person-placeholder'
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // HEADER FACETS - KPI Cards Style
+  // HEADER FACETS - KPI Cards
   // ══════════════════════════════════════════════════════════════════════════
   UI.HeaderFacets: [
-    { 
-      $Type  : 'UI.ReferenceFacet', 
-      ID     : 'StatusHeader', 
-      Target : '@UI.FieldGroup#StatusBadges',
-      ![@UI.Importance]: #High
-    },
-    { 
-      $Type  : 'UI.ReferenceFacet', 
-      ID     : 'ContactHeader', 
-      Target : '@UI.FieldGroup#QuickContact',
-      ![@UI.Importance]: #High
+    {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'TotalDonatedKPI',
+      Target : '@UI.DataPoint#TotalDonated'
     },
     {
       $Type  : 'UI.ReferenceFacet',
-      ID     : 'DonorTypeHeader',
-      Target : '@UI.FieldGroup#DonorTypeInfo',
-      ![@UI.Importance]: #Medium
+      ID     : 'DonationCountKPI',
+      Target : '@UI.DataPoint#DonationCount'
+    },
+    {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'EngagementKPI',
+      Target : '@UI.DataPoint#EngagementScore'
+    },
+    {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'LikelihoodKPI',
+      Target : '@UI.DataPoint#LikelihoodScore'
+    },
+    { 
+      $Type  : 'UI.ReferenceFacet', 
+      ID     : 'StatusHeader', 
+      Target : '@UI.FieldGroup#StatusBadges'
     }
   ],
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // DATA POINTS FOR KPI CARDS
+  // ══════════════════════════════════════════════════════════════════════════
+  UI.DataPoint#TotalDonated: {
+    $Type       : 'UI.DataPointType',
+    Value       : totalDonated,
+    Title       : 'Total Donated',
+    Criticality : #Positive
+  },
+
+  UI.DataPoint#DonationCount: {
+    $Type : 'UI.DataPointType',
+    Value : donationCount,
+    Title : 'Donations'
+  },
+
+  UI.DataPoint#EngagementScore: {
+    $Type         : 'UI.DataPointType',
+    Value         : engagementScore,
+    Title         : 'Engagement %',
+    TargetValue   : 100,
+    Visualization : #Progress
+  },
+
+  UI.DataPoint#LikelihoodScore: {
+    $Type         : 'UI.DataPointType',
+    Value         : likelihoodScore,
+    Title         : 'Likelihood %',
+    TargetValue   : 100,
+    Visualization : #Progress
+  },
 
   UI.FieldGroup #StatusBadges: {
     $Type: 'UI.FieldGroupType',
@@ -88,29 +124,11 @@ annotate donor_management_BitaSrv.Donors with @(
     ]
   },
 
-  UI.FieldGroup #QuickContact: {
-    $Type: 'UI.FieldGroupType',
-    Label: 'Contact',
-    Data : [
-      { $Type: 'UI.DataField', Value: phone, Label: 'Phone' },
-      { $Type: 'UI.DataField', Value: email, Label: 'Email' }
-    ]
-  },
-
-  UI.FieldGroup #DonorTypeInfo: {
-    $Type: 'UI.FieldGroupType',
-    Label: 'Classification',
-    Data : [
-      { $Type: 'UI.DataField', Value: donorType.typeName, Label: 'Type' }
-    ]
-  },
-
   // ══════════════════════════════════════════════════════════════════════════
-  // ACTION BUTTONS - Grouped by Function
+  // ACTION BUTTONS
   // ══════════════════════════════════════════════════════════════════════════
   UI.Identification: [
     { Value: name },
-    // AI & Analytics Group
     { 
       $Type  : 'UI.DataFieldForAction',
       Label  : '🤖 AI Summary',
@@ -129,7 +147,6 @@ annotate donor_management_BitaSrv.Donors with @(
       Action : 'donor_management_BitaSrv.DetectAnomalies',
       ![@UI.Importance]: #High
     },
-    // Communication Group
     { 
       $Type  : 'UI.DataFieldForAction',
       Label  : '📊 AI Impact Report',
@@ -151,27 +168,24 @@ annotate donor_management_BitaSrv.Donors with @(
   ],
 
   // ══════════════════════════════════════════════════════════════════════════
-  // TABLE VIEW - Enhanced with Criticality & Responsive
+  // TABLE VIEW - With Analytics Columns
   // ══════════════════════════════════════════════════════════════════════════
   UI.LineItem: [
-    { $Type: 'UI.DataField', Value: name, Label: 'Donor Name', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '20%' } },
-    { $Type: 'UI.DataField', Value: email, Label: 'Email', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '20%' } },
-    { $Type: 'UI.DataField', Value: phone, Label: 'Phone', ![@UI.Importance]: #Medium, ![@HTML5.CssDefaults]: { width: '12%' } },
-    { $Type: 'UI.DataField', Value: donorType.typeName, Label: 'Type', ![@UI.Importance]: #Medium, ![@HTML5.CssDefaults]: { width: '10%' } },
-    { $Type: 'UI.DataField', Value: status, Label: 'Active', Criticality: status, ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '8%' } },
-    { $Type: 'UI.DataField', Value: isRecurringDonor, Label: 'Recurring', Criticality: isRecurringDonor, ![@UI.Importance]: #Medium, ![@HTML5.CssDefaults]: { width: '8%' } },
-    { $Type: 'UI.DataField', Value: isHNI, Label: 'VIP', Criticality: isHNI, ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '8%' } },
-    { $Type: 'UI.DataField', Value: modifiedAt, Label: 'Last Updated', ![@UI.Importance]: #Low, ![@HTML5.CssDefaults]: { width: '14%' } }
+    { $Type: 'UI.DataField', Value: name, Label: 'Name', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: email, Label: 'Email', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: donorTier, Label: 'Tier', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: totalDonated, Label: 'Total', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: donationCount, Label: '# Donations', ![@UI.Importance]: #Medium },
+    { $Type: 'UI.DataField', Value: engagementScore, Label: 'Engagement', ![@UI.Importance]: #Medium },
+    { $Type: 'UI.DataField', Value: status, Label: 'Active', Criticality: status, ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: isHNI, Label: 'VIP', Criticality: isHNI, ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: isRecurringDonor, Label: 'Recurring', Criticality: isRecurringDonor, ![@UI.Importance]: #Medium }
   ],
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // TABLE CONFIGURATION - Sorting & Variants
-  // ══════════════════════════════════════════════════════════════════════════
   UI.PresentationVariant: {
     Text           : 'Default View',
     SortOrder      : [{ Property: name, Descending: false }],
-    Visualizations : ['@UI.LineItem'],
-    RequestAtLeast : [name, email, status, isHNI, isRecurringDonor]
+    Visualizations : ['@UI.LineItem']
   },
 
   UI.SelectionPresentationVariant #DefaultVariant: {
@@ -198,9 +212,6 @@ annotate donor_management_BitaSrv.Donors with @(
     PresentationVariant: { SortOrder: [{ Property: name }], Visualizations: ['@UI.LineItem'] }
   },
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // FILTER BAR - Enhanced Search
-  // ══════════════════════════════════════════════════════════════════════════
   UI.SelectionFields: [
     name,
     email,
@@ -211,10 +222,50 @@ annotate donor_management_BitaSrv.Donors with @(
   ],
 
   // ══════════════════════════════════════════════════════════════════════════
-  // FIELD GROUPS FOR ALL SECTIONS
+  // FIELD GROUPS - Analytics
+  // ══════════════════════════════════════════════════════════════════════════
+  
+  UI.FieldGroup #KPIMetrics: {
+    $Type: 'UI.FieldGroupType',
+    Label: 'Key Performance Metrics',
+    Data : [
+      { $Type: 'UI.DataField', Value: totalDonated, Label: '💰 Total Donated' },
+      { $Type: 'UI.DataField', Value: donationCount, Label: '📊 Number of Donations' },
+      { $Type: 'UI.DataField', Value: averageDonation, Label: '📈 Average Donation' },
+      { $Type: 'UI.DataField', Value: largestDonation, Label: '🏆 Largest Gift' },
+      { $Type: 'UI.DataField', Value: smallestDonation, Label: '📉 Smallest Gift' },
+      { $Type: 'UI.DataField', Value: monthlyAverage, Label: '📅 Monthly Average' }
+    ]
+  },
+
+  UI.FieldGroup #ScoresAnalysis: {
+    $Type: 'UI.FieldGroupType',
+    Label: 'Scores & Analysis',
+    Data : [
+      { $Type: 'UI.DataField', Value: donorTier, Label: '🏅 Donor Tier' },
+      { $Type: 'UI.DataField', Value: engagementScore, Label: '📊 Engagement Score (%)' },
+      { $Type: 'UI.DataField', Value: likelihoodScore, Label: '🎯 Likelihood Score (%)' },
+      { $Type: 'UI.DataField', Value: riskLevel, Label: '⚠️ Donation Risk Level' },
+      { $Type: 'UI.DataField', Value: percentOfTotal, Label: '🥧 % of Total Donations' },
+      { $Type: 'UI.DataField', Value: topCause, Label: '❤️ Favorite Cause' }
+    ]
+  },
+
+  UI.FieldGroup #TrendsTimeline: {
+    $Type: 'UI.FieldGroupType',
+    Label: 'Trends & Timeline',
+    Data : [
+      { $Type: 'UI.DataField', Value: firstDonationDate, Label: '🟢 First Donation Date' },
+      { $Type: 'UI.DataField', Value: lastDonationDate, Label: '🔵 Last Donation Date' },
+      { $Type: 'UI.DataField', Value: daysSinceLastDonation, Label: '⏱️ Days Since Last Donation' },
+      { $Type: 'UI.DataField', Value: yearOverYearGrowth, Label: '📈 Year-over-Year Growth (%)' }
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // FIELD GROUPS - Profile
   // ══════════════════════════════════════════════════════════════════════════
 
-  // Personal Information Section
   UI.FieldGroup #PersonalInfo: {
     $Type: 'UI.FieldGroupType',
     Label: 'Personal Details',
@@ -225,7 +276,6 @@ annotate donor_management_BitaSrv.Donors with @(
     ]
   },
 
-  // Classification Section
   UI.FieldGroup #Classification: {
     $Type: 'UI.FieldGroupType',
     Label: 'Donor Classification',
@@ -237,49 +287,42 @@ annotate donor_management_BitaSrv.Donors with @(
     ]
   },
 
-  // ════════════════════════════════════════════════════════════════════════════
-  // AI SUMMARY SECTION - Separate Tab
-  // ════════════════════════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════════════════
+  // FIELD GROUPS - AI Sections
+  // ══════════════════════════════════════════════════════════════════════════
+
   UI.FieldGroup #AISummary: {
     $Type: 'UI.FieldGroupType',
     Label: 'AI-Generated Donor Analysis',
     Data : [
-      { $Type: 'UI.DataField', Value: summary, Label: 'Donor Intelligence Report' }
+      { $Type: 'UI.DataField', Value: summary, Label: '' }
     ]
   },
 
-  // ════════════════════════════════════════════════════════════════════════════
-  // PREDICTION SECTION - Separate Tab
-  // ════════════════════════════════════════════════════════════════════════════
   UI.FieldGroup #PredictionAnalysis: {
     $Type: 'UI.FieldGroupType',
     Label: 'Donation Likelihood Prediction',
     Data : [
-      { $Type: 'UI.DataField', Value: predictionResult, Label: 'ML Prediction Results' }
+      { $Type: 'UI.DataField', Value: predictionResult, Label: '' }
     ]
   },
 
-  // ════════════════════════════════════════════════════════════════════════════
-  // ANOMALY DETECTION SECTION - Separate Tab
-  // ════════════════════════════════════════════════════════════════════════════
   UI.FieldGroup #AnomalyDetection: {
     $Type: 'UI.FieldGroupType',
     Label: 'Fraud & Anomaly Detection',
     Data : [
-      { $Type: 'UI.DataField', Value: anomalyResult, Label: 'Anomaly Detection Results' }
+      { $Type: 'UI.DataField', Value: anomalyResult, Label: '' }
     ]
   },
 
-  // Donation History Section
   UI.FieldGroup #DonationHistory: {
     $Type: 'UI.FieldGroupType',
     Label: 'Giving History',
     Data : [
-      { $Type: 'UI.DataField', Value: donationHistory, Label: 'Donation Records' }
+      { $Type: 'UI.DataField', Value: donationHistory, Label: '' }
     ]
   },
 
-  // Audit Information Section
   UI.FieldGroup #AuditInfo: {
     $Type: 'UI.FieldGroupType',
     Label: 'System Information',
@@ -292,59 +335,70 @@ annotate donor_management_BitaSrv.Donors with @(
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // PAGE LAYOUT - TABS WITH SEPARATE AI SECTIONS
+  // PAGE LAYOUT - TABS
   // ══════════════════════════════════════════════════════════════════════════
   UI.Facets: [
-    // Tab 1: Donor Profile
+    // Tab 1: Analytics Dashboard
+    {
+      $Type  : 'UI.CollectionFacet',
+      ID     : 'AnalyticsTab',
+      Label  : '📊 Analytics',
+      Facets : [
+        { $Type: 'UI.ReferenceFacet', ID: 'KPIMetrics', Label: 'Key Metrics', Target: '@UI.FieldGroup#KPIMetrics' },
+        { $Type: 'UI.ReferenceFacet', ID: 'ScoresAnalysis', Label: 'Scores & Analysis', Target: '@UI.FieldGroup#ScoresAnalysis' },
+        { $Type: 'UI.ReferenceFacet', ID: 'TrendsTimeline', Label: 'Trends & Timeline', Target: '@UI.FieldGroup#TrendsTimeline' }
+      ]
+    },
+    // Tab 2: Donor Profile
     {
       $Type  : 'UI.CollectionFacet',
       ID     : 'DonorProfileTab',
-      Label  : '👤 Donor Profile',
+      Label  : '👤 Profile',
       Facets : [
         { $Type: 'UI.ReferenceFacet', ID: 'PersonalInfo', Label: 'Personal Information', Target: '@UI.FieldGroup#PersonalInfo' },
         { $Type: 'UI.ReferenceFacet', ID: 'Classification', Label: 'Classification', Target: '@UI.FieldGroup#Classification' }
       ]
     },
-    // Tab 2: AI Summary (Separate)
+    // Tab 3: Donation History
+    {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'HistoryTab',
+      Label  : '📜 History',
+      Target : '@UI.FieldGroup#DonationHistory'
+    },
+    // Tab 4: AI Summary
     {
       $Type  : 'UI.ReferenceFacet',
       ID     : 'AISummaryTab',
       Label  : '🤖 AI Summary',
       Target : '@UI.FieldGroup#AISummary'
     },
-    // Tab 3: Prediction Analysis (Separate)
+    // Tab 5: Prediction
     {
       $Type  : 'UI.ReferenceFacet',
       ID     : 'PredictionTab',
       Label  : '🎯 Prediction',
       Target : '@UI.FieldGroup#PredictionAnalysis'
     },
-    // Tab 4: Anomaly Detection (Separate)
+    // Tab 6: Anomaly Detection
     {
       $Type  : 'UI.ReferenceFacet',
       ID     : 'AnomalyTab',
-      Label  : '🔍 Anomaly Detection',
+      Label  : '🔍 Anomaly',
       Target : '@UI.FieldGroup#AnomalyDetection'
     },
-    // Tab 5: Donation History
-    {
-      $Type  : 'UI.ReferenceFacet',
-      ID     : 'HistoryTab',
-      Label  : '📊 Donation History',
-      Target : '@UI.FieldGroup#DonationHistory'
-    },
-    // Tab 6: Audit Trail
+    // Tab 7: Audit Trail
     {
       $Type  : 'UI.ReferenceFacet',
       ID     : 'AuditTab',
-      Label  : '🔒 Audit Trail',
+      Label  : '🔒 Audit',
       Target : '@UI.FieldGroup#AuditInfo'
     }
   ]
 );
 
 // ══════════════════════════════════════════════════════════════════════════════
-// FIELD-LEVEL ANNOTATIONS - Enhanced with New AI Fields
+// FIELD-LEVEL ANNOTATIONS
 // ══════════════════════════════════════════════════════════════════════════════
 annotate donor_management_BitaSrv.Donors with {
   ID      @UI.Hidden;
@@ -354,53 +408,38 @@ annotate donor_management_BitaSrv.Donors with {
   email   @(title: 'Email Address', Common.FieldControl: #Mandatory);
   phone   @title: 'Phone Number';
   
-  status  @(
-    title: 'Active',
-    Common.Text: { $value: status, ![@UI.TextArrangement]: #TextOnly }
-  );
-  
-  isHNI   @(
-    title: 'VIP Donor',
-    Common.Text: { $value: isHNI, ![@UI.TextArrangement]: #TextOnly }
-  );
-  
-  isRecurringDonor @(
-    title: 'Recurring Donor',
-    Common.Text: { $value: isRecurringDonor, ![@UI.TextArrangement]: #TextOnly }
-  );
+  status           @title: 'Active';
+  isHNI            @title: 'VIP Donor';
+  isRecurringDonor @title: 'Recurring Donor';
   
   createdAt  @title: 'Created On';
   createdBy  @title: 'Created By';
   modifiedAt @title: 'Last Modified';
   modifiedBy @title: 'Modified By';
   
-  // AI Summary Field
-  summary @(
-    title: 'AI Summary',
-    UI.MultiLineText: true,
-    UI.HiddenFilter: true
-  );
+  // AI Fields
+  summary          @(title: 'AI Summary', UI.MultiLineText: true, UI.HiddenFilter: true);
+  predictionResult @(title: 'Prediction', UI.MultiLineText: true, UI.HiddenFilter: true);
+  anomalyResult    @(title: 'Anomaly', UI.MultiLineText: true, UI.HiddenFilter: true);
+  donationHistory  @(title: 'History', UI.MultiLineText: true, UI.HiddenFilter: true);
 
-  // Prediction Result Field
-  predictionResult @(
-    title: 'Prediction Analysis',
-    UI.MultiLineText: true,
-    UI.HiddenFilter: true
-  );
-
-  // Anomaly Detection Result Field
-  anomalyResult @(
-    title: 'Anomaly Detection',
-    UI.MultiLineText: true,
-    UI.HiddenFilter: true
-  );
-
-  // Donation History Virtual Field
-  donationHistory @(
-    title: 'Donation History',
-    UI.MultiLineText: true,
-    UI.HiddenFilter: true
-  );
+  // Analytics Fields
+  totalDonated          @(title: 'Total Donated', UI.HiddenFilter: true);
+  donationCount         @(title: 'Donations', UI.HiddenFilter: true);
+  averageDonation       @(title: 'Average', UI.HiddenFilter: true);
+  largestDonation       @(title: 'Largest', UI.HiddenFilter: true);
+  smallestDonation      @(title: 'Smallest', UI.HiddenFilter: true);
+  daysSinceLastDonation @(title: 'Days Since Last', UI.HiddenFilter: true);
+  donorTier             @(title: 'Tier', UI.HiddenFilter: true);
+  engagementScore       @(title: 'Engagement %', UI.HiddenFilter: true);
+  likelihoodScore       @(title: 'Likelihood %', UI.HiddenFilter: true);
+  riskLevel             @(title: 'Risk Level', UI.HiddenFilter: true);
+  topCause              @(title: 'Top Cause', UI.HiddenFilter: true);
+  percentOfTotal        @(title: '% of Total', UI.HiddenFilter: true);
+  yearOverYearGrowth    @(title: 'YoY Growth', UI.HiddenFilter: true);
+  monthlyAverage        @(title: 'Monthly Avg', UI.HiddenFilter: true);
+  lastDonationDate      @(title: 'Last Donation', UI.HiddenFilter: true);
+  firstDonationDate     @(title: 'First Donation', UI.HiddenFilter: true);
 
   donorType @(
     title: 'Donor Type',
@@ -414,14 +453,13 @@ annotate donor_management_BitaSrv.Donors with {
         { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'typeName' },
         { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'description' }
       ]
-    },
-    Common.ValueListWithFixedValues: false
+    }
   );
 };
 
 
 // ══════════════════════════════════════════════════════════════════════════════
-// DONATIONS - Enhanced Modern View
+// DONATIONS
 // ══════════════════════════════════════════════════════════════════════════════
 
 annotate donor_management_BitaSrv.Donations with @(
@@ -434,14 +472,14 @@ annotate donor_management_BitaSrv.Donations with @(
   },
 
   UI.LineItem: [
-    { $Type: 'UI.DataField', Value: donor_Name, Label: 'Donor', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '15%' } },
-    { $Type: 'UI.DataField', Value: donor_Email, Label: 'Email', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '18%' } },
-    { $Type: 'UI.DataField', Value: donation_date, Label: 'Date', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '10%' } },
-    { $Type: 'UI.DataField', Value: amount, Label: 'Amount', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '10%' } },
-    { $Type: 'UI.DataField', Value: currency_code, Label: 'Currency', ![@UI.Importance]: #Medium, ![@HTML5.CssDefaults]: { width: '7%' } },
-    { $Type: 'UI.DataField', Value: campaign, Label: 'Campaign', ![@UI.Importance]: #High, ![@HTML5.CssDefaults]: { width: '15%' } },
-    { $Type: 'UI.DataField', Value: cause, Label: 'Cause', ![@UI.Importance]: #Medium, ![@HTML5.CssDefaults]: { width: '12%' } },
-    { $Type: 'UI.DataField', Value: city, Label: 'City', ![@UI.Importance]: #Low, ![@HTML5.CssDefaults]: { width: '13%' } }
+    { $Type: 'UI.DataField', Value: donor_Name, Label: 'Donor', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: donor_Email, Label: 'Email', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: donation_date, Label: 'Date', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: amount, Label: 'Amount', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: currency_code, Label: 'Currency', ![@UI.Importance]: #Medium },
+    { $Type: 'UI.DataField', Value: campaign, Label: 'Campaign', ![@UI.Importance]: #High },
+    { $Type: 'UI.DataField', Value: cause, Label: 'Cause', ![@UI.Importance]: #Medium },
+    { $Type: 'UI.DataField', Value: city, Label: 'City', ![@UI.Importance]: #Low }
   ],
 
   UI.PresentationVariant: {

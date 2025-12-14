@@ -24,19 +24,6 @@
           "odataVersion": "4.0"
         }
       }
-    },
-    "crossNavigation": {
-      "inbounds": {
-        "donormanagementbitadonormanage-display": {
-          "semanticObject": "donormanagementbitadonormanage",
-          "action": "display",
-          "title": "{{donormanagementbitadonormanage-display.flpTitle}}",
-          "signature": {
-            "parameters": {},
-            "additionalParameters": "allowed"
-          }
-        }
-      }
     }
   },
   "sap.ui": {
@@ -64,7 +51,8 @@
         "sap.ui.core": {},
         "sap.fe.templates": {},
         "sap.f": {},
-        "sap.uxap": {}
+        "sap.uxap": {},
+        "sap.suite.ui.microchart": {}
       }
     },
     "contentDensities": {
@@ -138,15 +126,8 @@
                     "condensedTableLayout": true,
                     "enableExport": true,
                     "enableFullScreen": true,
-                    "enablePaste": false,
                     "quickVariantSelection": {
-                      "showCounts": true,
-                      "paths": [
-                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#DefaultVariant" },
-                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VIPDonors" },
-                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#RecurringDonors" },
-                        { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#ActiveDonors" }
-                      ]
+                      "showCounts": true
                     },
                     "personalization": {
                       "column": true,
@@ -168,8 +149,7 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/Donors",
-              "sectionLayout": "Tabs",
-              "showRelatedApps": false
+              "sectionLayout": "Tabs"
             }
           }
         }
