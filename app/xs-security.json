@@ -1,0 +1,48 @@
+{
+  "xsappname": "donor-management-bita",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.admin",
+      "description": "Administrator Access"
+    },
+    {
+      "name": "$XSAPPNAME.user",
+      "description": "User Access"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Admin",
+      "description": "Administrator Role",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.user"
+      ]
+    },
+    {
+      "name": "User",
+      "description": "User Role",
+      "scope-references": [
+        "$XSAPPNAME.user"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "DonorManagement_Admin",
+      "description": "Admin Role Collection",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
+      ]
+    },
+    {
+      "name": "DonorManagement_User",
+      "description": "User Role Collection",
+      "role-template-references": [
+        "$XSAPPNAME.User"
+      ]
+    }
+  ]
+}

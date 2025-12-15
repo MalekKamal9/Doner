@@ -1,0 +1,122 @@
+_schema-version: "3.2"
+ID: donor-management-bita
+version: 1.0.0
+description: "Donor Management Application"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+
+modules:
+  # ════════════════════════════════════════════════════════════
+  # Service Module (Backend CAP Service)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: donor-management-bita-db
+      - name: donor-management-bita-auth
+
+  # ════════════════════════════════════════════════════════════
+  # Database Deployer Module (HANA)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: donor-management-bita-db
+
+  # ════════════════════════════════════════════════════════════
+  # UI Application Module (Fiori App)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-ui
+    type: nodejs
+    path: app/donormanagement
+    build-parameters:
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms: []
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+
+  # ════════════════════════════════════════════════════════════
+  # App Router Module (Routes requests to services)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-approuter
+    type: approuter.nodejs
+    path: approuter
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: donor-management-bita-auth
+      - name: donor-management-bita-html5-repo-runtime
+    build-parameters:
+      requires:
+        - name: donor-management-bita-ui
+          artifacts:
+            - './*'
+          target-path: resources/donormanagement
+
+resources:
+  # ════════════════════════════════════════════════════════════
+  # HDI Container (HANA Database)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  # ════════════════════════════════════════════════════════════
+  # XSUAA Service (Authentication)
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: donor-management-bita-${org}-${space}
+        tenant-mode: dedicated
+
+  # ════════════════════════════════════════════════════════════
+  # HTML5 App Repository Runtime
+  # ════════════════════════════════════════════════════════════
+  - name: donor-management-bita-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

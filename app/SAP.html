@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP Donor Management System - Technical Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a1628;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --blue: #3b82f6;
+            --blue-light: #60a5fa;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --green: #10b981;
+            --green-light: #34d399;
+            --orange: #f59e0b;
+            --orange-light: #fbbf24;
+            --pink: #ec4899;
+            --pink-light: #f472b6;
+            --cyan: #06b6d4;
+            --cyan-light: #22d3ee;
+            --sap-blue: #0070f2;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a365d 50%, #0d2137 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.2);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+            }
+            50% {
+                box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+            }
+        }
+
+        @keyframes flowArrow {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(10px);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes dataFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-10deg) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes progressLine {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-fadeInLeft {
+            animation: fadeInLeft 0.6s ease-out forwards;
+        }
+
+        .animate-fadeInRight {
+            animation: fadeInRight 0.6s ease-out forwards;
+        }
+
+        .animate-scaleIn {
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+
+        .animate-slideDown {
+            animation: slideDown 0.5s ease-out forwards;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .animate-bounce {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--sap-blue), var(--blue));
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--blue-light), var(--purple-light), var(--pink-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 24px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Content Sections */
+        .section {
+            display: none;
+            padding: 40px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--blue-light);
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ==================== SYSTEM OVERVIEW ==================== */
+        .architecture-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .arch-layer {
+            border-radius: 16px;
+            padding: 20px 28px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .arch-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .arch-layer.blue { background: linear-gradient(135deg, var(--blue), #1d4ed8); }
+        .arch-layer.purple { background: linear-gradient(135deg, var(--purple), #6d28d9); }
+        .arch-layer.green { background: linear-gradient(135deg, var(--green), #059669); }
+        .arch-layer.orange { background: linear-gradient(135deg, var(--orange), #d97706); }
+
+        .arch-layer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .arch-layer-icon {
+            font-size: 28px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .arch-layer-title {
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .arch-layer-items {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .arch-layer-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .arch-layer-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .arch-arrow {
+            text-align: center;
+            font-size: 24px;
+            color: var(--blue-light);
+            opacity: 0;
+            animation: flowArrow 1.5s ease-in-out infinite;
+        }
+
+        .platform-base {
+            background: #0a2540;
+            border: 3px solid var(--sap-blue);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 16px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .platform-base::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 112, 242, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .platform-base h3 {
+            color: var(--sap-blue);
+            font-size: 22px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .platform-base p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 8px;
+            position: relative;
+        }
+
+        /* Key Benefits */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
+
+        .benefit-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--green-light), var(--cyan-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .benefit-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* ==================== TECHNOLOGY STACK ==================== */
+        .stack-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stack-layer {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 2px solid transparent;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .stack-layer:hover {
+            transform: translateX(8px);
+        }
+
+        .stack-layer.green-border { border-color: var(--green); }
+        .stack-layer.blue-border { border-color: var(--blue); }
+        .stack-layer.purple-border { border-color: var(--purple); }
+        .stack-layer.orange-border { border-color: var(--orange); }
+
+        .stack-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stack-icon.green { background: linear-gradient(135deg, var(--green), #059669); }
+        .stack-icon.blue { background: linear-gradient(135deg, var(--blue), #1d4ed8); }
+        .stack-icon.purple { background: linear-gradient(135deg, var(--purple), #6d28d9); }
+        .stack-icon.orange { background: linear-gradient(135deg, var(--orange), #d97706); }
+
+        .stack-content {
+            flex: 1;
+        }
+
+        .stack-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .stack-name.green { color: var(--green-light); }
+        .stack-name.blue { color: var(--blue-light); }
+        .stack-name.purple { color: var(--purple-light); }
+        .stack-name.orange { color: var(--orange-light); }
+
+        .stack-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .stack-features {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stack-feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .stack-badge {
+            background: #0d2137;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .stack-badge.green { border: 1px solid var(--green); color: var(--green-light); }
+        .stack-badge.blue { border: 1px solid var(--blue); color: var(--blue-light); }
+        .stack-badge.purple { border: 1px solid var(--purple); color: var(--purple-light); }
+        .stack-badge.orange { border: 1px solid var(--orange); color: var(--orange-light); }
+
+        /* Capabilities Grid */
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .capability-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .capability-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--blue);
+        }
+
+        .capability-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .capability-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .capability-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* ==================== DATA FLOW ==================== */
+        .dataflow-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dataflow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .dataflow-node {
+            text-align: center;
+            opacity: 0;
+        }
+
+        .dataflow-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dataflow-circle::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px dashed currentColor;
+            opacity: 0.3;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .dataflow-circle:hover {
+            transform: scale(1.1);
+        }
+
+        .dataflow-circle.blue { background: linear-gradient(135deg, var(--blue), #1d4ed8); color: var(--blue); }
+        .dataflow-circle.purple { background: linear-gradient(135deg, var(--purple), #6d28d9); color: var(--purple); }
+
+        .dataflow-circle span {
+            font-size: 36px;
+            color: white;
+        }
+
+        .dataflow-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .dataflow-box {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            min-width: 160px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .dataflow-box:hover {
+            transform: scale(1.05);
+        }
+
+        .dataflow-box.blue-border { border: 2px solid var(--blue); }
+        .dataflow-box.purple-border { border: 2px solid var(--purple); }
+        .dataflow-box.green-border { border: 2px solid var(--green); }
+        .dataflow-box.orange-border { border: 2px solid var(--orange); }
+        .dataflow-box.pink-border { border: 2px solid var(--pink); }
+
+        .dataflow-box-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .dataflow-box-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .dataflow-box-title.blue { color: var(--blue-light); }
+        .dataflow-box-title.purple { color: var(--purple-light); }
+        .dataflow-box-title.green { color: var(--green-light); }
+        .dataflow-box-title.orange { color: var(--orange-light); }
+        .dataflow-box-title.pink { color: var(--pink-light); }
+
+        .dataflow-box-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .dataflow-arrow {
+            font-size: 28px;
+            opacity: 0;
+            animation: flowArrow 1.5s ease-in-out infinite;
+        }
+
+        .dataflow-arrow.blue { color: var(--blue-light); }
+        .dataflow-arrow.purple { color: var(--purple-light); }
+        .dataflow-arrow.green { color: var(--green-light); }
+        .dataflow-arrow.orange { color: var(--orange-light); }
+        .dataflow-arrow.pink { color: var(--pink-light); }
+
+        .dataflow-outputs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dataflow-output-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Data Flow Details */
+        .flow-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .flow-detail-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .flow-detail-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .flow-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .flow-detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .flow-detail-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .flow-detail-items {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .flow-detail-items p {
+            margin-bottom: 4px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .flow-detail-items p::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+        }
+
+        /* ==================== AI/ML ARCHITECTURE ==================== */
+        .aiml-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .aiml-flow {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            margin-bottom: 40px;
+        }
+
+        .aiml-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .aiml-column.input { max-width: 250px; }
+        .aiml-column.output { max-width: 250px; }
+
+        .aiml-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .aiml-section.blue-border { border: 2px solid var(--blue); }
+        .aiml-section.green-border { border: 2px solid var(--green); }
+        .aiml-section.pink-border { border: 2px solid var(--pink); }
+
+        .aiml-section-header {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .aiml-section-header.blue { color: var(--blue-light); }
+        .aiml-section-header.green { color: var(--green-light); }
+        .aiml-section-header.pink { color: var(--pink-light); }
+
+        .aiml-item {
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .aiml-item:hover {
+            transform: translateX(4px);
+        }
+
+        .aiml-item.blue { background: rgba(59, 130, 246, 0.15); border: 1px solid var(--blue); }
+        .aiml-item.green { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--green); }
+        .aiml-item.purple { background: rgba(139, 92, 246, 0.15); border: 1px solid var(--purple); }
+        .aiml-item.orange { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--orange); }
+        .aiml-item.pink { background: rgba(236, 72, 153, 0.15); border: 1px solid var(--pink); }
+
+        .aiml-item-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .aiml-item-title.blue { color: var(--blue-light); }
+        .aiml-item-title.green { color: var(--green-light); }
+        .aiml-item-title.purple { color: var(--purple-light); }
+        .aiml-item-title.orange { color: var(--orange-light); }
+        .aiml-item-title.pink { color: var(--pink-light); }
+
+        .aiml-item-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .aiml-arrow-container {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            opacity: 0;
+        }
+
+        .aiml-arrow {
+            font-size: 32px;
+            animation: flowArrow 1.5s ease-in-out infinite;
+        }
+
+        .aiml-arrow.blue { color: var(--blue-light); }
+        .aiml-arrow.pink { color: var(--pink-light); }
+
+        /* AI Metrics */
+        .ai-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .ai-metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .ai-metric-card.green::before { background: var(--green); }
+        .ai-metric-card.purple::before { background: var(--purple); }
+        .ai-metric-card.orange::before { background: var(--orange); }
+        .ai-metric-card.pink::before { background: var(--pink); }
+
+        .ai-metric-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .ai-metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .ai-metric-value.green { color: var(--green-light); }
+        .ai-metric-value.purple { color: var(--purple-light); }
+        .ai-metric-value.orange { color: var(--orange-light); }
+        .ai-metric-value.pink { color: var(--pink-light); }
+
+        .ai-metric-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* ==================== ROADMAP ==================== */
+        .roadmap-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+            border-radius: 3px;
+            transform: translateY(-50%);
+        }
+
+        .roadmap-line-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            width: 0;
+            animation: progressLine 2s ease-out 1s forwards;
+        }
+
+        .roadmap-points {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .roadmap-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+        }
+
+        .roadmap-dot {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: white;
+            border: 4px solid white;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .roadmap-dot.green { background: var(--green); box-shadow: 0 0 20px var(--green); }
+        .roadmap-dot.blue { background: var(--blue); box-shadow: 0 0 20px var(--blue); }
+        .roadmap-dot.purple { background: var(--purple); box-shadow: 0 0 20px var(--purple); }
+
+        .roadmap-date {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .roadmap-phases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .roadmap-phase {
+            opacity: 0;
+        }
+
+        .roadmap-phase-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-phase-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .roadmap-phase-card.green-border { border: 2px solid var(--green); }
+        .roadmap-phase-card.blue-border { border: 2px solid var(--blue); }
+        .roadmap-phase-card.purple-border { border: 2px solid var(--purple); }
+
+        .roadmap-phase-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .roadmap-phase-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .roadmap-phase-badge.green { background: rgba(16, 185, 129, 0.2); color: var(--green-light); }
+        .roadmap-phase-badge.blue { background: rgba(59, 130, 246, 0.2); color: var(--blue-light); }
+        .roadmap-phase-badge.purple { background: rgba(139, 92, 246, 0.2); color: var(--purple-light); }
+
+        .roadmap-phase-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .roadmap-phase-title.green { color: var(--green-light); }
+        .roadmap-phase-title.blue { color: var(--blue-light); }
+        .roadmap-phase-title.purple { color: var(--purple-light); }
+
+        .roadmap-phase-services {
+            margin-bottom: 8px;
+        }
+
+        .roadmap-phase-services p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .roadmap-phase-services p::before {
+            content: '•';
+            position: absolute;
+            left: 6px;
+        }
+
+        .roadmap-deliverables {
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .roadmap-deliverables.green { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); }
+        .roadmap-deliverables.blue { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--blue); }
+        .roadmap-deliverables.purple { background: rgba(139, 92, 246, 0.1); border: 1px solid var(--purple); }
+
+        .roadmap-deliverables-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .roadmap-deliverables-title.green { color: var(--green-light); }
+        .roadmap-deliverables-title.blue { color: var(--blue-light); }
+        .roadmap-deliverables-title.purple { color: var(--purple-light); }
+
+        .roadmap-deliverables p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        /* ==================== BTP SERVICES ==================== */
+        .btp-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .btp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .btp-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .btp-card.green::before { background: linear-gradient(90deg, var(--green), var(--green-light)); }
+        .btp-card.orange::before { background: linear-gradient(90deg, var(--orange), var(--orange-light)); }
+        .btp-card.purple::before { background: linear-gradient(90deg, var(--purple), var(--purple-light)); }
+        .btp-card.blue::before { background: linear-gradient(90deg, var(--blue), var(--blue-light)); }
+        .btp-card.pink::before { background: linear-gradient(90deg, var(--pink), var(--pink-light)); }
+        .btp-card.cyan::before { background: linear-gradient(90deg, var(--cyan), var(--cyan-light)); }
+
+        .btp-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btp-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .btp-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .btp-icon.green { background: linear-gradient(135deg, var(--green), #059669); }
+        .btp-icon.orange { background: linear-gradient(135deg, var(--orange), #d97706); }
+        .btp-icon.purple { background: linear-gradient(135deg, var(--purple), #6d28d9); }
+        .btp-icon.blue { background: linear-gradient(135deg, var(--blue), #1d4ed8); }
+        .btp-icon.pink { background: linear-gradient(135deg, var(--pink), #be185d); }
+        .btp-icon.cyan { background: linear-gradient(135deg, var(--cyan), #0891b2); }
+
+        .btp-card-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .btp-card-info h3.green { color: var(--green-light); }
+        .btp-card-info h3.orange { color: var(--orange-light); }
+        .btp-card-info h3.purple { color: var(--purple-light); }
+        .btp-card-info h3.blue { color: var(--blue-light); }
+        .btp-card-info h3.pink { color: var(--pink-light); }
+        .btp-card-info h3.cyan { color: var(--cyan-light); }
+
+        .btp-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .btp-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--green-light);
+        }
+
+        .btp-status.available {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--blue-light);
+        }
+
+        .btp-features {
+            margin-bottom: 16px;
+        }
+
+        .btp-features p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .btp-features p::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green-light);
+        }
+
+        .btp-value {
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .btp-value.green { background: rgba(16, 185, 129, 0.1); }
+        .btp-value.orange { background: rgba(245, 158, 11, 0.1); }
+        .btp-value.purple { background: rgba(139, 92, 246, 0.1); }
+        .btp-value.blue { background: rgba(59, 130, 246, 0.1); }
+        .btp-value.pink { background: rgba(236, 72, 153, 0.1); }
+        .btp-value.cyan { background: rgba(6, 182, 212, 0.1); }
+
+        .btp-value span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btp-value span.green { color: var(--green-light); }
+        .btp-value span.orange { color: var(--orange-light); }
+        .btp-value span.purple { color: var(--purple-light); }
+        .btp-value span.blue { color: var(--blue-light); }
+        .btp-value span.pink { color: var(--pink-light); }
+        .btp-value span.cyan { color: var(--cyan-light); }
+
+        /* BTP Platform Summary */
+        .btp-summary {
+            background: linear-gradient(135deg, #0a2540, #1e3a5f);
+            border: 3px solid var(--sap-blue);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btp-summary::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(0, 112, 242, 0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .btp-summary h3 {
+            font-size: 28px;
+            color: var(--sap-blue);
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .btp-summary p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .btp-summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            position: relative;
+        }
+
+        .btp-summary-stat {
+            text-align: center;
+        }
+
+        .btp-summary-stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue-light), var(--cyan-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btp-summary-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .benefits-grid,
+            .capabilities-grid,
+            .flow-details,
+            .ai-metrics,
+            .btp-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .roadmap-phases {
+                grid-template-columns: 1fr;
+            }
+
+            .aiml-flow {
+                flex-direction: column;
+            }
+
+            .aiml-column.input,
+            .aiml-column.output {
+                max-width: 100%;
+            }
+
+            .aiml-arrow-container {
+                transform: rotate(90deg);
+                padding: 16px 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .nav {
+                gap: 6px;
+            }
+
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .benefits-grid,
+            .capabilities-grid,
+            .flow-details,
+            .ai-metrics,
+            .btp-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dataflow-diagram {
+                flex-direction: column;
+            }
+
+            .dataflow-outputs {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .dataflow-output-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-badge animate-fadeInUp">SAP Business Technology Platform</div>
+        <h1 class="animate-fadeInUp delay-1">Donor Management System</h1>
+        <p class="animate-fadeInUp delay-2">AI-Powered Donor Intelligence Platform | Technical Architecture & Implementation</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-btn active" data-section="overview">System Overview</button>
+        <button class="nav-btn" data-section="stack">Technology Stack</button>
+        <button class="nav-btn" data-section="dataflow">Data Flow</button>
+        <button class="nav-btn" data-section="aiml">AI/ML Architecture</button>
+        <button class="nav-btn" data-section="roadmap">Future Roadmap</button>
+        <button class="nav-btn" data-section="btp">SAP BTP Services</button>
+        <button class="nav-btn" data-section="devops">Development & DevOps</button>
+    </nav>
+
+    <!-- Section 1: System Overview -->
+    <section id="overview" class="section active">
+        <div class="section-title">
+            <h2>System Architecture Overview</h2>
+            <p>Enterprise-grade, cloud-native architecture built on SAP Business Technology Platform with AI-powered analytics and real-time data processing</p>
+        </div>
+
+        <div class="architecture-container">
+            <div class="arch-layer blue" data-animate="fadeInUp" data-delay="1">
+                <div class="arch-layer-header">
+                    <span class="arch-layer-icon">👥</span>
+                    <span class="arch-layer-title">USER LAYER</span>
+                </div>
+                <div class="arch-layer-items">
+                    <span class="arch-layer-item">Fundraising Manager</span>
+                    <span class="arch-layer-item">Donor Relations Officer</span>
+                    <span class="arch-layer-item">Finance Team</span>
+                    <span class="arch-layer-item">Executive Leadership</span>
+                </div>
+            </div>
+
+            <div class="arch-arrow" data-animate="fadeIn" data-delay="2">▼</div>
+
+            <div class="arch-layer blue" data-animate="fadeInUp" data-delay="2">
+                <div class="arch-layer-header">
+                    <span class="arch-layer-icon">📱</span>
+                    <span class="arch-layer-title">PRESENTATION LAYER - SAP Fiori</span>
+                </div>
+                <div class="arch-layer-items">
+                    <span class="arch-layer-item">SAP Fiori Launchpad</span>
+                    <span class="arch-layer-item">Fiori Elements UI</span>
+                    <span class="arch-layer-item">Responsive Mobile Design</span>
+                    <span class="arch-layer-item">Real-time Dashboards</span>
+                </div>
+            </div>
+
+            <div class="arch-arrow" data-animate="fadeIn" data-delay="3">▼</div>
+
+            <div class="arch-layer purple" data-animate="fadeInUp" data-delay="3">
+                <div class="arch-layer-header">
+                    <span class="arch-layer-icon">⚙️</span>
+                    <span class="arch-layer-title">APPLICATION LAYER - SAP CAP (Node.js)</span>
+                </div>
+                <div class="arch-layer-items">
+                    <span class="arch-layer-item">Donor Management Service</span>
+                    <span class="arch-layer-item">Donation Processing Service</span>
+                    <span class="arch-layer-item">Email Notification Service</span>
+                    <span class="arch-layer-item">PDF Report Generation</span>
+                </div>
+            </div>
+
+            <div class="arch-arrow" data-animate="fadeIn" data-delay="4">▼</div>
+
+            <div class="arch-layer green" data-animate="fadeInUp" data-delay="4">
+                <div class="arch-layer-header">
+                    <span class="arch-layer-icon">🤖</span>
+                    <span class="arch-layer-title">AI/ML PROCESSING LAYER</span>
+                </div>
+                <div class="arch-layer-items">
+                    <span class="arch-layer-item">AI Summary Generator</span>
+                    <span class="arch-layer-item">Prediction Engine</span>
+                    <span class="arch-layer-item">Anomaly Detector</span>
+                    <span class="arch-layer-item">Engagement Recommender</span>
+                </div>
+            </div>
+
+            <div class="arch-arrow" data-animate="fadeIn" data-delay="5">▼</div>
+
+            <div class="arch-layer orange" data-animate="fadeInUp" data-delay="5">
+                <div class="arch-layer-header">
+                    <span class="arch-layer-icon">💾</span>
+                    <span class="arch-layer-title">DATA LAYER - SAP HANA Cloud</span>
+                </div>
+                <div class="arch-layer-items">
+                    <span class="arch-layer-item">Donors Entity</span>
+                    <span class="arch-layer-item">Donations Entity</span>
+                    <span class="arch-layer-item">DonorTypes Entity</span>
+                    <span class="arch-layer-item">Analytics Views</span>
+                </div>
+            </div>
+
+            <div class="platform-base" data-animate="scaleIn" data-delay="6">
+                <h3>SAP BUSINESS TECHNOLOGY PLATFORM</h3>
+                <p>Secure • Scalable • Enterprise-Ready • Cloud-Native</p>
+            </div>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card" data-animate="fadeInUp" data-delay="7">
+                <div class="benefit-icon">⚡</div>
+                <div class="benefit-value">60%</div>
+                <div class="benefit-label">Faster Development</div>
+            </div>
+            <div class="benefit-card" data-animate="fadeInUp" data-delay="7">
+                <div class="benefit-icon">🎯</div>
+                <div class="benefit-value">99.5%</div>
+                <div class="benefit-label">Time Saved on Analysis</div>
+            </div>
+            <div class="benefit-card" data-animate="fadeInUp" data-delay="8">
+                <div class="benefit-icon">📈</div>
+                <div class="benefit-value">280%</div>
+                <div class="benefit-label">ROI</div>
+            </div>
+            <div class="benefit-card" data-animate="fadeInUp" data-delay="8">
+                <div class="benefit-icon">🔒</div>
+                <div class="benefit-value">100%</div>
+                <div class="benefit-label">Enterprise Security</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Technology Stack -->
+    <section id="stack" class="section">
+        <div class="section-title">
+            <h2>Technology Stack</h2>
+            <p>Modern, cloud-native technology stack leveraging the full power of SAP Business Technology Platform</p>
+        </div>
+
+        <div class="stack-container">
+            <div class="stack-layer green-border" data-animate="fadeInLeft" data-delay="1">
+                <div class="stack-icon green">🛠️</div>
+                <div class="stack-content">
+                    <div class="stack-name green">SAP Build Code</div>
+                    <div class="stack-desc">Full-stack cloud development environment with AI-powered coding assistance</div>
+                    <div class="stack-features">
+                        <span class="stack-feature">Joule AI Copilot</span>
+                        <span class="stack-feature">CAP Framework</span>
+                        <span class="stack-feature">One-Click Deploy</span>
+                        <span class="stack-feature">Git Integration</span>
+                    </div>
+                </div>
+                <div class="stack-badge green">Active Since Oct 2025</div>
+            </div>
+
+            <div class="stack-layer blue-border" data-animate="fadeInRight" data-delay="2">
+                <div class="stack-icon blue">📱</div>
+                <div class="stack-content">
+                    <div class="stack-name blue">SAP Fiori Elements</div>
+                    <div class="stack-desc">Annotations-driven UI framework for consistent enterprise user experience</div>
+                    <div class="stack-features">
+                        <span class="stack-feature">List Report</span>
+                        <span class="stack-feature">Object Page</span>
+                        <span class="stack-feature">Responsive Design</span>
+                        <span class="stack-feature">SAPUI5 Framework</span>
+                    </div>
+                </div>
+                <div class="stack-badge blue">Standard UI Pattern</div>
+            </div>
+
+            <div class="stack-layer purple-border" data-animate="fadeInLeft" data-delay="3">
+                <div class="stack-icon purple">⚙️</div>
+                <div class="stack-content">
+                    <div class="stack-name purple">SAP CAP (Node.js)</div>
+                    <div class="stack-desc">Cloud Application Programming model for enterprise-grade backend services</div>
+                    <div class="stack-features">
+                        <span class="stack-feature">OData V4 APIs</span>
+                        <span class="stack-feature">CDS Modeling</span>
+                        <span class="stack-feature">Nodemailer</span>
+                        <span class="stack-feature">PDFKit</span>
+                    </div>
+                </div>
+                <div class="stack-badge purple">Business Logic</div>
+            </div>
+
+            <div class="stack-layer orange-border" data-animate="fadeInRight" data-delay="4">
+                <div class="stack-icon orange">💾</div>
+                <div class="stack-content">
+                    <div class="stack-name orange">SAP HANA Cloud</div>
+                    <div class="stack-desc">In-memory database platform with advanced analytics and ML capabilities</div>
+                    <div class="stack-features">
+                        <span class="stack-feature">In-Memory Processing</span>
+                        <span class="stack-feature">Real-time Analytics</span>
+                        <span class="stack-feature">Multi-Model DB</span>
+                        <span class="stack-feature">PAL/APL ML</span>
+                    </div>
+                </div>
+                <div class="stack-badge orange">Active Since Nov 2023</div>
+            </div>
+        </div>
+
+        <div class="capabilities-grid">
+            <div class="capability-card" data-animate="fadeInUp" data-delay="5">
+                <div class="capability-icon" style="background: linear-gradient(135deg, var(--green), #059669);">🚀</div>
+                <div class="capability-title">Rapid Development</div>
+                <div class="capability-desc">60% faster development with pre-built templates, Joule AI assistance, and automated deployment pipelines</div>
+            </div>
+            <div class="capability-card" data-animate="fadeInUp" data-delay="5">
+                <div class="capability-icon" style="background: linear-gradient(135deg, var(--blue), #1d4ed8);">🔄</div>
+                <div class="capability-title">Seamless Integration</div>
+                <div class="capability-desc">Native integration with SAP S/4HANA, SAP SuccessFactors, and third-party systems via REST/OData APIs</div>
+            </div>
+            <div class="capability-card" data-animate="fadeInUp" data-delay="6">
+                <div class="capability-icon" style="background: linear-gradient(135deg, var(--purple), #6d28d9);">🔒</div>
+                <div class="capability-title">Enterprise Security</div>
+                <div class="capability-desc">Role-based access control, OAuth 2.0, SAML SSO, and end-to-end encryption for data protection</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Data Flow -->
+    <section id="dataflow" class="section">
+        <div class="section-title">
+            <h2>Data Flow Architecture</h2>
+            <p>End-to-end data flow from user interaction through AI processing to persistent storage</p>
+        </div>
+
+        <div class="dataflow-container">
+            <div class="dataflow-diagram">
+                <div class="dataflow-node" data-animate="scaleIn" data-delay="1">
+                    <div class="dataflow-circle blue">
+                        <span>👤</span>
+                    </div>
+                    <div class="dataflow-label">User Request</div>
+                </div>
+
+                <div class="dataflow-arrow blue" data-animate="fadeIn" data-delay="2">→</div>
+
+                <div class="dataflow-box blue-border" data-animate="fadeInUp" data-delay="2">
+                    <div class="dataflow-box-icon">📱</div>
+                    <div class="dataflow-box-title blue">SAP Fiori UI</div>
+                    <div class="dataflow-box-sub">User Interface Layer</div>
+                </div>
+
+                <div class="dataflow-arrow purple" data-animate="fadeIn" data-delay="3">→</div>
+
+                <div class="dataflow-box purple-border" data-animate="fadeInUp" data-delay="3">
+                    <div class="dataflow-box-icon">⚙️</div>
+                    <div class="dataflow-box-title purple">SAP CAP Service</div>
+                    <div class="dataflow-box-sub">Business Logic Layer</div>
+                </div>
+
+                <div class="dataflow-outputs">
+                    <div class="dataflow-output-row">
+                        <div class="dataflow-arrow green" data-animate="fadeIn" data-delay="4">→</div>
+                        <div class="dataflow-box green-border" data-animate="fadeInUp" data-delay="4">
+                            <div class="dataflow-box-icon">🤖</div>
+                            <div class="dataflow-box-title green">AI/ML Engine</div>
+                            <div class="dataflow-box-sub">Intelligence Layer</div>
+                        </div>
+                    </div>
+                    <div class="dataflow-output-row">
+                        <div class="dataflow-arrow orange" data-animate="fadeIn" data-delay="5">→</div>
+                        <div class="dataflow-box orange-border" data-animate="fadeInUp" data-delay="5">
+                            <div class="dataflow-box-icon">💾</div>
+                            <div class="dataflow-box-title orange">HANA Cloud</div>
+                            <div class="dataflow-box-sub">Persistence Layer</div>
+                        </div>
+                    </div>
+                    <div class="dataflow-output-row">
+                        <div class="dataflow-arrow pink" data-animate="fadeIn" data-delay="6">→</div>
+                        <div class="dataflow-box pink-border" data-animate="fadeInUp" data-delay="6">
+                            <div class="dataflow-box-icon">📧</div>
+                            <div class="dataflow-box-title pink">External Services</div>
+                            <div class="dataflow-box-sub">Email & PDF</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-details">
+                <div class="flow-detail-card" data-animate="fadeInUp" data-delay="7">
+                    <div class="flow-detail-header">
+                        <div class="flow-detail-icon" style="background: linear-gradient(135deg, var(--blue), #1d4ed8);">📥</div>
+                        <div class="flow-detail-title" style="color: var(--blue-light);">Request Processing</div>
+                    </div>
+                    <div class="flow-detail-items">
+                        <p>OData V4 protocol</p>
+                        <p>JWT authentication</p>
+                        <p>Request validation</p>
+                        <p>Rate limiting</p>
+                    </div>
+                </div>
+                <div class="flow-detail-card" data-animate="fadeInUp" data-delay="7">
+                    <div class="flow-detail-header">
+                        <div class="flow-detail-icon" style="background: linear-gradient(135deg, var(--purple), #6d28d9);">⚡</div>
+                        <div class="flow-detail-title" style="color: var(--purple-light);">Business Logic</div>
+                    </div>
+                    <div class="flow-detail-items">
+                        <p>Entity validation</p>
+                        <p>Custom actions</p>
+                        <p>Event handlers</p>
+                        <p>Batch processing</p>
+                    </div>
+                </div>
+                <div class="flow-detail-card" data-animate="fadeInUp" data-delay="8">
+                    <div class="flow-detail-header">
+                        <div class="flow-detail-icon" style="background: linear-gradient(135deg, var(--green), #059669);">🧠</div>
+                        <div class="flow-detail-title" style="color: var(--green-light);">AI Processing</div>
+                    </div>
+                    <div class="flow-detail-items">
+                        <p>Pattern recognition</p>
+                        <p>Predictive scoring</p>
+                        <p>Anomaly detection</p>
+                        <p>NLP analysis</p>
+                    </div>
+                </div>
+                <div class="flow-detail-card" data-animate="fadeInUp" data-delay="8">
+                    <div class="flow-detail-header">
+                        <div class="flow-detail-icon" style="background: linear-gradient(135deg, var(--orange), #d97706);">📊</div>
+                        <div class="flow-detail-title" style="color: var(--orange-light);">Data Persistence</div>
+                    </div>
+                    <div class="flow-detail-items">
+                        <p>ACID transactions</p>
+                        <p>In-memory caching</p>
+                        <p>Change tracking</p>
+                        <p>Audit logging</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: AI/ML Architecture -->
+    <section id="aiml" class="section">
+        <div class="section-title">
+            <h2>AI/ML Processing Architecture</h2>
+            <p>Intelligent donor analysis powered by custom machine learning algorithms and predictive analytics</p>
+        </div>
+
+        <div class="aiml-container">
+            <div class="aiml-flow">
+                <div class="aiml-column input">
+                    <div class="aiml-section blue-border" data-animate="fadeInLeft" data-delay="1">
+                        <div class="aiml-section-header blue">📥 INPUT DATA</div>
+                        <div class="aiml-item blue">
+                            <div class="aiml-item-title blue">Donor Profile</div>
+                            <div class="aiml-item-desc">Name, email, phone, status, VIP flag, recurring donor status, classification</div>
+                        </div>
+                        <div class="aiml-item blue">
+                            <div class="aiml-item-title blue">Donation History</div>
+                            <div class="aiml-item-desc">Amount, date, campaign, cause, frequency, payment method</div>
+                        </div>
+                        <div class="aiml-item blue">
+                            <div class="aiml-item-title blue">Global Statistics</div>
+                            <div class="aiml-item-desc">Averages, standard deviation, percentiles, benchmarks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aiml-arrow-container" data-animate="fadeIn" data-delay="2">
+                    <span class="aiml-arrow blue">→</span>
+                </div>
+
+                <div class="aiml-column processing">
+                    <div class="aiml-section green-border" data-animate="fadeInUp" data-delay="2">
+                        <div class="aiml-section-header green">🤖 AI/ML PROCESSING</div>
+                        <div class="aiml-item green">
+                            <div class="aiml-item-title green">1. AI Summary Generator</div>
+                            <div class="aiml-item-desc">Calculates donation statistics, determines donor tier (Diamond/Platinum/Gold/Silver/Bronze), generates engagement score (0-100%), creates personalized insights and recommendations</div>
+                        </div>
+                        <div class="aiml-item purple">
+                            <div class="aiml-item-title purple">2. Donation Prediction Engine</div>
+                            <div class="aiml-item-desc">RFM Analysis (Recency 25pts, Frequency 20pts, Monetary 10pts), weighted scoring model with VIP (5pts), Recurring (15pts), Engagement (15pts), Trend (10pts) factors</div>
+                        </div>
+                        <div class="aiml-item orange">
+                            <div class="aiml-item-title orange">3. Anomaly Detection System</div>
+                            <div class="aiml-item-desc">Z-Score analysis (|Z| > 3 threshold), IQR outlier detection, velocity checks (donations/30 days), pattern recognition (same-day, round numbers)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aiml-arrow-container" data-animate="fadeIn" data-delay="3">
+                    <span class="aiml-arrow pink">→</span>
+                </div>
+
+                <div class="aiml-column output">
+                    <div class="aiml-section pink-border" data-animate="fadeInRight" data-delay="3">
+                        <div class="aiml-section-header pink">📤 OUTPUT</div>
+                        <div class="aiml-item pink">
+                            <div class="aiml-item-title pink">AI Summary Report</div>
+                            <div class="aiml-item-desc">Tier classification, statistics, insights, personalized recommendations</div>
+                        </div>
+                        <div class="aiml-item pink">
+                            <div class="aiml-item-title pink">Prediction Score</div>
+                            <div class="aiml-item-desc">0-100% likelihood score, HIGH/MEDIUM/LOW classification</div>
+                        </div>
+                        <div class="aiml-item pink">
+                            <div class="aiml-item-title pink">Anomaly Report</div>
+                            <div class="aiml-item-desc">Risk assessment, flagged items, compliance alerts</div>
+                        </div>
+                        <div class="aiml-item pink">
+                            <div class="aiml-item-title pink">Next Best Action</div>
+                            <div class="aiml-item-desc">AI-recommended engagement strategy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-metrics">
+                <div class="ai-metric-card green" data-animate="fadeInUp" data-delay="4">
+                    <div class="ai-metric-icon">⏱️</div>
+                    <div class="ai-metric-value green">5 sec</div>
+                    <div class="ai-metric-label">Analysis Time (vs 20 min manual)</div>
+                </div>
+                <div class="ai-metric-card purple" data-animate="fadeInUp" data-delay="4">
+                    <div class="ai-metric-icon">🎯</div>
+                    <div class="ai-metric-value purple">85%</div>
+                    <div class="ai-metric-label">Prediction Accuracy</div>
+                </div>
+                <div class="ai-metric-card orange" data-animate="fadeInUp" data-delay="5">
+                    <div class="ai-metric-icon">🛡️</div>
+                    <div class="ai-metric-value orange">95%</div>
+                    <div class="ai-metric-label">Fraud Detection Rate</div>
+                </div>
+                <div class="ai-metric-card pink" data-animate="fadeInUp" data-delay="5">
+                    <div class="ai-metric-icon">💡</div>
+                    <div class="ai-metric-value pink">100</div>
+                    <div class="ai-metric-label">Engagement Score Points</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Future Roadmap -->
+    <section id="roadmap" class="section">
+        <div class="section-title">
+            <h2>Implementation Roadmap</h2>
+            <p>Strategic phased approach to evolve from rule-based AI to enterprise-grade generative AI platform</p>
+        </div>
+
+        <div class="roadmap-container">
+            <div class="roadmap-timeline">
+                <div class="roadmap-line">
+                    <div class="roadmap-line-progress"></div>
+                </div>
+                <div class="roadmap-points">
+                    <div class="roadmap-point" data-animate="scaleIn" data-delay="1">
+                        <div class="roadmap-dot green">1</div>
+                        <div class="roadmap-date">Q4 2024</div>
+                    </div>
+                    <div class="roadmap-point" data-animate="scaleIn" data-delay="2">
+                        <div class="roadmap-dot blue">2</div>
+                        <div class="roadmap-date">Q1-Q2 2025</div>
+                    </div>
+                    <div class="roadmap-point" data-animate="scaleIn" data-delay="3">
+                        <div class="roadmap-dot purple">3</div>
+                        <div class="roadmap-date">Q3-Q4 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-phases">
+                <div class="roadmap-phase" data-animate="fadeInUp" data-delay="4">
+                    <div class="roadmap-phase-card green-border">
+                        <div class="roadmap-phase-header">
+                            <span class="roadmap-phase-badge green">✅ CURRENT</span>
+                        </div>
+                        <div class="roadmap-phase-title green">Phase 1: Foundation</div>
+                        <div class="roadmap-phase-services">
+                            <p>SAP Build Code</p>
+                            <p>SAP HANA Cloud</p>
+                            <p>SAP Business Application Studio</p>
+                            <p>Rule-based AI/ML</p>
+                        </div>
+                    </div>
+                    <div class="roadmap-deliverables green">
+                        <div class="roadmap-deliverables-title green">✓ Delivered</div>
+                        <p>✓ Core donor management CRUD</p>
+                        <p>✓ AI summary generation</p>
+                        <p>✓ Prediction engine</p>
+                        <p>✓ Anomaly detection</p>
+                        <p>✓ Email & PDF reports</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase" data-animate="fadeInUp" data-delay="5">
+                    <div class="roadmap-phase-card blue-border">
+                        <div class="roadmap-phase-header">
+                            <span class="roadmap-phase-badge blue">🔜 PLANNED</span>
+                        </div>
+                        <div class="roadmap-phase-title blue">Phase 2: Intelligence</div>
+                        <div class="roadmap-phase-services">
+                            <p>SAP AI Launchpad</p>
+                            <p>SAP Build Process Automation</p>
+                            <p>SAP Build Work Zone</p>
+                            <p>Generative AI Integration</p>
+                        </div>
+                    </div>
+                    <div class="roadmap-deliverables blue">
+                        <div class="roadmap-deliverables-title blue">○ Planned</div>
+                        <p>○ GPT-4/Claude integration</p>
+                        <p>○ Natural language summaries</p>
+                        <p>○ Automated workflows</p>
+                        <p>○ RPA bots</p>
+                        <p>○ Unified launchpad</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase" data-animate="fadeInUp" data-delay="6">
+                    <div class="roadmap-phase-card purple-border">
+                        <div class="roadmap-phase-header">
+                            <span class="roadmap-phase-badge purple">📋 FUTURE</span>
+                        </div>
+                        <div class="roadmap-phase-title purple">Phase 3: Scale</div>
+                        <div class="roadmap-phase-services">
+                            <p>SAP Build Apps</p>
+                            <p>Custom ML Models</p>
+                            <p>Advanced Analytics</p>
+                            <p>Mobile Platform</p>
+                        </div>
+                    </div>
+                    <div class="roadmap-deliverables purple">
+                        <div class="roadmap-deliverables-title purple">○ Vision</div>
+                        <p>○ Mobile donor app</p>
+                        <p>○ Donor self-service portal</p>
+                        <p>○ Custom ML models</p>
+                        <p>○ Predictive analytics</p>
+                        <p>○ Team workspaces</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: SAP BTP Services -->
+    <section id="btp" class="section">
+        <div class="section-title">
+            <h2>SAP BTP Services Overview</h2>
+            <p>Comprehensive suite of enterprise-grade services available for current and future implementation</p>
+        </div>
+
+        <div class="btp-container">
+            <div class="btp-grid">
+                <div class="btp-card green" data-animate="fadeInUp" data-delay="1">
+                    <div class="btp-card-header">
+                        <div class="btp-icon green">🛠️</div>
+                        <div class="btp-card-info">
+                            <h3 class="green">SAP Build Code</h3>
+                            <span class="btp-status active">✅ Active • Oct 2025</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>Full-stack development environment</p>
+                        <p>Joule AI-powered coding assistant</p>
+                        <p>One-click cloud deployment</p>
+                        <p>Integrated testing & debugging</p>
+                    </div>
+                    <div class="btp-value green">
+                        <span class="green">💡 60% Faster Development</span>
+                    </div>
+                </div>
+
+                <div class="btp-card orange" data-animate="fadeInUp" data-delay="1">
+                    <div class="btp-card-header">
+                        <div class="btp-icon orange">💾</div>
+                        <div class="btp-card-info">
+                            <h3 class="orange">SAP HANA Cloud</h3>
+                            <span class="btp-status active">✅ Active • Nov 2023</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>In-memory data processing</p>
+                        <p>Real-time analytics engine</p>
+                        <p>Multi-model database support</p>
+                        <p>Built-in ML (PAL/APL)</p>
+                    </div>
+                    <div class="btp-value orange">
+                        <span class="orange">💡 10x Query Performance</span>
+                    </div>
+                </div>
+
+                <div class="btp-card purple" data-animate="fadeInUp" data-delay="2">
+                    <div class="btp-card-header">
+                        <div class="btp-icon purple">🤖</div>
+                        <div class="btp-card-info">
+                            <h3 class="purple">SAP AI Launchpad</h3>
+                            <span class="btp-status available">🔜 Available • Oct 2025</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>Generative AI Hub access</p>
+                        <p>GPT-4, Claude, Gemini models</p>
+                        <p>Custom ML model deployment</p>
+                        <p>MLOps workflow management</p>
+                    </div>
+                    <div class="btp-value purple">
+                        <span class="purple">💡 Natural Language AI</span>
+                    </div>
+                </div>
+
+                <div class="btp-card blue" data-animate="fadeInUp" data-delay="2">
+                    <div class="btp-card-header">
+                        <div class="btp-icon blue">⚡</div>
+                        <div class="btp-card-info">
+                            <h3 class="blue">Process Automation</h3>
+                            <span class="btp-status available">🔜 Available • Nov 2023</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>Visual workflow builder</p>
+                        <p>Business rules engine</p>
+                        <p>RPA bot integration</p>
+                        <p>System connectors</p>
+                    </div>
+                    <div class="btp-value blue">
+                        <span class="blue">💡 90% Task Automation</span>
+                    </div>
+                </div>
+
+                <div class="btp-card pink" data-animate="fadeInUp" data-delay="3">
+                    <div class="btp-card-header">
+                        <div class="btp-icon pink">📱</div>
+                        <div class="btp-card-info">
+                            <h3 class="pink">SAP Build Apps</h3>
+                            <span class="btp-status available">🔜 Available • Sep 2024</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>No-code app development</p>
+                        <p>Mobile & web deployment</p>
+                        <p>Visual logic builder</p>
+                        <p>Native API integration</p>
+                    </div>
+                    <div class="btp-value pink">
+                        <span class="pink">💡 Mobile Donor Access</span>
+                    </div>
+                </div>
+
+                <div class="btp-card cyan" data-animate="fadeInUp" data-delay="3">
+                    <div class="btp-card-header">
+                        <div class="btp-icon cyan">🏠</div>
+                        <div class="btp-card-info">
+                            <h3 class="cyan">Build Work Zone</h3>
+                            <span class="btp-status available">🔜 Available • May 2025</span>
+                        </div>
+                    </div>
+                    <div class="btp-features">
+                        <p>Unified digital workplace</p>
+                        <p>Role-based launchpad</p>
+                        <p>Team collaboration spaces</p>
+                        <p>Dashboard widgets</p>
+                    </div>
+                    <div class="btp-value cyan">
+                        <span class="cyan">💡 Single Entry Point</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btp-summary" data-animate="scaleIn" data-delay="4">
+                <h3>SAP Business Technology Platform</h3>
+                <p>The intelligent enterprise platform that combines database management, analytics, application development, integration, and AI capabilities in one unified environment</p>
+                <div class="btp-summary-stats">
+                    <div class="btp-summary-stat">
+                        <div class="btp-summary-stat-value">6</div>
+                        <div class="btp-summary-stat-label">Services Available</div>
+                    </div>
+                    <div class="btp-summary-stat">
+                        <div class="btp-summary-stat-value">3</div>
+                        <div class="btp-summary-stat-label">Currently Active</div>
+                    </div>
+                    <div class="btp-summary-stat">
+                        <div class="btp-summary-stat-value">280%</div>
+                        <div class="btp-summary-stat-label">Projected ROI</div>
+                    </div>
+                    <div class="btp-summary-stat">
+                        <div class="btp-summary-stat-value">∞</div>
+                        <div class="btp-summary-stat-label">Scalability</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Development & DevOps -->
+    <section id="devops" class="section">
+        <div class="section-title">
+            <h2>What We Built & How</h2>
+            <p>Complete development journey from database design to AI-powered features using SAP Build Code, SAP Cloud SDK for AI, SAP Fiori, and SAC Analytics</p>
+        </div>
+
+        <div class="devops-container" style="max-width: 1200px; margin: 0 auto;">
+            
+            <!-- STEP 1: Database Design -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--orange-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--orange); padding: 8px 16px; border-radius: 8px; font-weight: 800;">STEP 1</span>
+                    <span style="background: var(--orange); padding: 8px 12px; border-radius: 8px;">💾</span>
+                    Database Design with SAP Build Code
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="1" style="background: var(--bg-card); border: 2px solid var(--orange); border-radius: 16px; padding: 28px;">
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Using <strong style="color: var(--orange-light);">SAP Build Code</strong> and the <strong style="color: var(--orange-light);">CAP Framework</strong>, we designed and created the core database entities stored in <strong style="color: var(--orange-light);">SAP HANA Cloud</strong>:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+                        <!-- Donors Table -->
+                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 2px solid var(--orange); border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">👤</div>
+                                <div>
+                                    <div style="color: var(--orange-light); font-size: 16px; font-weight: 700;">Donors</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Primary Entity</div>
+                                </div>
+                            </div>
+                            <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: 'Consolas', monospace; font-size: 11px;">
+                                <div style="color: var(--blue-light);">ID</div>
+                                <div style="color: var(--green-light);">name, email, phone</div>
+                                <div style="color: var(--purple-light);">status, classification</div>
+                                <div style="color: var(--pink-light);">isVIP, isRecurring</div>
+                                <div style="color: var(--cyan-light);">summary, predictionResult</div>
+                                <div style="color: var(--orange-light);">anomalyResult</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Donations Table -->
+                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05)); border: 2px solid var(--blue); border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--blue), #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">💰</div>
+                                <div>
+                                    <div style="color: var(--blue-light); font-size: 16px; font-weight: 700;">Donations</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Transaction Entity</div>
+                                </div>
+                            </div>
+                            <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: 'Consolas', monospace; font-size: 11px;">
+                                <div style="color: var(--blue-light);">ID</div>
+                                <div style="color: var(--green-light);">amount, currency</div>
+                                <div style="color: var(--purple-light);">donationDate</div>
+                                <div style="color: var(--pink-light);">campaign, cause</div>
+                                <div style="color: var(--cyan-light);">paymentMethod</div>
+                                <div style="color: var(--orange-light);">donor_ID (FK)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- DonorTypes Table -->
+                        <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05)); border: 2px solid var(--purple); border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--purple), #6d28d9); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🏷️</div>
+                                <div>
+                                    <div style="color: var(--purple-light); font-size: 16px; font-weight: 700;">DonorTypes</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Classification Entity</div>
+                                </div>
+                            </div>
+                            <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: 'Consolas', monospace; font-size: 11px;">
+                                <div style="color: var(--blue-light);">ID</div>
+                                <div style="color: var(--green-light);">code</div>
+                                <div style="color: var(--purple-light);">name</div>
+                                <div style="color: var(--pink-light);">description</div>
+                                <div style="color: var(--text-muted);">// Individual, Corporate</div>
+                                <div style="color: var(--text-muted);">// Foundation, etc.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CDS Code Example -->
+                    <div style="background: #0d1117; border-radius: 12px; padding: 20px; font-family: 'Consolas', monospace;">
+                        <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">// schema.cds - Database Schema Definition</div>
+                        <div style="color: var(--purple-light); font-size: 13px;">namespace <span style="color: var(--green-light);">akme.donor;</span></div>
+                        <div style="color: var(--blue-light); font-size: 13px; margin-top: 8px;">entity <span style="color: var(--orange-light);">Donors</span> {</div>
+                        <div style="color: var(--text-secondary); font-size: 12px; padding-left: 20px;">key ID : UUID;</div>
+                        <div style="color: var(--text-secondary); font-size: 12px; padding-left: 20px;">name : String(100);</div>
+                        <div style="color: var(--text-secondary); font-size: 12px; padding-left: 20px;">donations : Association to many <span style="color: var(--blue-light);">Donations</span> on donations.donor = $self;</div>
+                        <div style="color: var(--cyan-light); font-size: 12px; padding-left: 20px;">summary : LargeString; <span style="color: var(--text-muted);">// AI Generated</span></div>
+                        <div style="color: var(--blue-light); font-size: 13px;">}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: CRUD Operations with Fiori -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--blue-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--blue); padding: 8px 16px; border-radius: 8px; font-weight: 800;">STEP 2</span>
+                    <span style="background: var(--blue); padding: 8px 12px; border-radius: 8px;">📱</span>
+                    CRUD Operations with SAP Fiori UI
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="2" style="background: var(--bg-card); border: 2px solid var(--blue); border-radius: 16px; padding: 28px;">
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Using <strong style="color: var(--blue-light);">SAP Fiori Elements</strong>, we created a complete user interface with List Report and Object Page patterns for all CRUD operations:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+                        <!-- Add -->
+                        <div style="background: linear-gradient(135deg, var(--green), #059669); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">➕</div>
+                            <div style="color: white; font-size: 18px; font-weight: 700;">ADD</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">Create New Donor</div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; margin-top: 12px;">
+                                <div style="color: white; font-size: 10px;">Modal Form</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 9px;">Validation</div>
+                            </div>
+                        </div>
+                        
+                        <!-- View -->
+                        <div style="background: linear-gradient(135deg, var(--blue), #1d4ed8); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">👁️</div>
+                            <div style="color: white; font-size: 18px; font-weight: 700;">VIEW</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">Donor Details</div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; margin-top: 12px;">
+                                <div style="color: white; font-size: 10px;">Object Page</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 9px;">6 Tabs</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Edit -->
+                        <div style="background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">✏️</div>
+                            <div style="color: white; font-size: 18px; font-weight: 700;">EDIT</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">Update Donor</div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; margin-top: 12px;">
+                                <div style="color: white; font-size: 10px;">Inline Edit</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 9px;">Draft Mode</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delete -->
+                        <div style="background: linear-gradient(135deg, var(--pink), #be185d); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">🗑️</div>
+                            <div style="color: white; font-size: 18px; font-weight: 700;">DELETE</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">Remove Donor</div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; margin-top: 12px;">
+                                <div style="color: white; font-size: 10px;">Confirmation</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 9px;">Soft Delete</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fiori UI Features -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--blue); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--blue-light); font-size: 14px; font-weight: 600; margin-bottom: 12px;">📋 List Report Page</div>
+                            <ul style="color: var(--text-secondary); font-size: 12px; padding-left: 16px; margin: 0;">
+                                <li style="margin-bottom: 6px;">Smart Filter Bar with multiple filters</li>
+                                <li style="margin-bottom: 6px;">Responsive Table with sorting</li>
+                                <li style="margin-bottom: 6px;">Quick filters by Type, Status, Classification</li>
+                                <li style="margin-bottom: 6px;">Search functionality</li>
+                                <li>Export to Excel</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--blue); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--blue-light); font-size: 14px; font-weight: 600; margin-bottom: 12px;">📄 Object Page (6 Tabs)</div>
+                            <ul style="color: var(--text-secondary); font-size: 12px; padding-left: 16px; margin: 0;">
+                                <li style="margin-bottom: 6px;"><strong>Profile:</strong> Donor information</li>
+                                <li style="margin-bottom: 6px;"><strong>AI Summary:</strong> AI-generated insights</li>
+                                <li style="margin-bottom: 6px;"><strong>Prediction:</strong> Donation likelihood</li>
+                                <li style="margin-bottom: 6px;"><strong>Anomaly:</strong> Fraud detection results</li>
+                                <li style="margin-bottom: 6px;"><strong>History:</strong> All donations</li>
+                                <li><strong>Audit:</strong> Change tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: AI Integration -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--green-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--green); padding: 8px 16px; border-radius: 8px; font-weight: 800;">STEP 3</span>
+                    <span style="background: var(--green); padding: 8px 12px; border-radius: 8px;">🤖</span>
+                    AI Integration with SAP Cloud SDK for AI (JavaScript)
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="3" style="background: var(--bg-card); border: 2px solid var(--green); border-radius: 16px; padding: 28px;">
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Using <strong style="color: var(--green-light);">SAP Cloud SDK for AI (JavaScript)</strong>, we integrated intelligent features that analyze donor data and provide actionable insights:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        
+                        <!-- AI Feature 1: Automated Summaries -->
+                        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05)); border: 2px solid var(--green); border-radius: 12px; padding: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--green), #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📝</div>
+                                <div>
+                                    <div style="color: var(--green-light); font-size: 16px; font-weight: 700;">AI Summary Generator</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Automated Donor Notes</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">When viewing a donor profile, the AI generates intelligent summaries:</p>
+                            <div style="background: #0d1117; border-radius: 10px; padding: 16px; border-left: 4px solid var(--green);">
+                                <div style="color: var(--green-light); font-size: 12px; font-style: italic; line-height: 1.6;">
+                                    "This donor has contributed <strong>500 Thousand US Dollars</strong> across <strong>3 years</strong>, mainly during <strong>festival seasons</strong>. Last donation was <strong>6 months ago</strong>. Engagement score: <strong>78%</strong>. Tier: <strong>Diamond</strong>."
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;">
+                                <span style="background: rgba(16, 185, 129, 0.2); color: var(--green-light); padding: 4px 10px; border-radius: 6px; font-size: 10px;">Total Donations</span>
+                                <span style="background: rgba(16, 185, 129, 0.2); color: var(--green-light); padding: 4px 10px; border-radius: 6px; font-size: 10px;">Giving Patterns</span>
+                                <span style="background: rgba(16, 185, 129, 0.2); color: var(--green-light); padding: 4px 10px; border-radius: 6px; font-size: 10px;">Engagement Score</span>
+                                <span style="background: rgba(16, 185, 129, 0.2); color: var(--green-light); padding: 4px 10px; border-radius: 6px; font-size: 10px;">Donor Tier</span>
+                            </div>
+                        </div>
+
+                        <!-- AI Feature 2: Prediction -->
+                        <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05)); border: 2px solid var(--purple); border-radius: 12px; padding: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--purple), #6d28d9); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🎯</div>
+                                <div>
+                                    <div style="color: var(--purple-light); font-size: 16px; font-weight: 700;">Donation Likelihood Prediction</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Next 6 Months Forecast</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">Predicts: <em>"Will this donor most likely donate again in the next 6 months?"</em></p>
+                            <div style="background: #0d1117; border-radius: 10px; padding: 16px;">
+                                <div style="color: var(--text-muted); font-size: 11px; margin-bottom: 8px;">// Scoring Model (100 points)</div>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                    <div style="color: var(--purple-light); font-size: 11px;">📅 Recency: <strong>25 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">🔄 Frequency: <strong>20 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">♻️ Recurring: <strong>15 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">💫 Engagement: <strong>15 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">💰 Amount: <strong>10 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">📈 Trend: <strong>10 pts</strong></div>
+                                    <div style="color: var(--purple-light); font-size: 11px;">⭐ VIP Bonus: <strong>5 pts</strong></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 16px;">
+                                <span style="background: rgba(16, 185, 129, 0.3); color: var(--green-light); padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600;">HIGH (70-100)</span>
+                                <span style="background: rgba(245, 158, 11, 0.3); color: var(--orange-light); padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600;">MEDIUM (40-69)</span>
+                                <span style="background: rgba(236, 72, 153, 0.3); color: var(--pink-light); padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600;">LOW (0-39)</span>
+                            </div>
+                        </div>
+
+                        <!-- AI Feature 3: Anomaly Detection -->
+                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 2px solid var(--orange); border-radius: 12px; padding: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🚨</div>
+                                <div>
+                                    <div style="color: var(--orange-light); font-size: 16px; font-weight: 700;">Anomaly Detection</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Fraud / Unusual Activity Flagging</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">AI/ML model detects suspicious patterns:</p>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 12px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 12px; font-weight: 600;">💰 Unusually Large Donations</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Z-Score > 3 standard deviations</div>
+                                </div>
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 12px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 12px; font-weight: 600;">⚡ High Frequency Spikes</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Velocity check: >5 donations in 30 days</div>
+                                </div>
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 12px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 12px; font-weight: 600;">🔍 Pattern Recognition</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Round numbers, same-day multiple donations</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Feature 4: Engagement Recommendations -->
+                        <div style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.05)); border: 2px solid var(--pink); border-radius: 12px; padding: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--pink), #be185d); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">💡</div>
+                                <div>
+                                    <div style="color: var(--pink-light); font-size: 16px; font-weight: 700;">Engagement Recommendations</div>
+                                    <div style="color: var(--text-muted); font-size: 11px;">Next Best Action Suggestions</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">AI suggests the best action for each donor:</p>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                                <div style="background: rgba(236, 72, 153, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">📧</div>
+                                    <div style="color: var(--pink-light); font-size: 11px; font-weight: 600;">Send Thank You Email</div>
+                                </div>
+                                <div style="background: rgba(236, 72, 153, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">🎉</div>
+                                    <div style="color: var(--pink-light); font-size: 11px; font-weight: 600;">Invite to Annual Gala</div>
+                                </div>
+                                <div style="background: rgba(236, 72, 153, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">🔔</div>
+                                    <div style="color: var(--pink-light); font-size: 11px; font-weight: 600;">Remind for Renewal</div>
+                                </div>
+                                <div style="background: rgba(236, 72, 153, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">🤝</div>
+                                    <div style="color: var(--pink-light); font-size: 11px; font-weight: 600;">Schedule VIP Meeting</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SDK Code Example -->
+                    <div style="background: #0d1117; border-radius: 12px; padding: 20px; margin-top: 24px; font-family: 'Consolas', monospace;">
+                        <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">// Using SAP Cloud SDK for AI (JavaScript)</div>
+                        <div style="color: var(--purple-light); font-size: 12px;">import</div><span style="color: var(--text-secondary); font-size: 12px;"> { OrchestrationClient } </span><span style="color: var(--purple-light); font-size: 12px;">from</span><span style="color: var(--green-light); font-size: 12px;"> '@sap-ai-sdk/orchestration';</span>
+                        <div style="color: var(--purple-light); font-size: 12px; margin-top: 8px;">import</div><span style="color: var(--text-secondary); font-size: 12px;"> { AiApiClient } </span><span style="color: var(--purple-light); font-size: 12px;">from</span><span style="color: var(--green-light); font-size: 12px;"> '@sap-ai-sdk/ai-api';</span>
+                        <div style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">// Generate AI Summary for donor</div>
+                        <div style="color: var(--blue-light); font-size: 12px;">const</div><span style="color: var(--text-secondary); font-size: 12px;"> summary = </span><span style="color: var(--purple-light); font-size: 12px;">await</span><span style="color: var(--orange-light); font-size: 12px;"> generateDonorSummary</span><span style="color: var(--text-secondary); font-size: 12px;">(donorId, donations);</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: SAC Dashboard -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--cyan-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--cyan); padding: 8px 16px; border-radius: 8px; font-weight: 800;">STEP 4</span>
+                    <span style="background: var(--cyan); padding: 8px 12px; border-radius: 8px;">📊</span>
+                    SAP Analytics Cloud (SAC) Dashboards
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="4" style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 16px; padding: 28px;">
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Using <strong style="color: var(--cyan-light);">SAP Analytics Cloud</strong> connected to HANA Cloud for real-time executive dashboards and donor analytics:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+                        <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 12px;">📈</div>
+                            <div style="color: var(--cyan-light); font-size: 15px; font-weight: 700;">Donation Trends</div>
+                            <div style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">Monthly/Yearly analysis, growth tracking, seasonal patterns</div>
+                        </div>
+                        <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 12px;">🎯</div>
+                            <div style="color: var(--cyan-light); font-size: 15px; font-weight: 700;">Campaign Performance</div>
+                            <div style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">ROI by campaign, conversion rates, donor acquisition</div>
+                        </div>
+                        <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; text-align: center;">
+                            <div style="font-size: 36px; margin-bottom: 12px;">👥</div>
+                            <div style="color: var(--cyan-light); font-size: 15px; font-weight: 700;">Donor Segmentation</div>
+                            <div style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">Tier distribution, retention rates, lifetime value</div>
+                        </div>
+                    </div>
+                    
+                    <!-- SAC Connection -->
+                    <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05)); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="color: var(--cyan-light); font-size: 14px; font-weight: 600; margin-bottom: 8px;">🔗 Live Connection</div>
+                            <div style="color: var(--text-secondary); font-size: 12px;">SAC connects directly to HANA Cloud for real-time data with no data duplication</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">💾</div>
+                            <div style="font-size: 24px; color: var(--cyan-light);">→</div>
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--cyan), #0891b2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📊</div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px; text-align: right;">
+                            <div style="color: var(--cyan-light); font-size: 14px; font-weight: 600; margin-bottom: 8px;">📱 Mobile Access</div>
+                            <div style="color: var(--text-secondary); font-size: 12px;">Executives can view dashboards on any device, anywhere</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Git Version Control -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--orange-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--orange); padding: 8px 12px; border-radius: 8px;">📂</span>
+                    Git Version Control & Repository Management
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="2" style="background: var(--bg-card); border: 2px solid var(--orange); border-radius: 16px; padding: 28px;">
+                    <div style="display: flex; gap: 32px; flex-wrap: wrap;">
+                        <!-- Git Flow Diagram -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: var(--orange-light); font-size: 16px; margin-bottom: 16px;">🔄 Git Branching Strategy</h4>
+                            <div style="background: #0d1117; border-radius: 12px; padding: 20px; font-family: 'Consolas', 'Monaco', monospace;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 16px; height: 16px; background: var(--green); border-radius: 50%;"></div>
+                                    <div style="flex: 1; height: 3px; background: var(--green);"></div>
+                                    <span style="color: var(--green-light); font-size: 12px; font-weight: 600;">main</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; margin-left: 40px;">
+                                    <div style="width: 16px; height: 16px; background: var(--blue); border-radius: 50%;"></div>
+                                    <div style="flex: 1; height: 3px; background: var(--blue);"></div>
+                                    <span style="color: var(--blue-light); font-size: 12px; font-weight: 600;">develop</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; margin-left: 80px;">
+                                    <div style="width: 16px; height: 16px; background: var(--purple); border-radius: 50%;"></div>
+                                    <div style="flex: 1; height: 3px; background: var(--purple); border-style: dashed;"></div>
+                                    <span style="color: var(--purple-light); font-size: 12px; font-weight: 600;">feature/*</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-left: 80px;">
+                                    <div style="width: 16px; height: 16px; background: var(--pink); border-radius: 50%;"></div>
+                                    <div style="flex: 1; height: 3px; background: var(--pink); border-style: dashed;"></div>
+                                    <span style="color: var(--pink-light); font-size: 12px; font-weight: 600;">hotfix/*</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Git Benefits -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="color: var(--orange-light); font-size: 16px; margin-bottom: 16px;">✨ Version Control Benefits</h4>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 14px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 13px; font-weight: 600;">📜 Complete History</div>
+                                    <div style="color: var(--text-muted); font-size: 12px;">Track all changes with full audit trail</div>
+                                </div>
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 14px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 13px; font-weight: 600;">🔄 Easy Rollback</div>
+                                    <div style="color: var(--text-muted); font-size: 12px;">Revert to any previous version instantly</div>
+                                </div>
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 14px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 13px; font-weight: 600;">👥 Team Collaboration</div>
+                                    <div style="color: var(--text-muted); font-size: 12px;">Multiple developers work simultaneously</div>
+                                </div>
+                                <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--orange); padding: 14px; border-radius: 0 8px 8px 0;">
+                                    <div style="color: var(--orange-light); font-size: 13px; font-weight: 600;">🏷️ Release Tags</div>
+                                    <div style="color: var(--text-muted); font-size: 12px;">Mark stable versions for deployment</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Git Commands -->
+                    <div style="margin-top: 24px; background: #0d1117; border-radius: 12px; padding: 20px; font-family: 'Consolas', 'Monaco', monospace;">
+                        <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">// Common Git Workflow in SAP Build Code</div>
+                        <div style="color: var(--green-light); font-size: 13px; margin-bottom: 8px;">$ git checkout -b feature/ai-summary-enhancement</div>
+                        <div style="color: var(--blue-light); font-size: 13px; margin-bottom: 8px;">$ git add .</div>
+                        <div style="color: var(--purple-light); font-size: 13px; margin-bottom: 8px;">$ git commit -m "feat: Add AI summary generator for donors"</div>
+                        <div style="color: var(--orange-light); font-size: 13px; margin-bottom: 8px;">$ git push origin feature/ai-summary-enhancement</div>
+                        <div style="color: var(--pink-light); font-size: 13px;">$ git tag -a v1.2.0 -m "Release: AI Summary Feature"</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Development Landscape -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--purple-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--purple); padding: 8px 12px; border-radius: 8px;">🌐</span>
+                    Development Landscape & Environments
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="3" style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 16px; padding: 28px;">
+                    <!-- Environment Pipeline -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; flex-wrap: wrap;">
+                        <!-- DEV -->
+                        <div style="flex: 1; min-width: 180px; text-align: center;" data-animate="scaleIn" data-delay="3">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--green), #059669); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);">🔧</div>
+                            <div style="background: var(--green); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 8px;">DEVELOPMENT</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Local & Cloud Dev</div>
+                            <div style="color: var(--green-light); font-size: 12px; margin-top: 8px;">✅ Active</div>
+                        </div>
+                        
+                        <div style="font-size: 32px; color: var(--purple-light);">→</div>
+                        
+                        <!-- QA -->
+                        <div style="flex: 1; min-width: 180px; text-align: center;" data-animate="scaleIn" data-delay="4">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--blue), #1d4ed8); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);">🧪</div>
+                            <div style="background: var(--blue); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 8px;">QA / TESTING</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Quality Assurance</div>
+                            <div style="color: var(--blue-light); font-size: 12px; margin-top: 8px;">✅ Active</div>
+                        </div>
+                        
+                        <div style="font-size: 32px; color: var(--purple-light);">→</div>
+                        
+                        <!-- STAGING -->
+                        <div style="flex: 1; min-width: 180px; text-align: center;" data-animate="scaleIn" data-delay="5">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);">🎭</div>
+                            <div style="background: var(--orange); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 8px;">STAGING</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Pre-Production</div>
+                            <div style="color: var(--orange-light); font-size: 12px; margin-top: 8px;">✅ Active</div>
+                        </div>
+                        
+                        <div style="font-size: 32px; color: var(--purple-light);">→</div>
+                        
+                        <!-- PRODUCTION -->
+                        <div style="flex: 1; min-width: 180px; text-align: center;" data-animate="scaleIn" data-delay="6">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--pink), #be185d); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);">🚀</div>
+                            <div style="background: var(--pink); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 8px;">PRODUCTION</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Live Environment</div>
+                            <div style="color: var(--pink-light); font-size: 12px; margin-top: 8px;">✅ Active</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Environment Details -->
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--green-light); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DEV Environment</div>
+                            <div style="color: var(--text-muted); font-size: 11px; line-height: 1.6;">
+                                • SAP Build Code IDE<br>
+                                • Local HANA instance<br>
+                                • Feature branches<br>
+                                • Hot reload enabled
+                            </div>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--blue); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--blue-light); font-size: 13px; font-weight: 600; margin-bottom: 8px;">QA Environment</div>
+                            <div style="color: var(--text-muted); font-size: 11px; line-height: 1.6;">
+                                • Automated testing<br>
+                                • Integration tests<br>
+                                • Performance tests<br>
+                                • Security scans
+                            </div>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--orange); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--orange-light); font-size: 13px; font-weight: 600; margin-bottom: 8px;">Staging Environment</div>
+                            <div style="color: var(--text-muted); font-size: 11px; line-height: 1.6;">
+                                • Production mirror<br>
+                                • UAT testing<br>
+                                • Final validation<br>
+                                • Release candidate
+                            </div>
+                        </div>
+                        <div style="background: rgba(236, 72, 153, 0.1); border: 1px solid var(--pink); border-radius: 10px; padding: 16px;">
+                            <div style="color: var(--pink-light); font-size: 13px; font-weight: 600; margin-bottom: 8px;">Production Environment</div>
+                            <div style="color: var(--text-muted); font-size: 11px; line-height: 1.6;">
+                                • Cloud Foundry<br>
+                                • HANA Cloud<br>
+                                • 99.9% SLA<br>
+                                • Auto-scaling
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CI/CD Pipeline -->
+            <div class="devops-section" style="margin-bottom: 40px;">
+                <h3 style="color: var(--cyan-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--cyan); padding: 8px 12px; border-radius: 8px;">⚡</span>
+                    CI/CD Pipeline & Automation
+                </h3>
+                
+                <div class="devops-card" data-animate="fadeInUp" data-delay="7" style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 16px; padding: 28px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 120px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--green), #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">📝</div>
+                            <div>
+                                <div style="color: var(--green-light); font-size: 12px; font-weight: 600;">Code</div>
+                                <div style="color: var(--text-muted); font-size: 10px;">Push</div>
+                            </div>
+                        </div>
+                        <div style="color: var(--cyan-light); font-size: 20px;">→</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 120px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--blue), #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🔨</div>
+                            <div>
+                                <div style="color: var(--blue-light); font-size: 12px; font-weight: 600;">Build</div>
+                                <div style="color: var(--text-muted); font-size: 10px;">Compile</div>
+                            </div>
+                        </div>
+                        <div style="color: var(--cyan-light); font-size: 20px;">→</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 120px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--purple), #6d28d9); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🧪</div>
+                            <div>
+                                <div style="color: var(--purple-light); font-size: 12px; font-weight: 600;">Test</div>
+                                <div style="color: var(--text-muted); font-size: 10px;">Validate</div>
+                            </div>
+                        </div>
+                        <div style="color: var(--cyan-light); font-size: 20px;">→</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 120px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--orange), #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">📦</div>
+                            <div>
+                                <div style="color: var(--orange-light); font-size: 12px; font-weight: 600;">Package</div>
+                                <div style="color: var(--text-muted); font-size: 10px;">MTA Build</div>
+                            </div>
+                        </div>
+                        <div style="color: var(--cyan-light); font-size: 20px;">→</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 120px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--pink), #be185d); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🚀</div>
+                            <div>
+                                <div style="color: var(--pink-light); font-size: 12px; font-weight: 600;">Deploy</div>
+                                <div style="color: var(--text-muted); font-size: 10px;">Cloud Foundry</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="background: rgba(6, 182, 212, 0.1); border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">⏱️</div>
+                            <div style="color: var(--cyan-light); font-size: 24px; font-weight: 800;">~15 min</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Build to Deploy</div>
+                        </div>
+                        <div style="background: rgba(6, 182, 212, 0.1); border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">✅</div>
+                            <div style="color: var(--cyan-light); font-size: 24px; font-weight: 800;">100%</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Automated Tests</div>
+                        </div>
+                        <div style="background: rgba(6, 182, 212, 0.1); border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">🔄</div>
+                            <div style="color: var(--cyan-light); font-size: 24px; font-weight: 800;">Zero</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Downtime Deploy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Development Plans -->
+            <div class="devops-section">
+                <h3 style="color: var(--pink-light); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: var(--pink); padding: 8px 12px; border-radius: 8px;">🔮</span>
+                    Future Development Plans
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div class="devops-card" data-animate="fadeInUp" data-delay="8" style="background: var(--bg-card); border: 2px solid var(--green); border-radius: 16px; padding: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--green), #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;">🤖</div>
+                            <div>
+                                <div style="color: var(--green-light); font-size: 14px; font-weight: 700;">AI Enhancement</div>
+                                <div style="color: var(--text-muted); font-size: 11px;">Q1 2025</div>
+                            </div>
+                        </div>
+                        <ul style="color: var(--text-secondary); font-size: 12px; padding-left: 16px; margin: 0;">
+                            <li style="margin-bottom: 6px;">Integrate SAP AI Launchpad</li>
+                            <li style="margin-bottom: 6px;">GPT-4/Claude for summaries</li>
+                            <li style="margin-bottom: 6px;">Natural language queries</li>
+                            <li>Custom ML model training</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="devops-card" data-animate="fadeInUp" data-delay="8" style="background: var(--bg-card); border: 2px solid var(--blue); border-radius: 16px; padding: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--blue), #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;">⚡</div>
+                            <div>
+                                <div style="color: var(--blue-light); font-size: 14px; font-weight: 700;">Automation</div>
+                                <div style="color: var(--text-muted); font-size: 11px;">Q2 2025</div>
+                            </div>
+                        </div>
+                        <ul style="color: var(--text-secondary); font-size: 12px; padding-left: 16px; margin: 0;">
+                            <li style="margin-bottom: 6px;">Process Automation workflows</li>
+                            <li style="margin-bottom: 6px;">RPA bots for data entry</li>
+                            <li style="margin-bottom: 6px;">Automated thank-you emails</li>
+                            <li>Re-engagement campaigns</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="devops-card" data-animate="fadeInUp" data-delay="9" style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 16px; padding: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--purple), #6d28d9); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📱</div>
+                            <div>
+                                <div style="color: var(--purple-light); font-size: 14px; font-weight: 700;">Mobile & Portal</div>
+                                <div style="color: var(--text-muted); font-size: 11px;">Q3-Q4 2025</div>
+                            </div>
+                        </div>
+                        <ul style="color: var(--text-secondary); font-size: 12px; padding-left: 16px; margin: 0;">
+                            <li style="margin-bottom: 6px;">SAP Build Apps mobile</li>
+                            <li style="margin-bottom: 6px;">Donor self-service portal</li>
+                            <li style="margin-bottom: 6px;">Work Zone launchpad</li>
+                            <li>Team collaboration spaces</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div style="background: linear-gradient(135deg, #0a2540, #1e3a5f); border: 3px solid var(--sap-blue); border-radius: 20px; padding: 32px; text-align: center; margin-top: 40px; position: relative; overflow: hidden;" data-animate="scaleIn" data-delay="10">
+                <div style="position: absolute; top: -100%; left: -100%; width: 300%; height: 300%; background: radial-gradient(circle, rgba(0, 112, 242, 0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite;"></div>
+                <h3 style="font-size: 24px; color: var(--sap-blue); margin-bottom: 12px; position: relative;">Development Excellence</h3>
+                <p style="color: var(--text-secondary); font-size: 14px; max-width: 600px; margin: 0 auto 24px; position: relative;">Enterprise-grade development practices ensuring quality, reliability, and continuous improvement</p>
+                <div style="display: flex; justify-content: center; gap: 48px; position: relative; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--green-light), var(--cyan-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Environments</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--blue-light), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Git</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Version Control</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--orange-light), var(--pink-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">SAC</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Analytics Cloud</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--cyan-light), var(--green-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">CI/CD</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Automation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Akme Foundation - Donor Management System v1.0 | Powered by SAP Business Technology Platform | December 2024</p>
+    </footer>
+
+    <script>
+        // Navigation
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sectionId = btn.dataset.section;
+                
+                // Update nav buttons
+                navButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update sections
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Trigger animations for the new section
+                animateSection(sectionId);
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Animation Observer
+        function animateSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const animatedElements = section.querySelectorAll('[data-animate]');
+            
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                
+                const animation = el.dataset.animate;
+                const delay = el.dataset.delay || 0;
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.classList.add(`animate-${animation}`);
+                }, delay * 150);
+            });
+        }
+
+        // Initial animation for overview section
+        document.addEventListener('DOMContentLoaded', () => {
+            animateSection('overview');
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const animation = el.dataset.animate;
+                    const delay = el.dataset.delay || 0;
+                    
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.classList.add(`animate-${animation}`);
+                    }, delay * 150);
+                    
+                    observer.unobserve(el);
+                }
+            });
+        }, observerOptions);
+
+        // Add hover effects to cards
+        document.querySelectorAll('.card, .btp-card, .benefit-card, .capability-card, .flow-detail-card, .ai-metric-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add click animation to arch layers
+        document.querySelectorAll('.arch-layer').forEach(layer => {
+            layer.addEventListener('click', function() {
+                this.classList.add('animate-pulse');
+                setTimeout(() => {
+                    this.classList.remove('animate-pulse');
+                }, 2000);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const activeIndex = Array.from(navButtons).findIndex(btn => btn.classList.contains('active'));
+            
+            if (e.key === 'ArrowRight' && activeIndex < navButtons.length - 1) {
+                navButtons[activeIndex + 1].click();
+            } else if (e.key === 'ArrowLeft' && activeIndex > 0) {
+                navButtons[activeIndex - 1].click();
+            }
+        });
+
+        // Add subtle parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.header');
+            if (header) {
+                header.style.backgroundPositionY = `${scrolled * 0.3}px`;
+            }
+        });
+
+        console.log('SAP Donor Management System - Architecture Diagrams Loaded');
+        console.log('Use arrow keys (← →) to navigate between sections');
+    </script>
+</body>
+</html>
