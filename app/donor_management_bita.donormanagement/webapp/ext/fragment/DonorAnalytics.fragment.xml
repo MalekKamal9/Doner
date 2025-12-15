@@ -1,0 +1,53 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:cards="sap.f.cards">
+    
+    <VBox id="analyticsMainContainer" class="sapUiSmallMargin">
+        
+        <!-- DEBUG BUTTON -->
+        <HBox id="analyticsDebugBox" justifyContent="End" class="sapUiTinyMarginBottom">
+            <Button id="analyticsRefreshBtn" 
+                    text="🔄 Refresh Charts" 
+                    press=".extension.donormanagementbita.donormanagement.ext.controller.ObjectPageExt.onRefreshCharts"
+                    type="Emphasized"/>
+        </HBox>
+        
+        <!-- CHARTS ROW -->
+        <l:Grid id="analyticsChartsGrid" defaultSpan="L6 M12 S12" class="sapUiSmallMarginBottom">
+            
+            <!-- Donation Breakdown Chart -->
+            <f:Card id="analyticsBreakdownCard" class="chartCard">
+                <f:header>
+                    <cards:Header id="analyticsBreakdownHeader" title="💰 Donation Breakdown" />
+                </f:header>
+                <f:content>
+                    <VBox id="analyticsBreakdownContainer" class="chartContainer">
+                        <core:HTML id="analyticsBreakdownChart" 
+                            content="&lt;div class='chartCanvas' style='min-height: 300px; padding: 20px; text-align: center; color: #999;'&gt;Click 'Refresh Charts' to load data&lt;/div&gt;"
+                            preferDOM="false"/>
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+            <!-- Donation Timeline Chart -->
+            <f:Card id="analyticsTimelineCard" class="chartCard">
+                <f:header>
+                    <cards:Header id="analyticsTimelineHeader" title="📈 Donation Timeline" />
+                </f:header>
+                <f:content>
+                    <VBox id="analyticsTimelineContainer" class="chartContainer">
+                        <core:HTML id="analyticsTimelineChart" 
+                            content="&lt;div class='chartCanvas' style='min-height: 300px; padding: 20px; text-align: center; color: #999;'&gt;Click 'Refresh Charts' to load data&lt;/div&gt;"
+                            preferDOM="false"/>
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+        </l:Grid>
+        
+    </VBox>
+    
+</core:FragmentDefinition>

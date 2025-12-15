@@ -36,13 +36,21 @@ sap.ui.define([
             }
         },
 
+        // ═══════════════════════════════════════════════════════════════
+        // TAB CHANGE LISTENER
+        // ═══════════════════════════════════════════════════════════════
+        
         _setupTabChangeListener: function() {
             var that = this;
             var oView = this.base.getView();
             var oObjectPage = oView.byId("fe::ObjectPage");
             
             if (oObjectPage) {
+                console.log("📌 [TAB] Found ObjectPage, attaching section change listener");
                 oObjectPage.attachSectionChange(function(oEvent) {
+                    var oSection = oEvent.getParameter("section");
+                    console.log("📌 [TAB] Section changed:", oSection ? oSection.getId() : "unknown");
+                    
                     setTimeout(function() {
                         that._tryInitializeCharts();
                     }, 800);
@@ -72,8 +80,13 @@ sap.ui.define([
             });
             
             this._mutationObserver = observer;
+            console.log("👁️ [OBSERVER] MutationObserver active");
         },
 
+        // ═══════════════════════════════════════════════════════════════
+        // PUBLIC METHOD - Button press handler
+        // ═══════════════════════════════════════════════════════════════
+        
         onRefreshCharts: function() {
             console.log("🔄 [MANUAL] Manual refresh triggered");
             this._chartsInitialized = false;
@@ -81,15 +94,22 @@ sap.ui.define([
             this._tryInitializeCharts();
         },
 
+        // ═══════════════════════════════════════════════════════════════
+        // FIND CHART CONTAINERS - Using NEW unique IDs
+        // ═══════════════════════════════════════════════════════════════
+        
         _findChartContainers: function() {
             var result = { breakdown: null, timeline: null };
             
+            // NEW IDs: analyticsBreakdownChart and analyticsTimelineChart
             var breakdownIds = ["analyticsBreakdownChart", "donationBreakdownChart"];
             var timelineIds = ["analyticsTimelineChart", "donationTimelineChart"];
             
+            // Strategy 1: DOM query with ID contains
             for (var i = 0; i < breakdownIds.length && !result.breakdown; i++) {
                 var el = document.querySelector('[id*="' + breakdownIds[i] + '"]');
                 if (el) {
+                    console.log("✅ [FIND] Found breakdown via:", breakdownIds[i]);
                     result.breakdown = { isDOMElement: true, element: el };
                 }
             }
@@ -97,21 +117,53 @@ sap.ui.define([
             for (var j = 0; j < timelineIds.length && !result.timeline; j++) {
                 var el2 = document.querySelector('[id*="' + timelineIds[j] + '"]');
                 if (el2) {
+                    console.log("✅ [FIND] Found timeline via:", timelineIds[j]);
                     result.timeline = { isDOMElement: true, element: el2 };
                 }
             }
             
+            // Strategy 2: Try UI5 Core byId
             if (!result.breakdown || !result.timeline) {
-                var chartCanvases = document.querySelectorAll('.chartCanvas');
-                if (chartCanvases.length >= 2) {
-                    if (!result.breakdown) result.breakdown = { isDOMElement: true, element: chartCanvases[0] };
-                    if (!result.timeline) result.timeline = { isDOMElement: true, element: chartCanvases[1] };
+                for (var k = 0; k < breakdownIds.length && !result.breakdown; k++) {
+                    var ctrl = sap.ui.getCore().byId(breakdownIds[k]);
+                    if (ctrl) {
+                        console.log("✅ [FIND] Found breakdown control via Core.byId:", breakdownIds[k]);
+                        result.breakdown = ctrl;
+                    }
+                }
+                
+                for (var l = 0; l < timelineIds.length && !result.timeline; l++) {
+                    var ctrl2 = sap.ui.getCore().byId(timelineIds[l]);
+                    if (ctrl2) {
+                        console.log("✅ [FIND] Found timeline control via Core.byId:", timelineIds[l]);
+                        result.timeline = ctrl2;
+                    }
                 }
             }
             
+            // Strategy 3: Find by class
+            if (!result.breakdown || !result.timeline) {
+                var chartCanvases = document.querySelectorAll('.chartCanvas');
+                console.log("📊 [FIND] Found", chartCanvases.length, "chartCanvas elements");
+                
+                if (chartCanvases.length >= 2) {
+                    if (!result.breakdown) {
+                        result.breakdown = { isDOMElement: true, element: chartCanvases[0] };
+                    }
+                    if (!result.timeline) {
+                        result.timeline = { isDOMElement: true, element: chartCanvases[1] };
+                    }
+                }
+            }
+            
+            console.log("📋 [FIND] Results - Breakdown:", !!result.breakdown, ", Timeline:", !!result.timeline);
             return result;
         },
 
+        // ═══════════════════════════════════════════════════════════════
+        // SET CHART CONTENT
+        // ═══════════════════════════════════════════════════════════════
+        
         _setChartContent: function(container, htmlContent) {
             if (!container) return false;
             
@@ -136,8 +188,13 @@ sap.ui.define([
             return false;
         },
 
+        // ═══════════════════════════════════════════════════════════════
+        // CHART INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════
+
         _tryInitializeCharts: function() {
             if (this._chartsInitialized) {
+                console.log("ℹ️ [INIT] Charts already initialized");
                 return;
             }
             
@@ -158,160 +215,46 @@ sap.ui.define([
             
             if (!oContext) {
                 console.warn("⚠️ [CHECK] No binding context");
+                MessageToast.show("Waiting for donor data...");
                 return;
             }
 
-            // Get donor data from context
-            var oDonorData = oContext.getObject();
-            console.log("📋 [CHECK] Donor data from context:", oDonorData);
-            
             var sDonorID = oContext.getProperty("donorID");
-            console.log("✅ [CHECK] Donor ID:", sDonorID);
+            console.log("✅ [CHECK] All ready! Donor ID:", sDonorID);
             
             this._chartsInitialized = true;
-            
-            // Try to get donations from the navigation property first
-            this._fetchDonationsViaNavigation(oContext, sDonorID);
+            this._fetchDonorDonations(sDonorID);
         },
 
-        // Method 1: Use navigation property (donations) from the Donor context
-        _fetchDonationsViaNavigation: function(oContext, sDonorID) {
-            console.log("📡 [FETCH] Trying navigation property approach...");
+        _fetchDonorDonations: function(sDonorID) {
+            console.log("📡 [FETCH] Fetching donations for:", sDonorID);
             
-            var that = this;
             var oModel = this.base.getView().getModel();
-            
-            // Try to get donations via the navigation property
-            var sDonorPath = oContext.getPath();
-            console.log("📡 [FETCH] Donor path:", sDonorPath);
-            
-            var sDonationsPath = sDonorPath + "/donations";
-            console.log("📡 [FETCH] Donations path:", sDonationsPath);
-            
-            try {
-                var oListBinding = oModel.bindList(sDonationsPath);
-                
-                oListBinding.requestContexts(0, 1000).then(function(aContexts) {
-                    console.log("✅ [FETCH-NAV] Got", aContexts.length, "donations via navigation");
-                    
-                    if (aContexts && aContexts.length > 0) {
-                        var aDonations = aContexts.map(function(oCtx) {
-                            return oCtx.getObject();
-                        });
-                        console.log("📝 [FETCH-NAV] Sample donation:", aDonations[0]);
-                        that._processDonationData(aDonations);
-                    } else {
-                        console.log("⚠️ [FETCH-NAV] No donations via navigation, trying direct query...");
-                        that._fetchDonationsDirect(sDonorID);
-                    }
-                }).catch(function(oError) {
-                    console.error("❌ [FETCH-NAV] Navigation failed:", oError);
-                    console.log("🔄 [FETCH] Trying direct query...");
-                    that._fetchDonationsDirect(sDonorID);
-                });
-            } catch (e) {
-                console.error("❌ [FETCH-NAV] Exception:", e);
-                this._fetchDonationsDirect(sDonorID);
-            }
-        },
-
-        // Method 2: Direct query to Donations entity with filter
-        _fetchDonationsDirect: function(sDonorID) {
-            console.log("📡 [FETCH-DIRECT] Querying Donations entity with filter...");
-            
             var that = this;
-            var oModel = this.base.getView().getModel();
             
-            try {
-                // Try with Filter object
-                var oFilter = new sap.ui.model.Filter({
-                    path: "donorID",
-                    operator: sap.ui.model.FilterOperator.EQ,
-                    value1: sDonorID
-                });
-                
-                console.log("📡 [FETCH-DIRECT] Filter:", oFilter);
-                
-                var oListBinding = oModel.bindList("/Donations", undefined, undefined, [oFilter]);
-                
-                oListBinding.requestContexts(0, 1000).then(function(aContexts) {
-                    console.log("✅ [FETCH-DIRECT] Got", aContexts.length, "donations");
-                    
-                    if (aContexts && aContexts.length > 0) {
-                        var aDonations = aContexts.map(function(oCtx) {
-                            return oCtx.getObject();
-                        });
-                        console.log("📝 [FETCH-DIRECT] Sample donation:", aDonations[0]);
-                        that._processDonationData(aDonations);
-                    } else {
-                        console.log("⚠️ [FETCH-DIRECT] No donations found, trying without filter...");
-                        that._fetchAllDonationsAndFilter(sDonorID);
-                    }
-                }).catch(function(oError) {
-                    console.error("❌ [FETCH-DIRECT] Error:", oError);
-                    console.error("❌ [FETCH-DIRECT] Error message:", oError.message);
-                    console.error("❌ [FETCH-DIRECT] Error stack:", oError.stack);
-                    that._fetchAllDonationsAndFilter(sDonorID);
-                });
-            } catch (e) {
-                console.error("❌ [FETCH-DIRECT] Exception:", e);
-                this._fetchAllDonationsAndFilter(sDonorID);
-            }
-        },
-
-        // Method 3: Fetch all donations and filter client-side (fallback)
-        _fetchAllDonationsAndFilter: function(sDonorID) {
-            console.log("📡 [FETCH-ALL] Fetching all donations and filtering client-side...");
+            // OData V4 approach
+            var oListBinding = oModel.bindList("/Donations", undefined, undefined, [
+                new sap.ui.model.Filter("donorID", sap.ui.model.FilterOperator.EQ, sDonorID)
+            ], {
+                $orderby: "donation_date desc"
+            });
             
-            var that = this;
-            var oModel = this.base.getView().getModel();
-            
-            try {
-                var oListBinding = oModel.bindList("/Donations");
+            oListBinding.requestContexts(0, 1000).then(function(aContexts) {
+                console.log("✅ [FETCH] Got", aContexts.length, "donations");
                 
-                oListBinding.requestContexts(0, 5000).then(function(aContexts) {
-                    console.log("✅ [FETCH-ALL] Got", aContexts.length, "total donations");
-                    
-                    if (aContexts && aContexts.length > 0) {
-                        var aDonations = aContexts.map(function(oCtx) {
-                            return oCtx.getObject();
-                        });
-                        
-                        // Log first donation to see structure
-                        console.log("📝 [FETCH-ALL] Sample donation structure:", JSON.stringify(aDonations[0], null, 2));
-                        
-                        // Filter client-side - try different field names
-                        var aFiltered = aDonations.filter(function(d) {
-                            return d.donorID === sDonorID || 
-                                   d.donor_ID === sDonorID || 
-                                   d.donorId === sDonorID ||
-                                   d.donor_id === sDonorID ||
-                                   (d.donor && d.donor.donorID === sDonorID) ||
-                                   (d.donor_donorID === sDonorID);
-                        });
-                        
-                        console.log("📊 [FETCH-ALL] Filtered to", aFiltered.length, "donations for donor:", sDonorID);
-                        
-                        if (aFiltered.length > 0) {
-                            that._processDonationData(aFiltered);
-                        } else {
-                            // Show all available field names
-                            console.log("🔍 [DEBUG] Available fields in donation:", Object.keys(aDonations[0]));
-                            that._renderNoDataMessage();
-                        }
-                    } else {
-                        that._renderNoDataMessage();
-                    }
-                }).catch(function(oError) {
-                    console.error("❌ [FETCH-ALL] Error:", oError);
-                    MessageBox.error("Failed to fetch donations: " + oError.message);
+                if (aContexts && aContexts.length > 0) {
+                    var aDonations = aContexts.map(function(oCtx) {
+                        return oCtx.getObject();
+                    });
+                    that._processDonationData(aDonations);
+                } else {
                     that._renderNoDataMessage();
-                });
-            } catch (e) {
-                console.error("❌ [FETCH-ALL] Exception:", e);
-                MessageBox.error("Failed to fetch donations: " + e.message);
-                this._renderNoDataMessage();
-            }
+                }
+            }).catch(function(oError) {
+                console.error("❌ [FETCH] Error:", oError);
+                MessageBox.error("Failed to fetch donations");
+                that._renderNoDataMessage();
+            });
         },
 
         _processDonationData: function(aDonations) {
@@ -321,26 +264,15 @@ sap.ui.define([
             var monthlyTotals = {};
             
             aDonations.forEach(function(donation) {
-                // Try different field names for cause
-                var cause = donation.cause || donation.Cause || donation.campaign || donation.Campaign || "Other";
-                // Try different field names for amount
-                var amount = parseFloat(donation.amount || donation.Amount || donation.value || 0);
-                // Try different field names for date
-                var dateStr = donation.donation_date || donation.donationDate || donation.date || donation.Date;
+                var cause = donation.cause || "Other";
+                causeTotals[cause] = (causeTotals[cause] || 0) + parseFloat(donation.amount || 0);
                 
-                causeTotals[cause] = (causeTotals[cause] || 0) + amount;
-                
-                if (dateStr) {
-                    var date = new Date(dateStr);
-                    if (!isNaN(date.getTime())) {
-                        var monthKey = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, '0');
-                        monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + amount;
-                    }
+                if (donation.donation_date) {
+                    var date = new Date(donation.donation_date);
+                    var monthKey = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, '0');
+                    monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + parseFloat(donation.amount || 0);
                 }
             });
-
-            console.log("📊 [PROCESS] Causes:", causeTotals);
-            console.log("📅 [PROCESS] Months:", monthlyTotals);
 
             this._renderDonationByCauseChart(causeTotals);
             this._renderMonthlyTrendChart(monthlyTotals);
@@ -349,6 +281,8 @@ sap.ui.define([
         },
 
         _renderDonationByCauseChart: function(causeTotals) {
+            console.log("🎨 [RENDER] Rendering breakdown chart");
+            
             var sortedCauses = Object.entries(causeTotals)
                 .sort(function(a, b) { return b[1] - a[1]; })
                 .slice(0, 6);
@@ -386,9 +320,12 @@ sap.ui.define([
             
             html += '</div>';
             this._setChartContent(this._breakdownContainer, html);
+            console.log("✅ [RENDER] Breakdown chart done");
         },
 
         _renderMonthlyTrendChart: function(monthlyTotals) {
+            console.log("🎨 [RENDER] Rendering timeline chart");
+            
             var sortedMonths = Object.entries(monthlyTotals)
                 .sort(function(a, b) { return a[0].localeCompare(b[0]); })
                 .slice(-12);
@@ -433,6 +370,7 @@ sap.ui.define([
 
             html += '</svg></div>';
             this._setChartContent(this._timelineContainer, html);
+            console.log("✅ [RENDER] Timeline chart done");
         },
 
         _renderNoDataMessage: function() {

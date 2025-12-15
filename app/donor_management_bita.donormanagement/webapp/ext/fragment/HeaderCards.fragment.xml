@@ -1,175 +1,262 @@
 <core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
     xmlns:f="sap.f"
-    xmlns:l="sap.ui.layout">
+    xmlns:cards="sap.f.cards">
     
-    <VBox id="headerCardsContainer" class="sapUiSmallMargin">
+    <VBox id="objPageAnalyticsContainer" class="sapUiSmallMargin">
         
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- KPI CARDS ROW -->
+        <!-- DEBUG BUTTON -->
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <HBox id="kpiCardsRow" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMarginBottom">
-            
-            <!-- Card 1: Total Donors -->
-            <VBox id="totalDonorsCardBox" class="donorKpiCard donorKpiCardBlue" width="23%">
-                <VBox id="totalDonorsCardInner" alignItems="Center" class="sapUiSmallPadding">
-                    <core:Icon id="totalDonorsIcon" src="sap-icon://group" size="3rem" color="white"/>
-                    <Text id="totalDonorsLabel" text="Total Donors" class="donorKpiLabel"/>
-                    <ObjectNumber id="totalDonorsCard" 
-                                  number="0" 
-                                  unit="" 
-                                  emphasized="true" 
-                                  class="donorKpiNumber"/>
-                    <ObjectStatus id="totalDonorsChange" 
-                                  text="+12% vs last month" 
-                                  state="Success" 
-                                  class="donorKpiChange"/>
-                </VBox>
-            </VBox>
-            
-            <!-- Card 2: Active Donors -->
-            <VBox id="activeDonorsCardBox" class="donorKpiCard donorKpiCardGreen" width="23%">
-                <VBox id="activeDonorsCardInner" alignItems="Center" class="sapUiSmallPadding">
-                    <core:Icon id="activeDonorsIcon" src="sap-icon://user-settings" size="3rem" color="white"/>
-                    <Text id="activeDonorsLabel" text="Active Donors" class="donorKpiLabel"/>
-                    <ObjectNumber id="activeDonorsCard" 
-                                  number="0" 
-                                  unit="" 
-                                  emphasized="true" 
-                                  class="donorKpiNumber"/>
-                    <ObjectStatus id="activeDonorsChange" 
-                                  text="+8% active rate" 
-                                  state="Success" 
-                                  class="donorKpiChange"/>
-                </VBox>
-            </VBox>
-            
-            <!-- Card 3: Total Donations -->
-            <VBox id="totalDonatedCardBox" class="donorKpiCard donorKpiCardOrange" width="23%">
-                <VBox id="totalDonatedCardInner" alignItems="Center" class="sapUiSmallPadding">
-                    <core:Icon id="totalDonatedIcon" src="sap-icon://money-bills" size="3rem" color="white"/>
-                    <Text id="totalDonatedLabel" text="Total Donated" class="donorKpiLabel"/>
-                    <ObjectNumber id="totalDonatedCard" 
-                                  number="0" 
-                                  unit="USD" 
-                                  emphasized="true" 
-                                  class="donorKpiNumber"/>
-                    <ObjectStatus id="totalDonatedChange" 
-                                  text="+25% this quarter" 
-                                  state="Success" 
-                                  class="donorKpiChange"/>
-                </VBox>
-            </VBox>
-            
-            <!-- Card 4: Average Donation -->
-            <VBox id="avgDonationCardBox" class="donorKpiCard donorKpiCardPurple" width="23%">
-                <VBox id="avgDonationCardInner" alignItems="Center" class="sapUiSmallPadding">
-                    <core:Icon id="avgDonationIcon" src="sap-icon://target-group" size="3rem" color="white"/>
-                    <Text id="avgDonationLabel" text="Avg Donation" class="donorKpiLabel"/>
-                    <ObjectNumber id="avgDonationCard" 
-                                  number="0" 
-                                  unit="USD" 
-                                  emphasized="true" 
-                                  class="donorKpiNumber"/>
-                    <ObjectStatus id="avgDonationChange" 
-                                  text="+15% improvement" 
-                                  state="Success" 
-                                  class="donorKpiChange"/>
-                </VBox>
-            </VBox>
-            
+        <HBox id="objPageDebugButtonBox" justifyContent="End" class="sapUiTinyMarginBottom">
+            <Button id="objPageRefreshChartsBtn" 
+                    text="🔄 Refresh Charts" 
+                    press=".extension.donormanagementbita.donormanagement.ext.controller.ObjectPageExt.onRefreshCharts"
+                    type="Emphasized"/>
         </HBox>
         
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- QUICK STATS ROW -->
+        <!-- TOP ROW: KPI SUMMARY CARDS -->
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <HBox id="quickStatsRow" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMarginTop">
+        <l:Grid id="objPageKpiGrid" defaultSpan="L3 M6 S12" class="sapUiSmallMarginBottom">
             
-            <!-- Stat 1: Retention Rate -->
-            <VBox id="retentionRateCardBox" class="donorStatCard" width="18%">
-                <HBox id="retentionRateCardHBox" alignItems="Center" class="sapUiTinyPadding">
-                    <core:Icon id="retentionRateIcon" src="sap-icon://supplier" size="2rem" color="#0854A0" class="sapUiTinyMarginEnd"/>
-                    <VBox id="retentionRateCardVBox">
-                        <Text id="retentionRateLabel" text="Retention Rate" class="donorStatLabel"/>
-                        <ObjectNumber id="retentionRateCard" 
-                                      number="0" 
-                                      unit="%" 
-                                      class="donorStatNumber"/>
+            <!-- Total Donated Card -->
+            <f:Card id="objPageTotalDonatedCard" class="analyticsCard cardBlue">
+                <f:content>
+                    <VBox id="objPageTotalDonatedBox" alignItems="Center" class="cardContent">
+                        <core:Icon id="objPageTotalDonatedIcon" src="sap-icon://money-bills" size="3.5rem" color="white"/>
+                        <Text id="objPageTotalDonatedLabel" text="Total Donated" class="cardLabel"/>
+                        <ObjectNumber id="objPageTotalDonatedValue"
+                            number="{= parseFloat(${totalDonated}) || 0 }" 
+                            unit="USD" 
+                            emphasized="true"
+                            class="cardValue"/>
+                        <ProgressIndicator id="objPageDonationProgress"
+                            percentValue="85" 
+                            displayValue="85% of Goal"
+                            class="cardProgress"/>
                     </VBox>
-                </HBox>
-            </VBox>
+                </f:content>
+            </f:Card>
             
-            <!-- Stat 2: Recurring Donors -->
-            <VBox id="recurringDonorsCardBox" class="donorStatCard" width="18%">
-                <HBox id="recurringDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
-                    <core:Icon id="recurringDonorsIcon" src="sap-icon://restart" size="2rem" color="#107E3E" class="sapUiTinyMarginEnd"/>
-                    <VBox id="recurringDonorsCardVBox">
-                        <Text id="recurringDonorsLabel" text="Recurring Donors" class="donorStatLabel"/>
-                        <ObjectNumber id="recurringDonorsCard" 
-                                      number="0" 
-                                      unit="" 
-                                      class="donorStatNumber"/>
+            <!-- Total Gifts Card -->
+            <f:Card id="objPageDonationCountCard" class="analyticsCard cardGreen">
+                <f:content>
+                    <VBox id="objPageDonationCountBox" alignItems="Center" class="cardContent">
+                        <core:Icon id="objPageDonationCountIcon" src="sap-icon://receipt" size="3.5rem" color="white"/>
+                        <Text id="objPageDonationCountLabel" text="Total Gifts" class="cardLabel"/>
+                        <ObjectNumber id="objPageDonationCountValue"
+                            number="{= parseInt(${donationCount}) || 0 }" 
+                            emphasized="true"
+                            class="cardValue"/>
+                        <HBox id="objPageDonationCountBadge" class="cardBadge">
+                            <core:Icon id="objPageTrendUpIcon" src="sap-icon://trend-up" size="1rem" color="#1a9a5b"/>
+                            <Text id="objPageTrendUpText" text="+12% this year" class="cardBadgeText"/>
+                        </HBox>
                     </VBox>
-                </HBox>
-            </VBox>
+                </f:content>
+            </f:Card>
             
-            <!-- Stat 3: HNI Donors -->
-            <VBox id="hniDonorsCardBox" class="donorStatCard" width="18%">
-                <HBox id="hniDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
-                    <core:Icon id="hniDonorsIcon" src="sap-icon://diamond" size="2rem" color="#E9730C" class="sapUiTinyMarginEnd"/>
-                    <VBox id="hniDonorsCardVBox">
-                        <Text id="hniDonorsLabel" text="VIP Donors" class="donorStatLabel"/>
-                        <ObjectNumber id="hniDonorsCard" 
-                                      number="0" 
-                                      unit="" 
-                                      class="donorStatNumber"/>
+            <!-- Average Gift Card -->
+            <f:Card id="objPageAvgDonationCard" class="analyticsCard cardOrange">
+                <f:content>
+                    <VBox id="objPageAvgDonationBox" alignItems="Center" class="cardContent">
+                        <core:Icon id="objPageAvgDonationIcon" src="sap-icon://bar-chart" size="3.5rem" color="white"/>
+                        <Text id="objPageAvgDonationLabel" text="Average Gift" class="cardLabel"/>
+                        <ObjectNumber id="objPageAvgDonationValue"
+                            number="{= Math.round(parseFloat(${averageDonation}) || 0) }" 
+                            unit="USD" 
+                            emphasized="true"
+                            class="cardValue"/>
+                        <Text id="objPageAvgComparisonText" text="Above median donor" class="cardSubtext"/>
                     </VBox>
-                </HBox>
-            </VBox>
+                </f:content>
+            </f:Card>
             
-            <!-- Stat 4: At Risk -->
-            <VBox id="atRiskDonorsCardBox" class="donorStatCard" width="18%">
-                <HBox id="atRiskDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
-                    <core:Icon id="atRiskDonorsIcon" src="sap-icon://alert" size="2rem" color="#BB0000" class="sapUiTinyMarginEnd"/>
-                    <VBox id="atRiskDonorsCardVBox">
-                        <Text id="atRiskDonorsLabel" text="At Risk" class="donorStatLabel"/>
-                        <ObjectNumber id="atRiskDonorsCard" 
-                                      number="0" 
-                                      unit="" 
-                                      state="Error" 
-                                      class="donorStatNumber"/>
+            <!-- Engagement Score Card -->
+            <f:Card id="objPageEngagementCard" class="analyticsCard cardPurple">
+                <f:content>
+                    <VBox id="objPageEngagementBox" alignItems="Center" class="cardContent">
+                        <core:Icon id="objPageEngagementIcon" src="sap-icon://activity-items" size="3.5rem" color="white"/>
+                        <Text id="objPageEngagementLabel" text="Engagement Score" class="cardLabel"/>
+                        <ObjectNumber id="objPageEngagementValue"
+                            number="{= parseInt(${engagementScore}) || 0 }" 
+                            unit="%" 
+                            emphasized="true"
+                            class="cardValue"/>
+                        <ProgressIndicator id="objPageEngagementProgress"
+                            percentValue="{= parseInt(${engagementScore}) || 0 }" 
+                            showValue="false"
+                            class="cardProgress"/>
                     </VBox>
-                </HBox>
-            </VBox>
+                </f:content>
+            </f:Card>
             
-            <!-- Stat 5: New This Month -->
-            <VBox id="newDonorsCardBox" class="donorStatCard" width="18%">
-                <HBox id="newDonorsCardHBox" alignItems="Center" class="sapUiTinyPadding">
-                    <core:Icon id="newDonorsIcon" src="sap-icon://add-contact" size="2rem" color="#6C32A4" class="sapUiTinyMarginEnd"/>
-                    <VBox id="newDonorsCardVBox">
-                        <Text id="newDonorsLabel" text="New This Month" class="donorStatLabel"/>
-                        <ObjectNumber id="newDonorsCard" 
-                                      number="0" 
-                                      unit="" 
-                                      class="donorStatNumber"/>
-                    </VBox>
-                </HBox>
-            </VBox>
-            
-        </HBox>
+        </l:Grid>
         
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- REFRESH BUTTON -->
+        <!-- CHARTS ROW: DATA VISUALIZATION -->
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <Toolbar id="statsToolbar" class="sapUiTinyMarginTop">
-            <ToolbarSpacer id="toolbarSpacer"/>
-            <Button id="refreshStatsBtn" 
-                    text="Refresh Statistics" 
-                    icon="sap-icon://refresh" 
-                    type="Transparent" 
-                    press=".onRefreshStatistics"/>
-        </Toolbar>
+        <l:Grid id="objPageChartsGrid" defaultSpan="L6 M12 S12" class="sapUiSmallMarginBottom">
+            
+            <!-- Donation Breakdown Chart -->
+            <f:Card id="objPageBreakdownChartCard" class="chartCard">
+                <f:header>
+                    <cards:Header id="objPageBreakdownChartHeader" title="💰 Donation Breakdown" />
+                </f:header>
+                <f:content>
+                    <VBox id="objPageBreakdownChartContainer" class="chartContainer">
+                        <!-- Using sap.ui.core.HTML instead of html:div for better compatibility -->
+                        <core:HTML id="donationBreakdownChart" 
+                            content="&lt;div class='chartCanvas' style='min-height: 300px; padding: 20px; text-align: center; color: #999;'&gt;Loading chart...&lt;/div&gt;"
+                            preferDOM="false"/>
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+            <!-- Donation Timeline Chart -->
+            <f:Card id="objPageTimelineChartCard" class="chartCard">
+                <f:header>
+                    <cards:Header id="objPageTimelineChartHeader" title="📈 Donation Timeline" />
+                </f:header>
+                <f:content>
+                    <VBox id="objPageTimelineChartContainer" class="chartContainer">
+                        <!-- Using sap.ui.core.HTML instead of html:div for better compatibility -->
+                        <core:HTML id="donationTimelineChart" 
+                            content="&lt;div class='chartCanvas' style='min-height: 300px; padding: 20px; text-align: center; color: #999;'&gt;Loading chart...&lt;/div&gt;"
+                            preferDOM="false"/>
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+        </l:Grid>
+        
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- DETAIL METRICS ROW -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <l:Grid id="objPageMetricsGrid" defaultSpan="L4 M6 S12" class="sapUiSmallMarginBottom">
+            
+            <!-- Key Metrics Card -->
+            <f:Card id="objPageKeyMetricsCard" class="metricCard">
+                <f:header>
+                    <cards:Header id="objPageKeyMetricsHeader" title="🎯 Key Metrics" />
+                </f:header>
+                <f:content>
+                    <VBox id="objPageKeyMetricsContent" class="metricContent">
+                        
+                        <HBox id="objPageLargestGiftRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageLargestGiftLabelBox" alignItems="Center">
+                                <core:Icon id="objPageLargestGiftIcon" src="sap-icon://target-group" size="1.5rem" color="#0854A0" class="metricItemIcon"/>
+                                <Text id="objPageLargestGiftLabel" text="Largest Gift" class="metricItemLabel"/>
+                            </HBox>
+                            <ObjectNumber id="objPageLargestGiftValue"
+                                number="{= Math.round(parseFloat(${largestDonation}) || 0) }" 
+                                unit="USD" 
+                                class="metricItemValue"/>
+                        </HBox>
+                        
+                        <HBox id="objPageSmallestGiftRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageSmallestGiftLabelBox" alignItems="Center">
+                                <core:Icon id="objPageSmallestGiftIcon" src="sap-icon://expense-report" size="1.5rem" color="#107E3E" class="metricItemIcon"/>
+                                <Text id="objPageSmallestGiftLabel" text="Smallest Gift" class="metricItemLabel"/>
+                            </HBox>
+                            <ObjectNumber id="objPageSmallestGiftValue"
+                                number="{= Math.round(parseFloat(${smallestDonation}) || 0) }" 
+                                unit="USD" 
+                                class="metricItemValue"/>
+                        </HBox>
+                        
+                        <HBox id="objPageMonthlyAvgRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageMonthlyAvgLabelBox" alignItems="Center">
+                                <core:Icon id="objPageMonthlyAvgIcon" src="sap-icon://sum" size="1.5rem" color="#E9730C" class="metricItemIcon"/>
+                                <Text id="objPageMonthlyAvgLabel" text="Monthly Average" class="metricItemLabel"/>
+                            </HBox>
+                            <ObjectNumber id="objPageMonthlyAvgValue"
+                                number="{= Math.round(parseFloat(${monthlyAverage}) || 0) }" 
+                                unit="USD" 
+                                class="metricItemValue"/>
+                        </HBox>
+                        
+                        <HBox id="objPageTierRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageTierLabelBox" alignItems="Center">
+                                <core:Icon id="objPageTierIcon" src="sap-icon://employee" size="1.5rem" color="#6C32A4" class="metricItemIcon"/>
+                                <Text id="objPageTierLabel" text="Donor Tier" class="metricItemLabel"/>
+                            </HBox>
+                            <Text id="objPageTierValue" text="{= ${donorTier} || 'N/A' }" class="metricItemText"/>
+                        </HBox>
+                        
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+            <!-- Timeline Card -->
+            <f:Card id="objPageTimelineCard" class="metricCard">
+                <f:header>
+                    <cards:Header id="objPageTimelineHeader" title="📅 Timeline" />
+                </f:header>
+                <f:content>
+                    <VBox id="objPageTimelineContent" class="metricContent">
+                        
+                        <HBox id="objPageFirstDonationRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageFirstDonationLabelBox" alignItems="Center">
+                                <core:Icon id="objPageFirstDonationIcon" src="sap-icon://hello-world" size="1.5rem" color="#1a9a5b" class="metricItemIcon"/>
+                                <Text id="objPageFirstDonationLabel" text="First Donation" class="metricItemLabel"/>
+                            </HBox>
+                            <Text id="objPageFirstDonationValue" text="{= ${firstDonationDate} ? ${firstDonationDate}.substring(0,10) : 'N/A' }" class="metricItemText"/>
+                        </HBox>
+                        
+                        <HBox id="objPageLastDonationRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageLastDonationLabelBox" alignItems="Center">
+                                <core:Icon id="objPageLastDonationIcon" src="sap-icon://calendar" size="1.5rem" color="#0854A0" class="metricItemIcon"/>
+                                <Text id="objPageLastDonationLabel" text="Last Donation" class="metricItemLabel"/>
+                            </HBox>
+                            <Text id="objPageLastDonationValue" text="{= ${lastDonationDate} ? ${lastDonationDate}.substring(0,10) : 'N/A' }" class="metricItemText"/>
+                        </HBox>
+                        
+                        <HBox id="objPageDaysSinceRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageDaysSinceLabelBox" alignItems="Center">
+                                <core:Icon id="objPageDaysSinceIcon" src="sap-icon://history" size="1.5rem" color="#E9730C" class="metricItemIcon"/>
+                                <Text id="objPageDaysSinceLabel" text="Days Since Last" class="metricItemLabel"/>
+                            </HBox>
+                            <Text id="objPageDaysSinceValue" text="{= (${daysSinceLastDonation} || 0) + ' days' }" class="metricItemText"/>
+                        </HBox>
+                        
+                        <HBox id="objPageRiskLevelRow" justifyContent="SpaceBetween" alignItems="Center" class="metricItem">
+                            <HBox id="objPageRiskLevelLabelBox" alignItems="Center">
+                                <core:Icon id="objPageRiskLevelIcon" src="sap-icon://warning" size="1.5rem" color="#BB0000" class="metricItemIcon"/>
+                                <Text id="objPageRiskLevelLabel" text="Risk Level" class="metricItemLabel"/>
+                            </HBox>
+                            <ObjectStatus id="objPageRiskLevelValue"
+                                text="{= ${riskLevel} || 'Unknown' }" 
+                                state="{= ${riskLevel} &amp;&amp; ${riskLevel}.includes('High') ? 'Error' : ${riskLevel} &amp;&amp; ${riskLevel}.includes('Medium') ? 'Warning' : 'Success' }"/>
+                        </HBox>
+                        
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+            <!-- Top Cause Card -->
+            <f:Card id="objPageTopCauseCard" class="metricCard highlightCard">
+                <f:header>
+                    <cards:Header id="objPageTopCauseHeader" title="🎯 Top Supported Cause" />
+                </f:header>
+                <f:content>
+                    <VBox id="objPageTopCauseContent" alignItems="Center" class="topCauseContent">
+                        <core:Icon id="objPageTopCauseIcon" src="sap-icon://heart" size="4rem" color="#BB0000" class="topCauseIcon"/>
+                        <Title id="objPageTopCauseTitle" text="{= ${topCause} || 'Not Available' }" level="H3" class="topCauseTitle"/>
+                        <Text id="objPageTopCauseDesc" text="Most frequently supported cause" class="topCauseDesc"/>
+                        <ObjectNumber id="objPageTopCauseValue"
+                            number="42" 
+                            unit="% of contributions" 
+                            emphasized="true"
+                            class="topCauseValue"/>
+                    </VBox>
+                </f:content>
+            </f:Card>
+            
+        </l:Grid>
         
     </VBox>
     

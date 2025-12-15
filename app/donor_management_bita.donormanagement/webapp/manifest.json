@@ -186,6 +186,21 @@
               "contextPath": "/Donors",
               "sectionLayout": "Tabs",
               "showRelatedApps": false,
+              "content": {
+                "body": {
+                  "sections": {
+                    "CustomAnalytics": {
+                      "template": "donormanagementbita.donormanagement.ext.fragment.DonorAnalytics",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "Analytics"
+                      },
+                      "title": "📊 Visual Analytics",
+                      "type": "XMLFragment"
+                    }
+                  }
+                }
+              },
               "controlConfiguration": {
                 "donations/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
