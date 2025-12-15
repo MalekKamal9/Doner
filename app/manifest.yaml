@@ -1,4 +1,3 @@
-cat > manifest.yaml << 'EOF'
 ---
 applications:
   - name: donor-management-bita
@@ -10,4 +9,6 @@ applications:
     random-route: true
     env:
       NODE_ENV: production
-EOF
+    services:
+      - donor-management-hana
+      - donor-management-xsuaa
