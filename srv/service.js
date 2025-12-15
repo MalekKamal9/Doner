@@ -7,6 +7,14 @@ const { GenerateAIImpactReport } = require('./code/impact-report-logic');
 const { PredictDonationLikelihood } = require('./code/prediction-logic');
 const { DetectAnomalies } = require('./code/anomaly-logic');
 
+// ═══════════════════════════════════════════════════════════════
+// HELPER: Round to 2 decimal places (prevents decimal overflow errors)
+// ═══════════════════════════════════════════════════════════════
+const round2 = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return 0;
+    return Math.round(num * 100) / 100;
+};
+
 class donor_management_BitaSrv extends LCAPApplicationService {
     async init() {
 
@@ -101,14 +109,14 @@ class donor_management_BitaSrv extends LCAPApplicationService {
                 console.log(`💰 Previous Year (${previousYear}): $${previousYearTotal.toLocaleString()}`);
                 
                 const yoyGrowth = previousYearTotal > 0 
-                    ? ((currentYearTotal - previousYearTotal) / previousYearTotal * 100).toFixed(1)
-                    : '0';
+                    ? round2((currentYearTotal - previousYearTotal) / previousYearTotal * 100)
+                    : 0;
                 
                 const kpis = {
                     totalDonations: '$' + Math.round(totalDonationsAmount).toLocaleString(),
                     totalDonors: totalDonors.toString(),
                     avgDonation: '$' + Math.round(avgDonation).toLocaleString(),
-                    yoyGrowth: (parseFloat(yoyGrowth) >= 0 ? '+' : '') + yoyGrowth + '%'
+                    yoyGrowth: (yoyGrowth >= 0 ? '+' : '') + yoyGrowth + '%'
                 };
                 
                 // ═══════════════════════════════════════════════════════════════
@@ -488,11 +496,12 @@ function calculateAndAssignAnalytics(donor, donorData, donations, globalTotal) {
     const min = amounts.length > 0 ? Math.min(...amounts) : 0;
     const currency = donations[0]?.currency_code || 'USD';
     
-    if ('totalDonated' in donor) donor.totalDonated = total;
+    // ✅ FIX: Apply rounding to all decimal fields to prevent "Value X is not valid" errors
+    if ('totalDonated' in donor) donor.totalDonated = round2(total);
     if ('donationCount' in donor) donor.donationCount = count;
-    if ('averageDonation' in donor) donor.averageDonation = avg;
-    if ('largestDonation' in donor) donor.largestDonation = max;
-    if ('smallestDonation' in donor) donor.smallestDonation = min;
+    if ('averageDonation' in donor) donor.averageDonation = round2(avg);
+    if ('largestDonation' in donor) donor.largestDonation = round2(max);
+    if ('smallestDonation' in donor) donor.smallestDonation = round2(min);
     if ('currencyCode' in donor) donor.currencyCode = currency;
     
     const allDonationsWithParsedDates = donations.map((d, index) => {
@@ -522,10 +531,12 @@ function calculateAndAssignAnalytics(donor, donorData, donations, globalTotal) {
     }
     if ('daysSinceLastDonation' in donor) donor.daysSinceLastDonation = Math.max(0, daysSince);
     
+    // ✅ FIX: Round percentOfTotal
     if ('percentOfTotal' in donor) {
-        donor.percentOfTotal = globalTotal > 0 ? Math.round((total / globalTotal) * 10000) / 100 : 0;
+        donor.percentOfTotal = globalTotal > 0 ? round2((total / globalTotal) * 100) : 0;
     }
     
+    // ✅ FIX: Round yearOverYearGrowth
     if ('yearOverYearGrowth' in donor) {
         const yearlyAmounts = {};
         allDonationsWithParsedDates.forEach(d => {
@@ -538,12 +549,13 @@ function calculateAndAssignAnalytics(donor, donorData, donations, globalTotal) {
         if (years.length >= 2) {
             const current = yearlyAmounts[years[0]];
             const previous = yearlyAmounts[years[1]];
-            donor.yearOverYearGrowth = previous > 0 ? Math.round(((current - previous) / previous) * 100) : 0;
+            donor.yearOverYearGrowth = previous > 0 ? round2(((current - previous) / previous) * 100) : 0;
         } else {
             donor.yearOverYearGrowth = 0;
         }
     }
     
+    // ✅ FIX: Round monthlyAverage
     if ('monthlyAverage' in donor) {
         const uniqueMonths = new Set();
         allDonationsWithParsedDates.forEach(d => {
@@ -551,7 +563,7 @@ function calculateAndAssignAnalytics(donor, donorData, donations, globalTotal) {
                 uniqueMonths.add(`${d.parsedDate.getFullYear()}-${d.parsedDate.getMonth()}`);
             }
         });
-        donor.monthlyAverage = uniqueMonths.size > 0 ? total / uniqueMonths.size : 0;
+        donor.monthlyAverage = round2(uniqueMonths.size > 0 ? total / uniqueMonths.size : 0);
     }
     
     if ('donorTier' in donor) {
@@ -617,7 +629,8 @@ function calculateAndAssignAnalytics(donor, donorData, donations, globalTotal) {
             if (b.parsedDate) return 1;
             return 0;
         });
-        donor.donationHistory = generateHistoryTable(sortedAll, total, count, avg, max, currency);
+        // ✅ FIX: Pass rounded values to history table
+        donor.donationHistory = generateHistoryTable(sortedAll, round2(total), count, round2(avg), round2(max), currency);
     }
 }
 
